@@ -15,24 +15,24 @@
     @endif
 
     <!-- Dark green background header with logo and title -->
-    <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: 120px; border-radius: 0.5rem; background-color: #14532d;">
-        <div class="d-flex w-100 align-items-center justify-content-between" style="height: 64px;">
+    <!-- <div class="w-100 d-flex flex-column align-items-center justify-content-center" style="height: 120px; border-radius: 0.5rem; background-color: #14532d;">
+        <div class="d-flex w-100 align-items-center justify-content-between" style="height: 64px;"> -->
             <!-- Left: DOH Logo -->
-            <img src="{{ asset('images/DOH-logo.png') }}" alt="DOH Logo" style="height: 64px; margin-left: 1rem;" class="mb-2" onerror="this.style.display='none'">
+            <!-- <img src="{{ asset('images/DOH-logo.png') }}" alt="DOH Logo" style="height: 64px; margin-left: 1rem;" class="mb-2" onerror="this.style.display='none'"> -->
 
             <!-- Centered Title and Subtitle -->
-            <div class="d-flex flex-column align-items-center w-100">
+            <!-- <div class="d-flex flex-column align-items-center w-100">
                 <div class="text-white-50 mt-1 text-center" style="font-size: 1rem;">Department of Health</div>
                 <h5 class="text-white fw-bold mb-0 text-center" style="letter-spacing: 2px; font-size: .8rem;">{{ str_replace('_', ' ', config('app.name', 'Health Research Repository')) }}</h5>
-            </div>
+            </div> -->
 
             <!-- Right: BP Logo -->
-            <img src="{{ asset('images/BP-logo.png') }}" alt="BP Logo" style="height: 75px; margin-right: 1rem;" class="mb-2" onerror="this.style.display='none'">
+            <!-- <img src="{{ asset('images/BP-logo.png') }}" alt="BP Logo" style="height: 75px; margin-right: 1rem;" class="mb-2" onerror="this.style.display='none'">
         </div>
-    </div>
+    </div> -->
 
     <!-- Login form section -->
-    <div class="pt-4">
+    <div class="p-4 m-4 mx-auto" style="max-width: 500px;">
         <div class="mb-4 text-center">
             <h2 class="fw-semibold" style="font-size: 1.5rem;">Welcome</h2>
             <p class="text-muted" style="font-size: 1rem;">Please login to continue</p>

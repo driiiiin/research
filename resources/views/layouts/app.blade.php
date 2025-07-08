@@ -19,7 +19,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
-            <div class="container-fluid">
+            <div class="container-fluid position-fixed top-0 start-0 w-100 bg-white z-50" style="z-index: 1050;">
                 @include('partials.header')
             </div>
 

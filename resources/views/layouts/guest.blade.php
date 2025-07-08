@@ -19,11 +19,18 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div class="w-full sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+            <div class="container-fluid">
+                @include('partials.header')
             </div>
-        </div>
-    </body>
+
+        <body class="h-auto min-h-screen overflow-auto pt-10 pb-10">
+
+        {{ $slot }}
+
+        </body>
+
+        <!-- Start of footer -->
+        <footer class="pt-12">
+                @include('partials.footer')
+        </footer>
 </html>

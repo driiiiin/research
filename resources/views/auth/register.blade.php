@@ -1,12 +1,14 @@
 <x-guest-layout>
     <!-- Logo and Title on the Top Left -->
-    <div class="d-flex align-items-center mb-4" style="margin-left: 1.5rem; margin-top: 1.5rem;">
+    <!-- <div class="d-flex align-items-center mb-4" style="margin-left: .8rem; margin-top: 1.5rem;">
         <img src="{{ asset('images/DOH-logo.png') }}" alt="DOH Logo" style="height: 48px; margin-right: 0.75rem;" onerror="this.style.display='none'">
         <div>
-            <h1 class="fw-bold mb-0" style="font-size: 1.5rem; letter-spacing: 2px; color: #14532d;">{{ config('app.name', 'Herdin') }}</h1>
+            <h1 class="fw-bold mb-0" style="font-size: 1rem; letter-spacing: 2px; color: #14532d;">{{ str_replace('_', ' ', config('app.name', 'Herdin')) }}</h1>
             <div class="text-muted" style="font-size: 0.9rem;">Department of Health.</div>
         </div>
-    </div>
+        <img src="{{ asset('images/BP-logo.png') }}" alt="BP Logo" style="height: 63px; margin-right: 0.75rem;" onerror="this.style.display='none'">
+    </div> -->
+    <div class="p-4 m-4 mx-auto" style="max-width: 500px;">
     <div class="mb-4 text-center">
         <h2 class="fw-semibold" style="font-size: 1.5rem;">Register</h2>
         <p class="text-muted" style="font-size: 1rem;">Create your account to get started</p>
@@ -82,4 +84,5 @@
             </x-primary-button>
         </div>
     </form>
+</div>
 </x-guest-layout>
