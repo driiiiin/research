@@ -13,24 +13,98 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <!-- SweetAlert2 CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
+            <div class="container-fluid">
+                @include('partials.header')
+            </div>
+
             @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+
             </main>
         </div>
     </body>
+    <script>
+        let timeout;
+
+        function resetTimer() {
+            clearTimeout(timeout);
+            timeout = setTimeout(logoutUser , 3600000); // 1 hour (3,600,000 ms)
+            // timeout = setTimeout(logoutUser , 60000);// 1 minute
+            // timeout = setTimeout(logoutUser , 30000);// 30 sec
+        }
+
+        function logoutUser () {
+            Swal.fire({
+                title: 'Auto Logout',
+                text: 'You have been automatically logged out due to inactivity. Please login again to continue.',
+                icon: 'warning',
+                showCancelButton: false,
+                confirmButtonText: 'Login Again',
+                allowEnterKey: true, // allow enter key to confirm
+                didOpen: () => {
+                    // Add keydown listener for Enter key
+                    document.addEventListener('keydown', handleEnterKeyForSwal);
+                },
+                willClose: () => {
+                    // Remove keydown listener to avoid memory leaks
+                    document.removeEventListener('keydown', handleEnterKeyForSwal);
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    performLogout();
+                }
+            });
+        }
+
+        function handleEnterKeyForSwal(e) {
+            // Only trigger if the SweetAlert2 modal is open and Enter is pressed
+            if (e.key === 'Enter') {
+                const swalConfirmBtn = document.querySelector('.swal2-confirm');
+                if (swalConfirmBtn) {
+                    swalConfirmBtn.click();
+                }
+            }
+        }
+
+        function performLogout() {
+            // Create a form and submit it to logout
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route('logout') }}';
+
+            // Add CSRF token
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = '{{ csrf_token() }}';
+            form.appendChild(csrfInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Reset timer on user activity
+        window.onload = resetTimer;
+        window.onmousemove = resetTimer;
+        window.onkeydown = resetTimer;
+        window.onscroll = resetTimer;
+        window.onclick = resetTimer;
+        window.ontouchmove = resetTimer;
+
+        // Add event listener for beforeunload
+        window.addEventListener('beforeunload', function(e) {
+            // Optional: Add any cleanup logic here
+            // e.preventDefault();
+            // e.returnValue = '';
+        });
+    </script>
 </html>
