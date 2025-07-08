@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class LoginRequest extends FormRequest
 {
@@ -27,7 +29,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'login' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -39,17 +41,69 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
-        $this->ensureIsNotRateLimited();
+        $login = $this->input('login');
+        $password = $this->input('password');
+        $remember = $this->boolean('remember');
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey(), 86400);
+        // Check if login is email or username
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+        // Find the user first to check if they're blocked
+        $user = User::where($field, $login)->first();
+
+        if ($user) {
+            // Check if user is blocked
+            if ($user->login_blocked_until && $user->login_blocked_until->isFuture()) {
+                $remainingMinutes = now()->diffInMinutes($user->login_blocked_until);
+                throw ValidationException::withMessages([
+                    'login' => "Account is temporarily blocked. Please try again in {$remainingMinutes} minutes.",
+                ]);
+            }
+
+            // Reset failed logins if block period has expired
+            if ($user->login_blocked_until && $user->login_blocked_until->isPast()) {
+                $user->update([
+                    'failed_logins' => 0,
+                    'login_blocked_until' => null,
+                ]);
+            }
         }
 
-        RateLimiter::clear($this->throttleKey());
+        if (! Auth::attempt([$field => $login, 'password' => $password], $remember)) {
+            // Increment failed login attempts
+            if ($user) {
+                $failedLogins = $user->failed_logins + 1;
+                $user->update(['failed_logins' => $failedLogins]);
+
+                // Block user after 5 failed attempts for 30 minutes
+                if ($failedLogins >= 5) {
+                    $user->update([
+                        'login_blocked_until' => now()->addMinutes(30),
+                    ]);
+
+                    throw ValidationException::withMessages([
+                        'login' => 'Too many failed login attempts. Account blocked for 30 minutes.',
+                    ]);
+                } else {
+                    $remainingAttempts = 5 - $failedLogins;
+                    throw ValidationException::withMessages([
+                        'login' => "Invalid credentials. {$remainingAttempts} attempts remaining.",
+                    ]);
+                }
+            } else {
+                throw ValidationException::withMessages([
+                    'login' => trans('auth.failed'),
+                ]);
+            }
+        }
+
+        // Reset failed logins on successful login
+        if ($user) {
+            $user->update([
+                'failed_logins' => 0,
+                'login_blocked_until' => null,
+            ]);
+        }
     }
 
     /**
@@ -68,7 +122,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => __('auth.lockout_24h', [
+            'login' => __('auth.lockout_24h', [
                 'hours' => 24,
             ]),
         ]);
@@ -79,6 +133,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('login')).'|'.$this->ip());
     }
 }
