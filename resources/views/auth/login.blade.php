@@ -96,6 +96,19 @@
             </div>
             -->
 
+            <!-- Terms and Conditions Agreement -->
+            <div class="flex items-start mt-4">
+                <label for="terms_agree" class="mt-1">
+                    <input id="terms_agree" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="terms_agree" required>
+                    <span class="sr-only">I agree</span>
+                </label>
+                <div class="ms-2 text-sm text-gray-600 text-justify w-full" style="text-align: justify;">
+                    I have read about the <a href="#" class="underline text-blue-600 hover:text-blue-800">Terms and Conditions</a> and express my consent thereto.
+                </div>
+            </div>
+            <span id="terms-error" class="text-red-600 text-sm hidden">You must agree to the terms and conditions.</span>
+
+
             <div class="flex flex-col items-center justify-center mt-4">
                 <button type="submit" class="btn w-full flex justify-center" style="background-color: #14532d; color: #fff;">
                     {{ __('Log in') }}
@@ -117,6 +130,20 @@
         function noBack() {
             window.history.forward();
         }
+        // Terms and Conditions validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('login-form');
+            const termsCheckbox = document.getElementById('terms_agree');
+            const errorMsg = document.getElementById('terms-error');
+            form.addEventListener('submit', function(e) {
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    errorMsg.classList.remove('hidden');
+                } else {
+                    errorMsg.classList.add('hidden');
+                }
+            });
+        });
     </script>
     <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 </x-guest-layout>
