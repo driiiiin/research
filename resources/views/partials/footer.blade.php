@@ -1,4 +1,4 @@
-<div class="bg-[#FAF9F6] h-20 flex items-center relative">
+<div class="flex items-center relative">
     <div class="w-full flex flex-row items-center justify-between px-4 py-2">
         <div class="flex items-center">
             <span class="text-xs">&copy;{{ date('Y') }} Department of Health. All rights reserved.</span>

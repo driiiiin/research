@@ -18,19 +18,62 @@
         <!-- Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .header-fixed {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1050;
+                background: white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                margin-top: 120px;
+                min-height: calc(100vh - 120px - 80px);
+            }
+
+            .content-wrapper {
+                flex: 1;
+                padding: 20px;
+            }
+
+            .footer {
+                margin-top: auto;
+                background: #FAF9F6;
+                height: 80px;
+            }
+        </style>
     </head>
-            <div class="container-fluid">
-                @include('partials.header')
+    <body class="font-sans antialiased">
+        <!-- Fixed Header -->
+        <div class="header-fixed">
+            @include('partials.header')
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                {{ $slot }}
             </div>
 
-        <body class="h-auto min-h-screen overflow-auto pt-10 pb-10">
-
-        {{ $slot }}
-
-        </body>
-
-        <!-- Start of footer -->
-        <footer class="pt-12">
+            <!-- Footer -->
+            <div class="footer">
                 @include('partials.footer')
-        </footer>
+            </div>
+        </div>
+    </body>
 </html>

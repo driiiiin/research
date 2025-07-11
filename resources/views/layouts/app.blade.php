@@ -16,20 +16,64 @@
 
         <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .header-fixed {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1050;
+                background: white;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+
+            .main-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                margin-top: 120px;
+                min-height: calc(100vh - 120px - 80px);
+            }
+
+            .content-wrapper {
+                flex: 1;
+                padding: 20px;
+            }
+
+            .footer {
+                margin-top: auto;
+                background: #FAF9F6;
+                height: 80px;
+            }
+        </style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            <div class="container-fluid position-fixed top-0 start-0 w-100 bg-white z-50" style="z-index: 1050;">
-                @include('partials.header')
+        <!-- Fixed Header -->
+        <div class="header-fixed">
+            @include('partials.header')
+        </div>
+
+        @include('layouts.navigation')
+
+        <!-- Main Content Area -->
+        <div class="main-content" style="margin-top:30px">
+            <div class="content-wrapper">
+                @yield('content')
             </div>
 
-            @include('layouts.navigation')
-
-
-            <!-- Page Content -->
-            <main>
-
-            </main>
+            <!-- Footer -->
+            <div class="footer">
+                @include('partials.footer')
+            </div>
         </div>
     </body>
     <script>
