@@ -8,7 +8,7 @@
         </div>
         <img src="{{ asset('images/BP-logo.png') }}" alt="BP Logo" style="height: 63px; margin-right: 0.75rem;" onerror="this.style.display='none'">
     </div> -->
-    <div class="pt-2 mt-2 p-4 m-4 mx-auto shadow-lg rounded" style="max-width: 500px;">
+    <div class="mt-2 p-4 m-4 mx-auto shadow-lg rounded" style="max-width: 500px;">
     <div class="mb-4 text-center">
         <h2 class="fw-semibold" style="font-size: 1.5rem;">Register</h2>
         <p class="text-muted" style="font-size: 1rem;">Create your account to get started</p>

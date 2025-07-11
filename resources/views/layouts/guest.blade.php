@@ -42,7 +42,7 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                margin-top: 120px;
+                /* margin-top: 120px; */
                 min-height: calc(100vh - 120px - 80px);
             }
 
@@ -65,7 +65,7 @@
         </div>
 
         <!-- Main Content Area -->
-        <div class="main-content">
+        <div class="main-content" style="padding-top: 70px;">
             <div class="content-wrapper">
                 {{ $slot }}
             </div>

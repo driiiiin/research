@@ -1,3 +1,78 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Fixed header and navigation */
+.fixed-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+/* Ensure header content is properly contained */
+.fixed-header > div {
+    background: white;
+}
+
+/* Add padding to main content to prevent it from being hidden behind the fixed header/nav */
+.main-content {
+    padding-top: 120px; /* Adjust if your header+nav is taller/shorter */
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .main-content {
+        margin-top: 180px; /* More space for mobile */
+    }
+
+    .fixed-header {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+}
+
+/* Ensure navigation stays within the fixed header */
+.fixed-header nav {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Smooth scrolling for better UX */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Prevent content from going under the fixed header */
+body {
+    padding-top: 0;
+}
+
+/* Ensure proper header structure */
+.fixed-header .bg-white {
+    background: white !important;
+}
+
+/* Make navigation bar smaller in height */
+nav,
+.fixed-header nav,
+.fixed-header .navigation {
+    height: 48px !important;
+    min-height: 48px !important;
+}
+
+/* Adjust flex container height if needed */
+nav .h-16 {
+    height: 48px !important;
+}
+
+/* Adjust nav link padding for smaller height */
+nav a,
+nav button,
+nav .sm\:flex {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+

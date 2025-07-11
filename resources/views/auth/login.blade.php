@@ -32,7 +32,7 @@
     </div> -->
 
     <!-- Login form section -->
-    <div class="pt-2 mt-2 p-4 m-4 mx-auto shadow-lg rounded" style="max-width: 500px;">
+    <div class="pt-4 mt-5 p-4 m-4 mx-auto shadow-lg rounded" style="max-width: 500px;">
         <div class="mb-4 text-center">
             <h2 class="fw-semibold" style="font-size: 1.5rem;">Welcome</h2>
             <p class="text-muted" style="font-size: 1rem;">Please login to continue</p>

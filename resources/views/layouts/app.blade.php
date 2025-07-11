@@ -11,63 +11,27 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- SweetAlert2 CDN -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .header-fixed {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                z-index: 1050;
-                background: white;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-
-            .main-content {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                margin-top: 120px;
-                min-height: calc(100vh - 120px - 80px);
-            }
-
-            .content-wrapper {
-                flex: 1;
-                padding: 20px;
-            }
-
-            .footer {
-                margin-top: auto;
-                background: #FAF9F6;
-                height: 80px;
-            }
-        </style>
     </head>
     <body class="font-sans antialiased">
-        <!-- Fixed Header -->
-        <div class="header-fixed">
+        <!-- Fixed Header and Navigation -->
+        <div class="fixed-header">
             @include('partials.header')
+            @include('layouts.navigation')
         </div>
 
-        @include('layouts.navigation')
-
         <!-- Main Content Area -->
-        <div class="main-content" style="margin-top:30px">
+        <div class="main-content container-fluid">
             <div class="content-wrapper">
-                @yield('content')
+                {{ $slot }}
             </div>
 
             <!-- Footer -->
