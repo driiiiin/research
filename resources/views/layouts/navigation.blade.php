@@ -13,6 +13,9 @@
                     <x-nav-link :href="route('data-encoding')" :active="request()->routeIs('data-encoding')">
                         {{ __('Data Encoding') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('library.index')" :active="request()->routeIs('library.*')">
+                        {{ __('Library') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -70,6 +73,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('data-encoding')" :active="request()->routeIs('data-encoding')">
                 {{ __('Data Encoding') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('library.index')" :active="request()->routeIs('library.*')">
+                {{ __('Library') }}
             </x-responsive-nav-link>
         </div>
 
