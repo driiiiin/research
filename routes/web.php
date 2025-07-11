@@ -2,11 +2,48 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DataEncodingController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function (Request $request) {
+    $books = null;
+    $categories = \App\Models\Category::all();
+
+    // Only fetch books if there's a search query
+    if ($request->filled('search') || $request->filled('category') || $request->filled('format')) {
+        $query = \App\Models\Book::with('category')->where('status', 'Available');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('author', 'like', "%{$search}%")
+                  ->orWhere('isbn', 'like', "%{$search}%")
+                  ->orWhere('genre', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('format')) {
+            $query->where('format', $request->format);
+        }
+
+        $books = $query->latest()->paginate(12);
+    }
+
+    return view('page.welcome', compact('books', 'categories'));
+})->name('welcome');
+
+Route::get('/contact', function () {
+    return view('page.contact');
+})->name('contact');
+
+Route::get('/about', function () {
+    return view('page.about');
+})->name('about');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
