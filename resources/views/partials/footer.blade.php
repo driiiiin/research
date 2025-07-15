@@ -1,4 +1,4 @@
-<div class="w-full bg-[#e6f6f6] py-8">
+<div class="w-full bg-[#e6f6f6] py-8" style="padding-bottom:0">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 items-start px-4">
         <!-- Column 1: Logo -->
         <div class="flex flex-col items-center md:items-start">
@@ -33,8 +33,7 @@
             </ul>
         </div>
     </div>
-</div>
-<div class="flex items-center relative">
+    <div class="flex items-center relative">
     <div class="w-full flex flex-row items-center justify-between px-4 py-2">
         <div class="flex items-center">
             <span class="text-xs">&copy;{{ date('Y') }} Department of Health. All rights reserved.</span>
@@ -75,4 +74,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     </script>
+</div>
+
 </div>

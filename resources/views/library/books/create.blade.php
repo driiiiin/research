@@ -186,7 +186,7 @@
                         </div>
 
                         <div class="flex items-center justify-end space-x-4">
-                            <a href="{{ route('library.books.index') }}"
+                            <a href="{{ route('library.index') }}"
                                class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md text-sm font-medium">
                                 Cancel
                             </a>

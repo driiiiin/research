@@ -42,7 +42,7 @@
                                     </svg>
                                     Search
                                 </button>
-                                <a href="{{ route('welcome') }}" class="h-12 px-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow transition font-semibold text-base">
+                                <a href="{{ url('/') }}" class="h-12 px-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow transition font-semibold text-base">
                                     Clear
                                 </a>
                             </div>
@@ -127,3 +127,21 @@
         </div>
     </div>
 </x-guest-layout>
+<script>
+    // Detect if the page load is a reload/refresh
+    let isReload = false;
+    if (performance.getEntriesByType) {
+        const navEntries = performance.getEntriesByType("navigation");
+        if (navEntries.length > 0 && navEntries[0].type === "reload") {
+            isReload = true;
+        }
+    } else if (performance.navigation) {
+        // Deprecated, but still works in some browsers
+        isReload = performance.navigation.type === 1;
+    }
+
+    // Only redirect to root URL if it's a refresh and there are query parameters
+    if (isReload && window.location.search.length > 0) {
+        window.location.href = '/';
+    }
+</script>
