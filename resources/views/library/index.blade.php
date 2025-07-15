@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4 mb-2">
             <div class="flex items-center justify-between pt-4">
@@ -39,12 +38,34 @@
                     </div>
                 </div>
             </div>
+            <!-- Data Table Controls -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-8 mb-4 gap-4">
+                <form method="GET" class="flex items-center gap-2">
+                    <label for="per_page" class="text-sm text-gray-700">Show</label>
+                    <select name="per_page" id="per_page" onchange="this.form.submit()" class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm">
+                        @foreach([5, 10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('per_page', $books->perPage()) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                    <span class="text-sm text-gray-700">entries</span>
+                    <!-- @if(request('search'))
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                    @endif
+                </form>
+                <form method="GET" class="flex items-center gap-2">
+                    @if(request('per_page'))
+                        <input type="hidden" name="per_page" value="{{ request('per_page') }}">
+                    @endif
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search books..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
+                    <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Search</button>
+                </form> -->
+            </div>
             <!-- Books Table (List of Books) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Books List</h3>
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
@@ -56,7 +77,7 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse($books as $book)
-                                    <tr>
+                                    <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div>
                                                 <div class="text-sm font-medium text-gray-900">{{ $book->title }}</div>
@@ -112,11 +133,20 @@
                             </tbody>
                         </table>
                     </div>
-                    @if($books->hasPages())
-                        <div class="mt-4">
-                            {{ $books->links() }}
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
+                        <div class="text-sm text-gray-600">
+                            Showing
+                            <span class="font-semibold">{{ $books->firstItem() ?? 0 }}</span>
+                            to
+                            <span class="font-semibold">{{ $books->lastItem() ?? 0 }}</span>
+                            of
+                            <span class="font-semibold">{{ $books->total() }}</span>
+                            entries
                         </div>
-                    @endif
+                        <div>
+                            {{ $books->appends(request()->except('page'))->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
