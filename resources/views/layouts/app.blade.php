@@ -16,12 +16,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-        <!-- SweetAlert2 CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased" data-swal-success="{{ e(session('success') ?? '') }}" data-swal-error="{{ e(session('error') ?? '') }}">
         <!-- Fixed Header and Navigation -->
         <div class="fixed-header">
             @include('partials.header')
@@ -39,7 +35,7 @@
                 @include('partials.footer')
             </div>
         </div>
-    </body>
+    </div>
     <script>
         let timeout;
 
@@ -115,4 +111,28 @@
             // e.returnValue = '';
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const swalSuccess = document.body.getAttribute('data-swal-success');
+        const swalError = document.body.getAttribute('data-swal-error');
+        if (swalSuccess) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: swalSuccess,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+        if (swalError) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: swalError,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    </script>
+</body>
 </html>

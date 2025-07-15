@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 items-start px-4">
         <!-- Column 1: Logo -->
         <div class="flex flex-col items-center md:items-start">
-            <img src="{{ asset('images/phil-seal.png') }}" class="h-28 w-auto mb-2 opacity-10" alt="PH Seal">
+            <img src="{{ asset('images/phil-seal.png') }}" class="h-75 w-auto mb-2 opacity-100" alt="PH Seal">
         </div>
         <!-- Column 2: Republic of the Philippines -->
         <div class="flex flex-col items-center md:items-start">

@@ -43,7 +43,7 @@
                                     Search
                                 </button>
                                 <a href="{{ route('welcome') }}" class="h-12 px-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow transition font-semibold text-base">
-                                    Reset
+                                    Clear
                                 </a>
                             </div>
                         </div>

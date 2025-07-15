@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\PendingUser;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,22 +33,23 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class, 'regex:/^[a-zA-Z0-9_]+$/'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:pending_users,username', 'regex:/^[a-zA-Z0-9_]+$/'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:pending_users,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $pendingUser = PendingUser::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'middle_name' => $request->middle_name,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'approval_status' => 'pending',
         ]);
 
-        event(new Registered($user));
+        // Optionally, you can fire an event or notification here for admin approval
 
-        return redirect(route('login', absolute: false))->with('status', 'Registration successful! Please log in with your credentials.');
+        return redirect(route('login', absolute: false))->with('status', 'Registration submitted! Please contact the administrator for approval.');
     }
 }

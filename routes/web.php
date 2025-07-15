@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\DataEncodingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminPendingUserController;
 
 Route::get('/', function (Request $request) {
     $books = null;
@@ -46,18 +46,21 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $stats = [
+        'total_books' => \App\Models\Book::count(),
+        'total_categories' => \App\Models\Category::count(),
+        'total_borrowings' => \App\Models\Borrowing::where('status', 'Borrowed')->count(),
+        'overdue_books' => \App\Models\Borrowing::where('status', 'Overdue')->count(),
+    ];
+    $recent_books = \App\Models\Book::latest()->take(5)->get();
+    $recent_borrowings = \App\Models\Borrowing::with(['book', 'user'])->latest()->take(5)->get();
+    return view('dashboard', compact('stats', 'recent_books', 'recent_borrowings'));
 })->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
 
 Route::middleware(['auth', 'prevent-back'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Data Encoding Routes
-    Route::get('/data-encoding', [DataEncodingController::class, 'index'])->name('data-encoding');
-    Route::post('/data-encoding/encode', [DataEncodingController::class, 'store'])->name('data-encoding.encode');
-    Route::post('/data-encoding/decode', [DataEncodingController::class, 'decode'])->name('data-encoding.decode');
 
     // Library System Routes
     Route::prefix('library')->name('library.')->group(function () {
@@ -74,6 +77,13 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
         Route::patch('/borrowings/{borrowing}/return', [App\Http\Controllers\BorrowingController::class, 'return'])->name('borrowings.return');
         Route::patch('/borrowings/{borrowing}/lost', [App\Http\Controllers\BorrowingController::class, 'markAsLost'])->name('borrowings.lost');
     });
+});
+
+// Admin routes for pending user approval
+Route::middleware(['auth', 'prevent-back'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('pending-users', [AdminPendingUserController::class, 'index'])->name('pending-users.index');
+    Route::post('pending-users/{id}/approve', [AdminPendingUserController::class, 'approve'])->name('pending-users.approve');
+    Route::post('pending-users/{id}/reject', [AdminPendingUserController::class, 'reject'])->name('pending-users.reject');
 });
 
 require __DIR__.'/auth.php';
