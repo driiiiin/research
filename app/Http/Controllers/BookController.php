@@ -7,6 +7,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Models\SubmittedBook;
+use Illuminate\Support\Carbon;
 
 class BookController extends Controller
 {
@@ -140,5 +142,52 @@ class BookController extends Controller
 
         return redirect()->route('library.index')
             ->with('success', 'Book deleted successfully!');
+    }
+
+    /**
+     * Handle AJAX submission of books to external system and save to submitted_books.
+     */
+    public function submitBooks(Request $request)
+    {
+        $books = $request->input('books', []);
+        $now = Carbon::now();
+        foreach ($books as $book) {
+            SubmittedBook::create([
+                'book_id' => $book['id'],
+                'title' => $book['title'],
+                'author' => $book['author'] ?? null,
+                'isbn' => $book['isbn'] ?? null,
+                'submitted_at' => $now,
+            ]);
+        }
+        return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Display all books in a view for submitting to an external system, with pagination and search, and show submitted books tab.
+     */
+    public function submitPage(Request $request): View
+    {
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search');
+        $query = Book::with('category');
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%$search%")
+                  ->orWhere('author', 'like', "%$search%")
+                  ->orWhere('isbn', 'like', "%$search%")
+                  ->orWhere('publisher', 'like', "%$search%")
+                  ->orWhere('genre', 'like', "%$search%")
+                  ->orWhere('description', 'like', "%$search%")
+                  ->orWhere('call_number', 'like', "%$search%")
+                  ->orWhere('location', 'like', "%$search%")
+                  ->orWhere('format', 'like', "%$search%")
+                  ->orWhere('status', 'like', "%$search%")
+                  ;
+            });
+        }
+        $books = $query->paginate($perPage)->appends($request->all());
+        $submittedBooks = SubmittedBook::orderByDesc('submitted_at')->paginate(10, ['*'], 'submitted_page');
+        return view('library.books.submit', compact('books', 'submittedBooks'));
     }
 }

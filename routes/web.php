@@ -86,4 +86,8 @@ Route::middleware(['auth', 'prevent-back'])->prefix('admin')->name('admin.')->gr
     Route::post('pending-users/{id}/reject', [AdminPendingUserController::class, 'reject'])->name('pending-users.reject');
 });
 
+// Books Submit Page for External System
+Route::get('/books/submit', [App\Http\Controllers\BookController::class, 'submitPage'])->name('books.submit.page');
+Route::post('/books/submit-books', [App\Http\Controllers\BookController::class, 'submitBooks'])->name('books.submit.books');
+
 require __DIR__.'/auth.php';

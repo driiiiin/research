@@ -201,3 +201,47 @@ The seeder creates sample data including:
 - **Complete Information**: All books have full details for testing
 
 This provides a complete working example of the library system functionality. 
+
+## API Endpoints
+
+### Get All Books (with Category)
+- **Endpoint:** `GET /api/books`
+- **Description:** Returns a JSON array of all encoded books, including their category information. Useful for integration with external systems.
+- **Response Example:**
+```json
+[
+  {
+    "id": 1,
+    "title": "Book Title",
+    "author": "Author Name",
+    "isbn": "1234567890",
+    "publisher": "Publisher Name",
+    "publication_year": 2024,
+    "edition": "1st",
+    "genre": "Fiction",
+    "description": "Book description...",
+    "total_copies": 10,
+    "available_copies": 5,
+    "location": "Shelf A",
+    "call_number": "QA123 .B66 2024",
+    "price": "100.00",
+    "language": "English",
+    "pages": 300,
+    "format": "Hardcover",
+    "status": "Available",
+    "category_id": 2,
+    "created_at": "2024-07-08T12:00:00.000000Z",
+    "updated_at": "2024-07-08T12:00:00.000000Z",
+    "category": {
+      "id": 2,
+      "name": "Science",
+      "description": "Science books",
+      "color": "#00ff00",
+      "parent_id": null,
+      "created_at": "2024-07-08T12:00:00.000000Z",
+      "updated_at": "2024-07-08T12:00:00.000000Z"
+    }
+  },
+  // ... more books ...
+]
+``` 
