@@ -8,7 +8,14 @@
     </nav>
     <section class="max-w-4xl mx-auto mt-16 mb-8 bg-white rounded-lg shadow p-8">
         <h2 class="text-2xl font-bold text-[#14543A] mb-2">Contact</h2>
-        <p class="text-gray-700 mb-2">For inquiries, suggestions, or support, please contact us at:</p>
-        <a href="mailto:library@example.com" class="text-indigo-600 hover:underline">library@example.com</a>
+        <div class="text-gray-700 mb-2">
+            Health Policy Development and Planning Bureau - Health Research Division
+        </div>
+        <div class="mb-2">
+            <a href="mailto:healthresearch@doh.gov.ph" class="text-indigo-600 hover:underline">healthresearch@doh.gov.ph</a>
+        </div>
+        <div class="text-gray-700">
+            8651-7800 local 1326/1328
+        </div>
     </section>
 </x-guest-layout>

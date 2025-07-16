@@ -10,30 +10,38 @@
             <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <a href="{{ route('library.books.create') }}" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                            <svg class="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span class="font-medium text-blue-800">Add Book</span>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <a href="{{ route('library.books.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-blue-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-2 mt-2">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </span>
+                            <span class="font-semibold text-blue-800 text-base">Add Book</span>
                         </a>
-                        <a href="{{ route('library.borrowings.create') }}" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                            <svg class="w-6 h-6 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                            <span class="font-medium text-green-800">Borrow Book</span>
+                        <a href="{{ route('library.borrowings.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-green-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-green-100 focus:outline-none focus:ring-2 focus:ring-green-300">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-2 mt-2">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </span>
+                            <span class="font-semibold text-green-800 text-base">Borrow Book</span>
                         </a>
-                        <a href="{{ route('library.categories.create') }}" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                            <svg class="w-6 h-6 text-purple-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                            </svg>
-                            <span class="font-medium text-purple-800">Add Category</span>
+                        <a href="{{ route('library.categories.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-purple-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-300">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 mb-2 mt-2">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                            </span>
+                            <span class="font-semibold text-purple-800 text-base">Add Category</span>
                         </a>
-                        <a href="{{ route('library.books.index') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                            <svg class="w-6 h-6 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"></path>
-                            </svg>
-                            <span class="font-medium text-gray-800">Search</span>
+                        <a href="{{ route('libraries.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-yellow-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-300">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2 mt-2">
+                                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                            </span>
+                            <span class="font-semibold text-yellow-800 text-base">Add Library</span>
                         </a>
                     </div>
                 </div>
@@ -48,17 +56,17 @@
                         @endforeach
                     </select>
                     <span class="text-sm text-gray-700">entries</span>
-                    <!-- @if(request('search'))
+                    @if(request('search'))
                         <input type="hidden" name="search" value="{{ request('search') }}">
                     @endif
                 </form>
-                <form method="GET" class="flex items-center gap-2">
+                <form method="GET" class="flex items-center gap-2" id="searchForm">
                     @if(request('per_page'))
                         <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                     @endif
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search books..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
                     <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Search</button>
-                </form> -->
+                </form>
             </div>
             <!-- Books Table (List of Books) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -151,4 +159,32 @@
             </div>
         </div>
     </div>
+    <script>
+        // On page load, if navigation type is reload, remove search param from URL and reload
+        document.addEventListener('DOMContentLoaded', function() {
+            if (performance && performance.getEntriesByType) {
+                const navEntries = performance.getEntriesByType('navigation');
+                if (navEntries.length > 0 && navEntries[0].type === 'reload') {
+                    // Remove 'search' param from URL and reload
+                    const url = new URL(window.location.href);
+                    if (url.searchParams.has('search')) {
+                        url.searchParams.delete('search');
+                        // Also reset page param if present
+                        url.searchParams.delete('page');
+                        window.location.replace(url.toString());
+                    }
+                }
+            } else if (performance && performance.navigation) {
+                // Fallback for older browsers
+                if (performance.navigation.type === 1) {
+                    const url = new URL(window.location.href);
+                    if (url.searchParams.has('search')) {
+                        url.searchParams.delete('search');
+                        url.searchParams.delete('page');
+                        window.location.replace(url.toString());
+                    }
+                }
+            }
+        });
+    </script>
 </x-app-layout>

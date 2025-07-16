@@ -77,6 +77,9 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
         Route::patch('/borrowings/{borrowing}/return', [App\Http\Controllers\BorrowingController::class, 'return'])->name('borrowings.return');
         Route::patch('/borrowings/{borrowing}/lost', [App\Http\Controllers\BorrowingController::class, 'markAsLost'])->name('borrowings.lost');
     });
+
+    // Libraries
+    Route::resource('libraries', App\Http\Controllers\AdminLibraryController::class);
 });
 
 // Admin routes for pending user approval

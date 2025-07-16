@@ -122,6 +122,18 @@
                                     </select>
                                     <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                                 </div>
+                                <div>
+                                    <x-input-label for="library_id" value="Library *" />
+                                    <select id="library_id" name="library_id" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                        <option value="">Select Library</option>
+                                        @foreach($libraries as $library)
+                                            <option value="{{ $library->id }}" {{ old('library_id', $book->library_id) == $library->id ? 'selected' : '' }}>
+                                                {{ $library->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <x-input-error :messages="$errors->get('library_id')" class="mt-2" />
+                                </div>
                             </div>
                         </div>
 

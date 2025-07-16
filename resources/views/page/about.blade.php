@@ -8,6 +8,38 @@
     </nav>
     <section class="max-w-4xl mx-auto mb-16 bg-white rounded-lg shadow p-8">
         <h2 class="text-2xl font-bold text-[#14543A] mb-2">About</h2>
-        <p class="text-gray-700">This Library Management System allows you to search for books, explore categories, and check availability. Designed for ease of use and accessibility, it helps you find the resources you need quickly and efficiently.</p>
+        <div class="text-gray-700 space-y-4">
+            <p>
+                <strong>The Health Research Repository</strong>, an initiative spearheaded by the Department of Health's Health Policy Development and Planning Bureau (HPDPB) in collaboration with the Knowledge Management and Information Technology Service (KMITS), shall serve as a centralized platform for collecting and managing crucial evidence from the Department's research initiatives. Its primary aim is to streamline the process of gathering, preserving, sharing, and applying essential health research findings within the Department.
+            </p>
+            <p>
+                By leveraging advanced technologies and robust data management systems, this initiative seeks to enhance the efficiency and accessibility of vital health insights. The repository encourages collaboration and knowledge exchange among health professionals, empowering the Department to develop evidence-informed policies.
+            </p>
+            <p>
+                This strategic move reinforces the commitment to advancing healthcare through research, fostering a culture of continuous learning, and driving improvements in healthcare practices.
+            </p>
+            <p>
+                Our repository is managed by dedicated teams from the Health Policy Development and Planning Bureau's Health Research Division and KMITS's Central Library. Allow us to introduce the esteemed members:
+            </p>
+            <div class="mt-6">
+                <h3 class="text-xl font-semibold text-[#14543A] mb-2">Health Policy Development and Planning Bureau - Health Research Division</h3>
+                <ol class="list-decimal list-inside space-y-1 text-gray-800">
+                    <li>Dr. Kenneth G. Ronquillo, MPHM, CESO III</li>
+                    <li>Dr. Lester M. Tan, MPH, MSC</li>
+                    <li>Mr. Pio Justin V. Asuncion, RN, MPH, MOHRE, FRSPH</li>
+                    <li>Ms. Renee Lyn Cabanero-Gasgonia, RN, MPH</li>
+                    <li>Ms. Hanzel A. Barrameda</li>
+                    <li>Ms. Myka Angela A. Cadag, RND</li>
+                </ol>
+            </div>
+            <div class="mt-6">
+                <h3 class="text-xl font-semibold text-[#14543A] mb-2">KMITS - Central Library</h3>
+                <ol class="list-decimal list-inside space-y-1 text-gray-800">
+                    <li>Ms. Maricel Paya</li>
+                    <li>Ms. Samantha Ferol</li>
+                    <li>Mr. Vince Dominic Curato</li>
+                </ol>
+            </div>
+        </div>
     </section>
 </x-guest-layout>

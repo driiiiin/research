@@ -1,4 +1,4 @@
-<x-app-layout>
+`<x-app-layout>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4" x-data="{ tab: 'to_submit' }">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">Submit Books to External System</h1>
         <!-- Tab Navigation -->
@@ -170,30 +170,131 @@
         </div>
     </div>
 
+    <!-- Modern Modal for Confirming Submission -->
+    <div id="confirm-modal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-gray-200 bg-opacity-70 transition-opacity duration-200 hidden">
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 md:mx-0 max-h-[90vh] flex flex-col border border-gray-100 animate-fade-in">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 rounded-t-2xl">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800">Confirm Book Submission</h2>
+                <button id="modal-close" class="text-gray-400 hover:text-gray-600 text-2xl leading-none focus:outline-none">&times;</button>
+            </div>
+            <!-- Content -->
+            <div id="modal-content" class="overflow-auto px-6 py-4 text-sm text-gray-700 flex-1">
+                <!-- Book data table will be injected here -->
+            </div>
+            <!-- Footer -->
+            <div class="flex justify-end gap-2 px-6 py-4 border-t border-gray-100 rounded-b-2xl bg-gray-50">
+                <button id="modal-cancel" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button id="modal-confirm" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold">Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+    <style>
+        @keyframes fade-in { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: none; } }
+        .animate-fade-in { animation: fade-in 0.25s cubic-bezier(.4,0,.2,1); }
+    </style>
+
     <script>
+    // Only clear search and per_page on true reload (F5/refresh)
     document.addEventListener('DOMContentLoaded', function() {
+        let isReload = false;
+        if (window.performance && window.performance.getEntriesByType) {
+            const nav = window.performance.getEntriesByType('navigation')[0];
+            if (nav && nav.type === 'reload') isReload = true;
+        } else if (window.performance && window.performance.navigation) {
+            // Fallback for older browsers
+            if (window.performance.navigation.type === 1) isReload = true;
+        }
+        if (isReload) {
+            const url = new URL(window.location.href);
+            let changed = false;
+            ['search', 'per_page'].forEach(param => {
+                if (url.searchParams.has(param)) {
+                    url.searchParams.delete(param);
+                    changed = true;
+                }
+            });
+            if (changed) {
+                window.location.replace(url.pathname + url.search);
+                return; // Prevent further JS from running on this load
+            }
+        }
+        // Modal logic
+        const modal = document.getElementById('confirm-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalConfirm = document.getElementById('modal-confirm');
+        const modalCancel = document.getElementById('modal-cancel');
+        const modalClose = document.getElementById('modal-close');
+        let booksToSubmit = [];
+        let isBatch = false;
+
+        function showModal(books, batch = false) {
+            booksToSubmit = books;
+            isBatch = batch;
+            // Build table
+            let html = '';
+            if (books.length === 1) {
+                html += '<table class="min-w-full divide-y divide-gray-100 text-sm w-full">';
+                for (const [key, value] of Object.entries(books[0])) {
+                    html += `<tr><td class='font-medium pr-4 py-1 text-gray-700 whitespace-nowrap'>${key}</td><td class='py-1 break-all'>${value ?? ''}</td></tr>`;
+                }
+                html += '</table>';
+            } else {
+                // Multiple books: show as table
+                const fields = Object.keys(books[0]);
+                html += '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead><tr>';
+                fields.forEach(f => html += `<th class='px-2 py-1 text-left font-medium text-gray-700 whitespace-nowrap'>${f}</th>`);
+                html += '</tr></thead><tbody>';
+                books.forEach(book => {
+                    html += '<tr>';
+                    fields.forEach(f => html += `<td class='px-2 py-1 break-all'>${book[f] ?? ''}</td>`);
+                    html += '</tr>';
+                });
+                html += '</tbody></table></div>';
+            }
+            modalContent.innerHTML = html;
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.add('transition-opacity'); modal.style.opacity = 1; }, 10);
+        }
+        function hideModal() {
+            modal.classList.add('hidden');
+            booksToSubmit = [];
+        }
+        modalCancel.addEventListener('click', hideModal);
+        modalClose.addEventListener('click', hideModal);
+        // Dismiss modal on overlay click (but not modal itself)
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) hideModal();
+        });
+        // Confirm and submit
+        modalConfirm.addEventListener('click', function() {
+            const externalApiUrl = 'https://external-system.example.com/api/receive-book';
+            fetch(externalApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(isBatch ? booksToSubmit : booksToSubmit[0])
+            })
+            .then(response => {
+                hideModal();
+                if (response.ok) {
+                    alert(isBatch ? 'Selected books submitted successfully!' : 'Book submitted successfully!');
+                } else {
+                    alert('Failed to submit ' + (isBatch ? 'selected books.' : 'book.'));
+                }
+            })
+            .catch(error => {
+                hideModal();
+                alert('Error submitting ' + (isBatch ? 'selected books: ' : 'book: ') + error);
+            });
+        });
+
         // Per-row submit
         document.querySelectorAll('.btn-submit-book').forEach(function(button) {
             button.addEventListener('click', function() {
                 const book = JSON.parse(this.getAttribute('data-book'));
-                const externalApiUrl = 'https://external-system.example.com/api/receive-book';
-                fetch(externalApiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(book)
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Book submitted successfully!');
-                    } else {
-                        alert('Failed to submit book.');
-                    }
-                })
-                .catch(error => {
-                    alert('Error submitting book: ' + error);
-                });
+                showModal([book], false);
             });
         });
 
@@ -212,24 +313,7 @@
                 alert('Please select at least one book to submit.');
                 return;
             }
-            const externalApiUrl = 'https://external-system.example.com/api/receive-book';
-            fetch(externalApiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(selectedBooks)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Selected books submitted successfully!');
-                } else {
-                    alert('Failed to submit selected books.');
-                }
-            })
-            .catch(error => {
-                alert('Error submitting selected books: ' + error);
-            });
+            showModal(selectedBooks, true);
         });
     });
     </script>

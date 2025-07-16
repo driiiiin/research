@@ -48,4 +48,9 @@ class Book extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function library(): BelongsTo
+    {
+        return $this->belongsTo(Library::class);
+    }
 }

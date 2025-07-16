@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Models\SubmittedBook;
 use Illuminate\Support\Carbon;
+use App\Models\Library;
 
 class BookController extends Controller
 {
@@ -48,7 +49,8 @@ class BookController extends Controller
     public function create(): View
     {
         $categories = Category::all();
-        return view('library.books.create', compact('categories'));
+        $libraries = Library::all();
+        return view('library.books.create', compact('categories', 'libraries'));
     }
 
     /**
@@ -75,6 +77,7 @@ class BookController extends Controller
             'format' => 'required|in:Hardcover,Paperback,E-book,Audiobook',
             'status' => 'required|in:Available,Maintenance,Lost,Reserved',
             'category_id' => 'nullable|exists:categories,id',
+            'library_id' => 'nullable|exists:libraries,id',
         ]);
 
         Book::create($validated);
@@ -98,7 +101,8 @@ class BookController extends Controller
     public function edit(Book $book): View
     {
         $categories = Category::all();
-        return view('library.books.edit', compact('book', 'categories'));
+        $libraries = Library::all();
+        return view('library.books.edit', compact('book', 'categories', 'libraries'));
     }
 
     /**
@@ -125,6 +129,7 @@ class BookController extends Controller
             'format' => 'required|in:Hardcover,Paperback,E-book,Audiobook',
             'status' => 'required|in:Available,Maintenance,Lost,Reserved',
             'category_id' => 'nullable|exists:categories,id',
+            'library_id' => 'nullable|exists:libraries,id',
         ]);
 
         $book->update($validated);

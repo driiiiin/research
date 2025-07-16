@@ -26,8 +26,8 @@
         </div>
 
         <!-- Main Content Area -->
-        <div class="main-content container-fluid" style="padding-top: 0;">
-            <div class="content-wrapper" style="padding-top: 0;">
+        <div class="main-content container-fluid">
+            <div class="content-wrapper">
                 {{ $slot }}
             </div>
 
