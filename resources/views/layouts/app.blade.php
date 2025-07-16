@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
         <!-- Scripts -->
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased" data-swal-success="{{ e(session('success') ?? '') }}" data-swal-error="{{ e(session('error') ?? '') }}">
@@ -25,8 +26,8 @@
         </div>
 
         <!-- Main Content Area -->
-        <div class="main-content container-fluid">
-            <div class="content-wrapper">
+        <div class="main-content container-fluid" style="padding-top: 0;">
+            <div class="content-wrapper" style="padding-top: 0;">
                 {{ $slot }}
             </div>
 
