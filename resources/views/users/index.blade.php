@@ -5,15 +5,28 @@
                 <h3 class="text-xl font-bold text-primary">User Management</h3>
             </div>
             <div class="p-6">
-                <div class="mb-4 flex gap-2">
-                    <button id="approvedTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white focus:outline-none">Approved Users</button>
-                    <button id="pendingTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-200 text-gray-700 focus:outline-none">Pending Users</button>
+                <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                    <div class="flex gap-2">
+                        <button id="approvedTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white focus:outline-none">Approved Users</button>
+                        <button id="pendingTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-200 text-gray-700 focus:outline-none">Pending Users</button>
+                    </div>
+                    <form method="GET" action="{{ route('users.index') }}" class="flex items-center gap-2 mt-2 md:mt-0">
+                        <input
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Search users..."
+                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm"
+                        />
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+                        >
+                            Search
+                        </button>
+                    </form>
                 </div>
                 <div id="approvedTab" class="block">
-                    <form method="GET" action="{{ route('users.index') }}" class="mb-4 flex gap-2 flex-wrap items-center">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search users..." class="border rounded px-3 py-2 w-64" />
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
-                    </form>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -21,6 +34,7 @@
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -31,6 +45,13 @@
                                     <td class="px-4 py-3 whitespace-nowrap">{{ $user->full_name }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
                                     <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                    <td class="px-4 py-3 text-gray-700">
+                                        @if($user->session_id)
+                                            <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">Logged In</span>
+                                        @else
+                                            <span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-600 rounded">Logged Out</span>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-3 text-center">
                                         <div class="flex justify-center gap-2">
                                             <a href="{{ route('users.show', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-semibold rounded shadow-sm transition">Show</a>
@@ -49,7 +70,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
+                                    <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -59,13 +80,6 @@
                     </div>
                 </div>
                 <div id="pendingTab" class="hidden">
-                    <form method="GET" action="{{ route('users.index') }}" class="mb-4 flex gap-2">
-                        <input type="text" name="pending_search" value="{{ request('pending_search') }}" placeholder="Search pending users..." class="border rounded px-3 py-2 w-64" />
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
-                        @if(request('search'))
-                            <input type="hidden" name="search" value="{{ request('search') }}">
-                        @endif
-                    </form>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>

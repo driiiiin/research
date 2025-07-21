@@ -15,7 +15,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $pendingSearch = $request->input('pending_search');
         $verified = $request->input('verified');
         $blocked = $request->input('blocked');
 
@@ -47,19 +46,19 @@ class UserController extends Controller
             ->withQueryString();
 
         $pendingUsers = PendingUser::where('approval_status', 'pending')
-            ->when($pendingSearch, function ($query, $pendingSearch) {
-                $query->where(function($q) use ($pendingSearch) {
-                    $q->where('first_name', 'like', "%{$pendingSearch}%")
-                      ->orWhere('last_name', 'like', "%{$pendingSearch}%")
-                      ->orWhere('username', 'like', "%{$pendingSearch}%")
-                      ->orWhere('email', 'like', "%{$pendingSearch}%");
+            ->when($search, function ($query, $search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                      ->orWhere('last_name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->orderBy('id', 'asc')
             ->paginate(10, ['*'], 'pending_page')
             ->withQueryString();
 
-        return view('users.index', compact('users', 'pendingUsers', 'search', 'pendingSearch', 'verified', 'blocked'));
+        return view('users.index', compact('users', 'pendingUsers', 'search', 'verified', 'blocked'));
     }
 
     /**
@@ -112,15 +111,41 @@ class UserController extends Controller
             'session_id' => 'nullable|string|max:255',
         ]);
 
-        // Handle session_id logic
-        if (empty($validated['session_id']) && $user->session_id) {
+        // Only destroy session if not the current user
+        if (
+            empty($validated['session_id']) &&
+            $user->session_id &&
+            (int)$user->id !== (int)auth()->id()
+        ) {
             \Illuminate\Support\Facades\Session::getHandler()->destroy($user->session_id);
             $validated['session_id'] = null;
         }
 
+        // Only set email_verified_at to null if the email actually changed
+        if ($validated['email'] !== $user->email) {
+            $user->email_verified_at = null;
+        }
+
         $user->update($validated);
 
-        return redirect()->route('users.index', $user->id)->with('success', 'User updated successfully!');
+        // Handle password change if provided
+        if ($request->filled('password')) {
+            $request->validate([
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+            $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $user->save();
+
+            // If the updated user is the currently logged-in user, log them out
+            if ((int)$user->id === (int)auth()->id()) {
+                \Illuminate\Support\Facades\Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('login')->with('status', 'Password changed. Please log in again.');
+            }
+        }
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully!');
     }
 
     /**

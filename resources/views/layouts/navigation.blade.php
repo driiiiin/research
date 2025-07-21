@@ -17,6 +17,9 @@
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('User Management') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('books.submit.page')" :active="request()->routeIs('books.submit.*')">
+                        {{ __('API') }}
+                    </x-nav-link>
                 </div>
             </div>
 
