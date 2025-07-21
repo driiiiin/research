@@ -121,6 +121,17 @@
         const pendingTabBtn = document.getElementById('pendingTabBtn');
         const approvedTab = document.getElementById('approvedTab');
         const pendingTab = document.getElementById('pendingTab');
+
+        // Restore last active tab from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const lastTab = localStorage.getItem('userTab') || 'approved';
+            if (lastTab === 'pending') {
+                pendingTabBtn.click();
+            } else {
+                approvedTabBtn.click();
+            }
+        });
+
         approvedTabBtn.addEventListener('click', () => {
             approvedTab.classList.remove('hidden');
             approvedTab.classList.add('block');
@@ -130,6 +141,7 @@
             approvedTabBtn.classList.remove('bg-gray-200', 'text-gray-700');
             pendingTabBtn.classList.remove('bg-blue-600', 'text-white');
             pendingTabBtn.classList.add('bg-gray-200', 'text-gray-700');
+            localStorage.setItem('userTab', 'approved');
         });
         pendingTabBtn.addEventListener('click', () => {
             approvedTab.classList.remove('block');
@@ -140,6 +152,7 @@
             pendingTabBtn.classList.remove('bg-gray-200', 'text-gray-700');
             approvedTabBtn.classList.remove('bg-blue-600', 'text-white');
             approvedTabBtn.classList.add('bg-gray-200', 'text-gray-700');
+            localStorage.setItem('userTab', 'pending');
         });
         document.querySelectorAll('.delete-user-form').forEach(function(form) {
             form.addEventListener('submit', function(e) {
@@ -163,7 +176,7 @@
     </script>
     <script>
         window.addEventListener('DOMContentLoaded', function() {
-            // Detect if the page was reloaded (F5 or browser refresh)
+            // Only run on reload (not after form submit or navigation)
             let isReload = false;
             if (performance.getEntriesByType) {
                 const navEntries = performance.getEntriesByType('navigation');
@@ -171,12 +184,22 @@
                     isReload = true;
                 }
             } else if (performance.navigation) {
-                // Fallback for older browsers
                 isReload = performance.navigation.type === 1;
             }
             if (isReload) {
                 const url = new URL(window.location.href);
                 let changed = false;
+                // Remove main users pagination
+                if (url.searchParams.has('page')) {
+                    url.searchParams.delete('page');
+                    changed = true;
+                }
+                // Remove pending users pagination
+                if (url.searchParams.has('pending_page')) {
+                    url.searchParams.delete('pending_page');
+                    changed = true;
+                }
+                // Remove search parameters
                 if (url.searchParams.has('search')) {
                     url.searchParams.delete('search');
                     changed = true;

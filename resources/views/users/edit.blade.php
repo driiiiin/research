@@ -28,10 +28,6 @@
                     <label class="block text-gray-700">Email</label>
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
                 </div>
-                <div>
-                    <label class="block text-gray-700">Session ID (clear to force logout)</label>
-                    <input type="text" name="session_id" value="{{ old('session_id', $user->session_id) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
-                </div>
                 <div class="flex justify-end gap-2">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Update</button>
                 </div>
