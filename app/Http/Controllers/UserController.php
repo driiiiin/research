@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\PendingUser;
+use Illuminate\Support\Facades\Session;
+
+class UserController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $pendingSearch = $request->input('pending_search');
+        $verified = $request->input('verified');
+        $blocked = $request->input('blocked');
+
+        $users = User::query()
+            ->when($search, function ($query, $search) {
+                $query->whereRaw("CONCAT_WS(' ', first_name, middle_name, last_name) LIKE ?", ["%{$search}%"])
+                      ->orWhere('first_name', 'like', "%{$search}%")
+                      ->orWhere('middle_name', 'like', "%{$search}%")
+                      ->orWhere('last_name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->when($verified !== null && $verified !== '', function ($query) use ($verified) {
+                if ($verified === '1') {
+                    $query->whereNotNull('email_verified_at');
+                } elseif ($verified === '0') {
+                    $query->whereNull('email_verified_at');
+                }
+            })
+            ->when($blocked !== null && $blocked !== '', function ($query) use ($blocked) {
+                if ($blocked === '1') {
+                    $query->whereNotNull('login_blocked_until');
+                } elseif ($blocked === '0') {
+                    $query->whereNull('login_blocked_until');
+                }
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(10)
+            ->withQueryString();
+
+        $pendingUsers = PendingUser::where('approval_status', 'pending')
+            ->when($pendingSearch, function ($query, $pendingSearch) {
+                $query->where(function($q) use ($pendingSearch) {
+                    $q->where('first_name', 'like', "%{$pendingSearch}%")
+                      ->orWhere('last_name', 'like', "%{$pendingSearch}%")
+                      ->orWhere('username', 'like', "%{$pendingSearch}%")
+                      ->orWhere('email', 'like', "%{$pendingSearch}%");
+                });
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(10, ['*'], 'pending_page')
+            ->withQueryString();
+
+        return view('users.index', compact('users', 'pendingUsers', 'search', 'pendingSearch', 'verified', 'blocked'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        return view('users.show', compact('user'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        return view('users.edit', compact('user'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'session_id' => 'nullable|string|max:255',
+        ]);
+
+        // Handle session_id logic
+        if (empty($validated['session_id']) && $user->session_id) {
+            \Illuminate\Support\Facades\Session::getHandler()->destroy($user->session_id);
+            $validated['session_id'] = null;
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('users.index', $user->id)->with('success', 'User updated successfully!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    public function logoutSession($id)
+    {
+        $user = \App\Models\User::findOrFail($id);
+        if ($user->session_id) {
+            Session::getHandler()->destroy($user->session_id);
+            $user->session_id = null;
+            $user->save();
+        }
+        return redirect()->route('users.index')->with('success', 'User has been logged out.');
+    }
+}

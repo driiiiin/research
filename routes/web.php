@@ -80,6 +80,10 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
 
     // Libraries
     Route::resource('libraries', App\Http\Controllers\AdminLibraryController::class);
+
+    // Users
+    Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::post('users/{user}/logout-session', [App\Http\Controllers\UserController::class, 'logoutSession'])->name('users.logoutSession');
 });
 
 // Admin routes for pending user approval

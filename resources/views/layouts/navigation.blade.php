@@ -13,6 +13,10 @@
                     <x-nav-link :href="route('library.index')" :active="request()->routeIs('library.*')">
                         {{ __('Library') }}
                     </x-nav-link>
+                    <!-- THIS IS FOR USER MANAGEMENT -->
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        {{ __('User Management') }}
+                    </x-nav-link>
                 </div>
             </div>
 

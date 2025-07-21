@@ -6,7 +6,7 @@
             <a href="{{ route('about') }}" class="text-white text-lg font-medium hover:underline">About</a>
         </div>
     </nav>
-    <section class="max-w-4xl mx-auto mb-16 bg-white rounded-lg shadow p-8">
+    <section class="max-w-7xl mx-auto mb-16 bg-white rounded-lg shadow p-8">
         <h2 class="text-2xl font-bold text-[#14543A] mb-2">About</h2>
         <div class="text-gray-700 space-y-4">
             <p>

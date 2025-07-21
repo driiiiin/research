@@ -10,7 +10,7 @@
             <div class="mt-8 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
-                    <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex flex-col md:flex-row gap-4 mx-2 my-2 px-2">
                         <a href="{{ route('library.books.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-blue-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
                             <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-2 mt-2">
                                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
