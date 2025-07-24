@@ -31,6 +31,7 @@ return new class extends Migration
             $table->enum('format', ['Hardcover', 'Paperback', 'E-book', 'Audiobook'])->default('Paperback');
             $table->enum('status', ['Available', 'Maintenance', 'Lost', 'Reserved'])->default('Available');
             $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('library_id')->nullable()->constrained('libraries')->onDelete('set null');
             $table->timestamps();
         });
     }
