@@ -1,4 +1,4 @@
-<div class="bg-white border-b border-gray-100">
+<div class="bg-white border-b border-gray-100 fixed top-0 left-0 w-full z-50">
     <div class="mx-auto px-4 sm:px-6 lg:px-8 flex items-start">
         <!-- Logo and Title Group -->
         <div class="flex items-center" style="margin-left: 0.5rem;">

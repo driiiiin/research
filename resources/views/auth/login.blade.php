@@ -37,7 +37,7 @@
             <h2 class="fw-semibold" style="font-size: 1.5rem;">Welcome</h2>
             <p class="text-muted" style="font-size: 1rem;">Please login to continue</p>
         </div>
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" id="login-form">
             @csrf
 
             <!-- Username or Email Address -->
@@ -108,6 +108,26 @@
             </div>
             <span id="terms-error" class="text-red-600 text-sm hidden">You must agree to the terms and conditions.</span>
 
+            <!-- Captcha Section -->
+            <div class="mt-4">
+                <label for="captcha_input" class="block text-sm font-medium text-gray-700 mb-1">Captcha</label>
+                <div class="flex items-center gap-2">
+                    <span id="captchaSvgContainer" style="display: flex; align-items: center; flex: 1 1 0; min-width: 0;">
+                        {!! str_replace('<svg ', '<svg style="width:100%;height:44px;max-width:100%;" ', session('captcha_svg', $captcha_svg ?? '')) !!}
+                    </span>
+                    <button type="button" id="refreshCaptcha" title="Refresh Captcha" class="inline-flex items-center justify-center px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 focus:outline-none" style="height: 44px;">
+                        <i class="fa fa-sync-alt text-gray-600" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <input id="captcha_input" name="captcha_input" type="text" maxlength="6" autocomplete="off" required placeholder="Enter Captcha" class="mt-2 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                @error('captcha_input')
+                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+            <!-- End Captcha Section -->
+
+
+
 
             <div class="flex flex-col items-center justify-center mt-4">
                 <button type="submit" class="btn w-full flex justify-center" style="background-color: #14532d; color: #fff;">
@@ -126,22 +146,33 @@
         </form>
     </div>
     <script>
-        window.history.forward();
-        function noBack() {
-            window.history.forward();
-        }
-        // Terms and Conditions validation
+        // Remove captcha JS logic, keep only terms validation
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('login-form');
             const termsCheckbox = document.getElementById('terms_agree');
             const errorMsg = document.getElementById('terms-error');
             form.addEventListener('submit', function(e) {
                 if (!termsCheckbox.checked) {
-                    e.preventDefault();
                     errorMsg.classList.remove('hidden');
+                    e.preventDefault();
                 } else {
                     errorMsg.classList.add('hidden');
                 }
+            });
+        });
+        // AJAX captcha refresh
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refreshCaptcha');
+            const captchaContainer = document.getElementById('captchaSvgContainer');
+            refreshBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch("{{ route('captcha.refresh') }}", {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    captchaContainer.innerHTML = data.captcha_svg;
+                });
             });
         });
     </script>

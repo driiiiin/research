@@ -1,9 +1,9 @@
-`<x-app-layout>
+<x-app-layout>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4" x-data="{ tab: 'to_submit' }">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">Submit Books to External System</h1>
-        <!-- Tab Navigation -->
+        <!-- Tab Navigation (Aligned like API tab) -->
         <div class="mb-6 border-b border-gray-200">
-            <nav class="flex space-x-8" aria-label="Tabs">
+            <nav class="flex space-x-8 sm:-my-px sm:ms-10" aria-label="Tabs">
                 <button type="button" @click="tab = 'to_submit'" :class="tab === 'to_submit' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm focus:outline-none">
                     Books to Submit
                 </button>

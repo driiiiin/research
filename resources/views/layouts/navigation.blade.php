@@ -7,17 +7,17 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('library.index')" :active="request()->routeIs('library.*')">
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('library.index')" :active="request()->routeIs('library.*')">
                         {{ __('Library') }}
                     </x-nav-link>
                     <!-- THIS IS FOR USER MANAGEMENT -->
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('User Management') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('books.submit.page')" :active="request()->routeIs('books.submit.*')">
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('books.submit.page')" :active="request()->routeIs('books.submit.*')">
                         {{ __('API') }}
                     </x-nav-link>
                 </div>

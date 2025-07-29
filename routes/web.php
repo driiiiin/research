@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPendingUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', function (Request $request) {
     $books = null;
@@ -96,5 +97,7 @@ Route::middleware(['auth', 'prevent-back'])->prefix('admin')->name('admin.')->gr
 // Books Submit Page for External System
 Route::get('/books/submit', [App\Http\Controllers\BookController::class, 'submitPage'])->name('books.submit.page');
 Route::post('/books/submit-books', [App\Http\Controllers\BookController::class, 'submitBooks'])->name('books.submit.books');
+
+Route::get('/captcha/refresh', [AuthenticatedSessionController::class, 'refreshCaptcha'])->name('captcha.refresh');
 
 require __DIR__.'/auth.php';
