@@ -1,12 +1,12 @@
 <x-guest-layout>
-    <nav class="w-full bg-[#14543A] shadow rounded-2xl mt-4 mb-6">
+    <nav class="w-full bg-[#14543A] shadow rounded-2xl mb-4">
         <div class="flex items-center h-16 px-6 space-x-8">
             <a href="{{ route('welcome') }}" class="text-white text-lg font-medium hover:underline">Home</a>
             <a href="{{ route('contact') }}" class="text-white text-lg font-medium hover:underline">Contact</a>
             <a href="{{ route('about') }}" class="text-white text-lg font-medium hover:underline">About</a>
         </div>
     </nav>
-    <section class="max-w-7xl mx-auto mb-16 bg-white rounded-lg shadow p-8">
+    <section class="max-w-7xl mx-auto mt-8 mb-8 bg-white rounded-lg shadow p-8">
         <h2 class="text-2xl font-bold text-[#14543A] mb-2">About</h2>
         <div class="text-gray-700 space-y-4">
             <p>
@@ -19,7 +19,7 @@
                 This strategic move reinforces the commitment to advancing healthcare through research, fostering a culture of continuous learning, and driving improvements in healthcare practices.
             </p>
             <p>
-                Our repository is managed by dedicated teams from the Health Policy Development and Planning Bureau's Health Research Division and KMITS's Central Library. Allow us to introduce the esteemed members:
+                Our repository is managed by dedicated teams from the Health Policy Development and Planning Bureau's Health Research Division and KMITS's Central Research. Allow us to introduce the esteemed members:
             </p>
             <div class="mt-6">
                 <h3 class="text-xl font-semibold text-[#14543A] mb-2">Health Policy Development and Planning Bureau - Health Research Division</h3>
@@ -33,7 +33,7 @@
                 </ol>
             </div>
             <div class="mt-6">
-                <h3 class="text-xl font-semibold text-[#14543A] mb-2">KMITS - Central Library</h3>
+                <h3 class="text-xl font-semibold text-[#14543A] mb-2">KMITS - Central Research</h3>
                 <ol class="list-decimal list-inside space-y-1 text-gray-800">
                     <li>Ms. Maricel Paya</li>
                     <li>Ms. Samantha Ferol</li>

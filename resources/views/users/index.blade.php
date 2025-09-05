@@ -3,6 +3,12 @@
         <div class="bg-white shadow rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-xl font-bold text-primary">User Management</h3>
+                <a href="{{ route('register') }}" class="inline-flex items-center justify-center w-10 h-10 bg-primary hover:bg-[#14532d] text-primary border border-primary hover:text-white transition rounded-full shadow focus:outline-none" title="Add User Account">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v10m5-5H7" />
+                    </svg>
+                </a>
             </div>
             <div class="p-6">
                 <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
@@ -16,12 +22,10 @@
                             name="search"
                             value="{{ request('search') }}"
                             placeholder="Search users..."
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm"
-                        />
+                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm" />
                         <button
                             type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
-                        >
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
                             Search
                         </button>
                     </form>
@@ -40,38 +44,38 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($users as $user)
-                                <tr class="hover:bg-blue-50 transition">
-                                    <td class="px-4 py-3 text-gray-700">{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap">{{ $user->full_name }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
-                                    <td class="px-4 py-3 text-gray-700">
-                                        @if($user->session_id)
-                                            <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">Logged In</span>
-                                        @else
-                                            <span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-600 rounded">Logged Out</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <div class="flex justify-center gap-2">
-                                            <a href="{{ route('users.show', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-semibold rounded shadow-sm transition">Show</a>
-                                            <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded shadow-sm transition">Edit</a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="delete-user-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm transition">Delete</button>
-                                            </form>
-                                            <form action="{{ route('users.logoutSession', $user->id) }}" method="POST" style="display:inline-block;">
-                                                @csrf
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-400 hover:bg-red-600 text-white text-xs font-semibold rounded shadow-sm transition">Force Logout</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr class="hover:bg-blue-50 transition">
+                                <td class="px-4 py-3 text-gray-700">{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ $user->full_name }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 text-gray-700">
+                                    @if($user->session_id)
+                                    <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">Logged In</span>
+                                    @else
+                                    <span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-600 rounded">Logged Out</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-3 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        <a href="{{ route('users.show', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-semibold rounded shadow-sm transition">Show</a>
+                                        <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded shadow-sm transition">Edit</a>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="delete-user-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm transition">Delete</button>
+                                        </form>
+                                        <form action="{{ route('users.logoutSession', $user->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-400 hover:bg-red-600 text-white text-xs font-semibold rounded shadow-sm transition">Force Logout</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -92,34 +96,38 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($pendingUsers as $user)
-                                <tr class="hover:bg-blue-50 transition">
-                                    <td class="px-4 py-3 text-gray-700">{{ ($pendingUsers->currentPage() - 1) * $pendingUsers->perPage() + $loop->iteration }}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
-                                    <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
-                                    <td class="px-4 py-3 text-center">
-                                        <div class="flex justify-center gap-2">
-                                            <form action="{{ route('admin.pending-users.approve', $user->id) }}" method="POST" class="approve-user-form">
-                                                @csrf
-                                                <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition approve-btn">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                                    Approve
-                                                </button>
-                                            </form>
-                                            <form action="{{ route('admin.pending-users.reject', $user->id) }}" method="POST" class="reject-user-form">
-                                                @csrf
-                                                <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition reject-btn">
-                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                    Reject
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr class="hover:bg-blue-50 transition">
+                                <td class="px-4 py-3 text-gray-700">{{ ($pendingUsers->currentPage() - 1) * $pendingUsers->perPage() + $loop->iteration }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 text-center">
+                                    <div class="flex justify-center gap-2">
+                                        <form action="{{ route('admin.pending-users.approve', $user->id) }}" method="POST" class="approve-user-form">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition approve-btn">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Approve
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.pending-users.reject', $user->id) }}" method="POST" class="reject-user-form">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition reject-btn">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-lg">No pending users.</td>
-                                </tr>
+                            <tr>
+                                <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-lg">No pending users.</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

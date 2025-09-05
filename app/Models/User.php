@@ -26,6 +26,8 @@ class User extends Authenticatable
         'password',
         'failed_logins',
         'login_blocked_until',
+        'session_id',
+        'password_change_required',
     ];
 
     /**
@@ -74,5 +76,13 @@ class User extends Authenticatable
     public function getFullName(): string
     {
         return $this->full_name;
+    }
+
+    /**
+     * Check if password change is required for this user.
+     */
+    public function isPasswordChangeRequired(): bool
+    {
+        return $this->password_change_required ?? false;
     }
 }

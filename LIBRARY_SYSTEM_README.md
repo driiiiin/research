@@ -1,48 +1,48 @@
-# Library Management System
+# Health Research Management System
 
-A comprehensive library management system built with Laravel and Tailwind CSS. This system provides complete book management, borrowing functionality, and category organization.
+A comprehensive health research management system built with Laravel and Tailwind CSS. This system provides complete health research management, borrowing functionality, and category organization.
 
 ## Features
 
-### 📚 Book Management
-- **Add New Books**: Comprehensive form with all necessary book details
-- **Book Listing**: Search and filter books by title, author, ISBN, category, and status
-- **Book Details**: View complete book information including borrowing history
-- **Edit Books**: Update book information and inventory
-- **Delete Books**: Remove books from the system
+### 📚 Health Research Management
+- **Add New Health Researches**: Comprehensive form with all necessary health research details
+- **Health Research Listing**: Search and filter health researches by title, author, ISBN, category, and status
+- **Health Research Details**: View complete health research information including borrowing history
+- **Edit Health Researches**: Update health research information and inventory
+- **Delete Health Researches**: Remove health researches from the system
 
-### 📖 Book Information Fields
+### 📖 Health Research Information Fields
 - **Basic Info**: Title, Author, ISBN, Publisher, Publication Year, Edition
 - **Additional Info**: Genre, Language, Pages, Format, Price
 - **Inventory**: Total Copies, Available Copies, Location, Call Number, Status
-- **Description**: Detailed book description
-- **Category**: Organize books by categories
+- **Description**: Detailed health research description
+- **Category**: Organize health researches by categories
 
 ### 🏷️ Category Management
-- **Create Categories**: Add new book categories with descriptions
+- **Create Categories**: Add new health research categories with descriptions
 - **Color Coding**: Assign colors to categories for easy identification
 - **Hierarchical Categories**: Support for parent-child category relationships
 - **Category Examples**: Built-in suggestions for common categories
 
 ### 📋 Borrowing System
-- **Borrow Books**: Complete borrowing process with user selection
+- **Borrow Health Researches**: Complete borrowing process with user selection
 - **Due Date Management**: Automatic 14-day default due date
 - **Borrowing Rules**: Clear guidelines displayed during borrowing
-- **Return Books**: Mark books as returned
-- **Status Tracking**: Track borrowed, returned, overdue, and lost books
+- **Return Health Researches**: Mark health researches as returned
+- **Status Tracking**: Track borrowed, returned, overdue, and lost health researches
 
 ### 📊 Dashboard
-- **Statistics**: Total books, categories, borrowed books, overdue books
-- **Recent Activity**: Latest books added and recent borrowings
+- **Statistics**: Total health researches, categories, borrowed health researches, overdue health researches
+- **Recent Activity**: Latest health researches added and recent borrowings
 - **Quick Actions**: Easy access to common tasks
 - **Visual Indicators**: Color-coded status badges
 
 ## Database Structure
 
-### Books Table
+### Health Researches Table
 - `id` - Primary key
-- `title` - Book title
-- `author` - Book author
+- `title` - Health research title
+- `author` - Health research author
 - `isbn` - International Standard Book Number
 - `publisher` - Publishing company
 - `publication_year` - Year of publication
@@ -51,8 +51,8 @@ A comprehensive library management system built with Laravel and Tailwind CSS. T
 - `description` - Book description
 - `total_copies` - Total number of copies
 - `available_copies` - Available copies for borrowing
-- `location` - Physical location in library
-- `call_number` - Library call number
+- `location` - Physical location in research
+- `call_number` - Research call number
 - `price` - Book price
 - `language` - Book language
 - `pages` - Number of pages
@@ -69,11 +69,11 @@ A comprehensive library management system built with Laravel and Tailwind CSS. T
 
 ### Borrowings Table
 - `id` - Primary key
-- `book_id` - Foreign key to books table
+- `health_research_id` - Foreign key to health_researches table
 - `user_id` - Foreign key to users table
-- `borrowed_at` - When the book was borrowed
-- `due_date` - When the book is due
-- `returned_at` - When the book was returned
+- `borrowed_at` - When the health research was borrowed
+- `due_date` - When the health research is due
+- `returned_at` - When the health research was returned
 - `status` - Borrowing status (Borrowed, Returned, Overdue, Lost)
 - `notes` - Additional notes
 
@@ -95,32 +95,32 @@ This will create:
 - Test user account
 
 ### 3. Access the System
-- Navigate to `/library` to access the main dashboard
+- Navigate to `/research` to access the main dashboard
 - Use the navigation menu to access different sections
 
 ## Usage Guide
 
 ### Adding a New Book
-1. Navigate to Library → Books
+1. Navigate to Research → Books
 2. Click "Add New Book"
 3. Fill in the comprehensive form with book details
 4. Submit to add the book to the system
 
 ### Borrowing a Book
-1. Navigate to Library → Borrowings
+1. Navigate to Research → Borrowings
 2. Click "Add New Borrowing"
 3. Select the book and user
 4. Set the due date (defaults to 14 days)
 5. Add any notes and submit
 
 ### Managing Categories
-1. Navigate to Library → Categories
+1. Navigate to Research → Categories
 2. Click "Add New Category"
 3. Enter category name, description, and color
 4. Optionally select a parent category for subcategories
 
 ### Searching Books
-1. Navigate to Library → Books
+1. Navigate to Research → Books
 2. Use the search form to filter by:
    - Title, Author, or ISBN
    - Category
@@ -188,7 +188,7 @@ This will create:
 
 ## Support
 
-For questions or issues with the library system:
+For questions or issues with the research system:
 1. Check the Laravel documentation
 2. Review the code comments
 3. Test with the sample data provided
@@ -200,7 +200,7 @@ The seeder creates sample data including:
 - **7 Books**: Classic literature, programming books, self-help, and more
 - **Complete Information**: All books have full details for testing
 
-This provides a complete working example of the library system functionality. 
+This provides a complete working example of the research system functionality. 
 
 ## API Endpoints
 

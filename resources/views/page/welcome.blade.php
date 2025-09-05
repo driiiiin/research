@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <nav class="w-full bg-[#14543A] shadow rounded-2xl">
+    <nav class="w-full bg-[#14543A] shadow rounded-2xl mb-4">
         <div class="flex items-center h-16 px-6 space-x-8">
             <a href="{{ route('welcome') }}" class="text-white text-lg font-medium hover:underline">Home</a>
             <a href="{{ route('contact') }}" class="text-white text-lg font-medium hover:underline">Contact</a>
@@ -17,14 +17,6 @@
                             <div class="flex-1 min-w-0">
                                 <input id="search" name="search" type="text" value="" placeholder="Title, Author, ISBN, or Genre"
                                     class="h-12 w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm px-4 text-base" />
-                            </div>
-                            <div class="w-48 min-w-[10rem]">
-                                <select id="category" name="category" class="h-12 w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm px-4 text-base">
-                                    <option value="">All Categories</option>
-                                    @foreach($categories ?? [] as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                             <div class="w-40 min-w-[8rem]">
                                 <select id="format" name="format" class="h-12 w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm px-4 text-base">
@@ -50,12 +42,12 @@
                     </form>
 
                     <!-- Welcome Message -->
-                    @if(!request('search') && !request('category') && !request('format'))
+                    @if(!request('search') && !request('format'))
                     <div class="text-center py-8" style="padding-top:0; padding-bottom:10px">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
-                        <h3 class="mt-2 text-lg font-semibold text-gray-900">Welcome to our Library</h3>
+                        <h3 class="mt-2 text-lg font-semibold text-gray-900">Welcome to our Research</h3>
                         <p class="mt-1 text-base text-gray-500">Search for books using the form above.</p>
                     </div>
 
@@ -106,17 +98,12 @@
                 @endif
 
                 <!-- Search Results Heading -->
-                @if(request('search') || request('category') || request('format'))
+                @if(request('search') || request('format'))
                 <div class="max-w-7xl mx-auto mb-4">
                     <h2 class="text-xl font-bold text-[#14543A]">Search Results</h2>
                     <div class="text-gray-600 text-sm mt-1">
                         @if(request('search'))
                         <span>Keyword: <span class="font-semibold">{{ request('search') }}</span></span>
-                        @endif
-                        @if(request('category'))
-                        <span class="ml-2">Category: <span class="font-semibold">
-                                {{ optional($categories->firstWhere('id', request('category')))->name ?? 'N/A' }}
-                            </span></span>
                         @endif
                         @if(request('format'))
                         <span class="ml-2">Format: <span class="font-semibold">{{ request('format') }}</span></span>
@@ -125,38 +112,32 @@
                 </div>
                 @endif
 
-                <!-- Books Grid -->
-                @if(request('search') || request('category') || request('format'))
-                @if(isset($books) && $books->count() > 0)
+                <!-- Health Research Grid -->
+                @if(request('search') || request('format'))
+                @if(isset($healthResearches) && $healthResearches->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    @foreach($books as $book)
+                    @foreach($healthResearches as $healthResearch)
                     <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4">
-                                @if($book->category)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                    style="background-color: {{ $book->category->color }}20; color: {{ $book->category->color }};">
-                                    {{ $book->category->name }}
-                                </span>
-                                @endif
-                                <span class="text-xs text-gray-500">{{ $book->format }}</span>
+                                <span class="text-xs text-gray-500">{{ $healthResearch->format }}</span>
                             </div>
 
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $book->title }}</h3>
-                            <p class="text-sm text-gray-600 mb-3">by {{ $book->author }}</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $healthResearch->title }}</h3>
+                            <p class="text-sm text-gray-600 mb-3">by {{ $healthResearch->author }}</p>
 
-                            @if($book->description)
-                            <p class="text-sm text-gray-500 mb-4 line-clamp-3">{{ Str::limit($book->description, 100) }}</p>
+                            @if($healthResearch->description)
+                            <p class="text-sm text-gray-500 mb-4 line-clamp-3">{{ Str::limit($healthResearch->description, 100) }}</p>
                             @endif
 
                             <div class="flex items-center justify-between text-sm text-gray-500">
-                                <span>{{ $book->available_copies }}/{{ $book->total_copies }} available</span>
-                                @if($book->isbn)
-                                <span class="text-xs">ISBN: {{ $book->isbn }}</span>
+                                <span>{{ $healthResearch->available_copies }}/{{ $healthResearch->total_copies }} available</span>
+                                @if($healthResearch->isbn)
+                                <span class="text-xs">ISBN: {{ $healthResearch->isbn }}</span>
                                 @endif
                             </div>
 
-                            @if($book->available_copies > 0)
+                            @if($healthResearch->available_copies > 0)
                             <div class="mt-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                     Available
@@ -175,9 +156,9 @@
                 </div>
 
                 <!-- Pagination -->
-                @if($books->hasPages())
+                @if($healthResearches->hasPages())
                 <div class="mt-8">
-                    {{ $books->links() }}
+                    {{ $healthResearches->links() }}
                 </div>
                 @endif
                 @else

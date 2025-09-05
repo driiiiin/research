@@ -158,7 +158,7 @@ class UserController extends Controller
 
     public function logoutSession($id)
     {
-        $user = \App\Models\User::findOrFail($id);
+        $user = User::findOrFail($id);
         if ($user->session_id) {
             Session::getHandler()->destroy($user->session_id);
             $user->session_id = null;

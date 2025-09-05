@@ -3,7 +3,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4 mb-2">
             <div class="flex items-center justify-between pt-4">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ __('Books Management') }}
+                    {{ __('Health Research Management') }}
                 </h2>
             </div>
             <!-- Quick Actions -->
@@ -11,37 +11,13 @@
                 <div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="flex flex-col md:flex-row gap-4 mx-2 my-2 px-2">
-                        <a href="{{ route('library.books.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-blue-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        <a href="{{ route('research.health_researches.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-blue-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
                             <span class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 mb-2 mt-2">
                                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                             </span>
-                            <span class="font-semibold text-blue-800 text-base">Add Book</span>
-                        </a>
-                        <a href="{{ route('library.borrowings.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-green-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-green-100 focus:outline-none focus:ring-2 focus:ring-green-300">
-                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-2 mt-2">
-                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                            </span>
-                            <span class="font-semibold text-green-800 text-base">Borrow Book</span>
-                        </a>
-                        <a href="{{ route('library.categories.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-purple-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-300">
-                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-purple-100 mb-2 mt-2">
-                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                                </svg>
-                            </span>
-                            <span class="font-semibold text-purple-800 text-base">Add Category</span>
-                        </a>
-                        <a href="{{ route('libraries.create') }}" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-yellow-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-300">
-                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-yellow-100 mb-2 mt-2">
-                                <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                </svg>
-                            </span>
-                            <span class="font-semibold text-yellow-800 text-base">Add Library</span>
+                            <span class="font-semibold text-blue-800 text-base">Add Health Research</span>
                         </a>
                     </div>
                 </div>
@@ -52,7 +28,7 @@
                     <label for="per_page" class="text-sm text-gray-700">Show</label>
                     <select name="per_page" id="per_page" onchange="this.form.submit()" class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm">
                         @foreach([5, 10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('per_page', $books->perPage()) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                            <option value="{{ $size }}" {{ request('per_page', $healthResearches->perPage()) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
                     </select>
                     <span class="text-sm text-gray-700">entries</span>
@@ -64,66 +40,55 @@
                     @if(request('per_page'))
                         <input type="hidden" name="per_page" value="{{ request('per_page') }}">
                     @endif
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search books..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search health researches..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
                     <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Search</button>
                 </form>
             </div>
-            <!-- Books Table (List of Books) -->
+            <!-- Health Research Table (List of Health Research) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Books List</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Health Research List</h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Health Research</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Copies</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($books as $book)
+                                @forelse($healthResearches as $healthResearch)
                                     <tr class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ $book->title }}</div>
-                                                <div class="text-sm text-gray-500">{{ $book->author }}</div>
-                                                @if($book->isbn)
-                                                    <div class="text-xs text-gray-400">ISBN: {{ $book->isbn }}</div>
+                                                <div class="text-sm font-medium text-gray-900">{{ $healthResearch->title }}</div>
+                                                <div class="text-sm text-gray-500">{{ $healthResearch->author }}</div>
+                                                @if($healthResearch->isbn)
+                                                    <div class="text-xs text-gray-400">ISBN: {{ $healthResearch->isbn }}</div>
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            @if($book->category)
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                                      style="background-color: {{ $book->category->color }}20; color: {{ $book->category->color }};">
-                                                    {{ $book->category->name }}
-                                                </span>
-                                            @else
-                                                <span class="text-gray-400 text-sm">No category</span>
-                                            @endif
-                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $book->available_copies }}/{{ $book->total_copies }}
+                                            {{ $healthResearch->available_copies }}/{{ $healthResearch->total_copies }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                {{ $book->status === 'Available' ? 'bg-green-100 text-green-800' :
-                                                   ($book->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
-                                                   ($book->status === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
-                                                {{ $book->status }}
+                                                {{ $healthResearch->status === 'Available' ? 'bg-green-100 text-green-800' :
+                                                   ($healthResearch->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
+                                                   ($healthResearch->status === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
+                                                {{ $healthResearch->status }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
-                                                <a href="{{ route('library.books.show', $book) }}"
+                                                <a href="{{ route('research.health_researches.show', $healthResearch) }}"
                                                    class="text-blue-600 hover:text-blue-900">View</a>
-                                                <a href="{{ route('library.books.edit', $book) }}"
+                                                <a href="{{ route('research.health_researches.edit', $healthResearch) }}"
                                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                                <form method="POST" action="{{ route('library.books.destroy', $book) }}"
-                                                      class="inline" onsubmit="return confirm('Are you sure you want to delete this book?')">
+                                                <form method="POST" action="{{ route('research.health_researches.destroy', $healthResearch) }}"
+                                                      class="inline" onsubmit="return confirm('Are you sure you want to delete this health research?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
@@ -133,9 +98,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
-                                            No books found.
-                                        </td>
+                                                                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                        No health researches found.
+                                    </td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -144,15 +109,15 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
                         <div class="text-sm text-gray-600">
                             Showing
-                            <span class="font-semibold">{{ $books->firstItem() ?? 0 }}</span>
+                            <span class="font-semibold">{{ $healthResearches->firstItem() ?? 0 }}</span>
                             to
-                            <span class="font-semibold">{{ $books->lastItem() ?? 0 }}</span>
+                            <span class="font-semibold">{{ $healthResearches->lastItem() ?? 0 }}</span>
                             of
-                            <span class="font-semibold">{{ $books->total() }}</span>
+                            <span class="font-semibold">{{ $healthResearches->total() }}</span>
                             entries
                         </div>
                         <div>
-                            {{ $books->appends(request()->except('page'))->links() }}
+                            {{ $healthResearches->appends(request()->except('page'))->links() }}
                         </div>
                     </div>
                 </div>

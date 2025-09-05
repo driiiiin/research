@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Book extends Model
+class HealthResearch extends Model
 {
     use HasFactory;
 
+    protected $table = 'health_researches';
+
     protected $fillable = [
+        'accession_no',
         'title',
         'author',
         'isbn',
@@ -39,18 +42,4 @@ class Book extends Model
         'pages' => 'integer',
     ];
 
-    public function borrowings(): HasMany
-    {
-        return $this->hasMany(Borrowing::class);
-    }
-
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function library(): BelongsTo
-    {
-        return $this->belongsTo(Library::class);
-    }
 }

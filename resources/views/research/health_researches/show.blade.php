@@ -2,14 +2,14 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Book Details') }}
+                {{ __('Health Research Details') }}
             </h2>
             <div class="flex space-x-2">
-                <a href="{{ route('library.books.edit', $book) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                    Edit Book
+                <a href="{{ route('research.health_researches.edit', $healthResearch) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    Edit Health Research
                 </a>
-                <a href="{{ route('library.books.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                    Back to Books
+                <a href="{{ route('research.health_researches.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    Back to Health Researches
                 </a>
             </div>
         </div>
@@ -25,12 +25,6 @@
                         <p class="text-xl text-gray-600 mb-4">by {{ $book->author }}</p>
 
                         <div class="flex items-center space-x-4">
-                            @if($book->category)
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                                      style="background-color: {{ $book->category->color }}20; color: {{ $book->category->color }};">
-                                    {{ $book->category->name }}
-                                </span>
-                            @endif
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
                                 {{ $book->status === 'Available' ? 'bg-green-100 text-green-800' :
                                    ($book->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :

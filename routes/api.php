@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Book;
+use App\Models\HealthResearch;
 
-Route::get('/books', function () {
-    return response()->json(\App\Models\Book::with('category')->get());
+Route::get('/health_researches', function () {
+    return response()->json(\App\Models\HealthResearch::all());
 });

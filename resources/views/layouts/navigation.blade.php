@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 w-full">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 w-full relative">
     <!-- Primary Navigation Menu -->
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -6,18 +6,18 @@
             <div class="flex">
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden lg:flex space-x-8">
                     <x-nav-link class="min-w-[120px] text-center" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link class="min-w-[120px] text-center" :href="route('library.index')" :active="request()->routeIs('library.*')">
-                        {{ __('Library') }}
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('research.index')" :active="request()->routeIs('research.*')">
+                        {{ __('Research') }}
                     </x-nav-link>
                     <!-- THIS IS FOR USER MANAGEMENT -->
                     <x-nav-link class="min-w-[120px] text-center" :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('User Management') }}
                     </x-nav-link>
-                    <x-nav-link class="min-w-[120px] text-center" :href="route('books.submit.page')" :active="request()->routeIs('books.submit.*')">
+                    <x-nav-link class="min-w-[120px] text-center" :href="route('health_researches.submit.page')" :active="request()->routeIs('health_researches.submit.*')">
                         {{ __('API') }}
                     </x-nav-link>
                 </div>
@@ -76,13 +76,19 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-200 shadow-lg z-40">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('library.index')" :active="request()->routeIs('library.*')">
-                {{ __('Library') }}
+            <x-responsive-nav-link :href="route('research.index')" :active="request()->routeIs('research.*')">
+                {{ __('Research') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                {{ __('User Management') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('health_researches.submit.page')" :active="request()->routeIs('health_researches.submit.*')">
+                {{ __('API') }}
             </x-responsive-nav-link>
         </div>
 

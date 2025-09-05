@@ -32,7 +32,7 @@
     </div> -->
 
     <!-- Login form section -->
-    <div class="pt-4 mt-5 p-4 m-4 mx-auto shadow-lg rounded" style="max-width: 420px;">
+    <div class="p-4 mx-auto shadow-lg rounded w-full" style="max-width: 420px; background-color: white;">
         <div class="mb-4 text-center">
             <h2 class="fw-semibold" style="font-size: 1.5rem;">Welcome</h2>
             <p class="text-muted" style="font-size: 1rem;">Please login to continue</p>
@@ -70,6 +70,15 @@
                 <x-input-error :messages="$errors->get('login')" class="mt-2" />
             </div>
 
+            <!-- Forgot Password Link -->
+            <div class="flex items-center justify-end mt-2">
+                @if (Route::has('password.request'))
+                    <a class="text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200" href="{{ route('password.request') }}">
+                        {{ __('Forgot your password?') }}
+                    </a>
+                @endif
+            </div>
+
             <script>
                 function showPassword() {
                     var x = document.getElementById("password");
@@ -97,7 +106,7 @@
             -->
 
             <!-- Terms and Conditions Agreement -->
-            <div class="flex items-start mt-4">
+            <!-- <div class="flex items-start mt-4">
                 <label for="terms_agree" class="mt-1">
                     <input id="terms_agree" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="terms_agree" required>
                     <span class="sr-only">I agree</span>
@@ -106,17 +115,19 @@
                     I have read about the <a href="#" class="underline text-blue-600 hover:text-blue-800">Terms and Conditions</a> and express my consent thereto.
                 </div>
             </div>
-            <span id="terms-error" class="text-red-600 text-sm hidden">You must agree to the terms and conditions.</span>
+            <span id="terms-error" class="text-red-600 text-sm hidden">You must agree to the terms and conditions.</span> -->
 
             <!-- Captcha Section -->
             <div class="mt-4">
-                <label for="captcha_input" class="block text-sm font-medium text-gray-700 mb-1">Captcha</label>
+                <!-- Hidden field for captcha ID -->
+                <input type="hidden" id="captcha_id" name="captcha_id" value="{{ old('captcha_id', $captcha_id ?? session('captcha_id')) }}">
+
                 <div class="flex items-center gap-2">
                     <span id="captchaSvgContainer" style="display: flex; align-items: center; flex: 1 1 0; min-width: 0;">
-                        {!! str_replace('<svg ', '<svg style="width:100%;height:44px;max-width:100%;" ', session('captcha_svg', $captcha_svg ?? '')) !!}
+                        {!! str_replace('<svg ', '<svg style="width:100%;height:44px;max-width:100%;" ', old('captcha_svg', $captcha_svg ?? session('captcha_svg_' . ($captcha_id ?? session('captcha_id'))))) !!}
                     </span>
-                    <button type="button" id="refreshCaptcha" title="Refresh Captcha" class="inline-flex items-center justify-center px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 focus:outline-none" style="height: 44px;">
-                        <i class="fa fa-sync-alt text-gray-600" aria-hidden="true"></i>
+                    <button type="button" id="refreshCaptchaBtn" title="Refresh Captcha" class="inline-flex items-center justify-center rounded-full focus:outline-none bg-white hover:bg-gray-100 transition-colors duration-200 shadow-sm" style="height: 44px; width: 44px; color: #14532d; border: 1px solid #e5e7eb;">
+                        <i class="fa fa-sync-alt" aria-hidden="true" style="color: #14532d; font-size: 14px;"></i>
                     </button>
                 </div>
                 <input id="captcha_input" name="captcha_input" type="text" maxlength="6" autocomplete="off" required placeholder="Enter Captcha" class="mt-2 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -126,55 +137,84 @@
             </div>
             <!-- End Captcha Section -->
 
-
-
-
             <div class="flex flex-col items-center justify-center mt-4">
                 <button type="submit" class="btn w-full flex justify-center" style="background-color: #14532d; color: #fff;">
                     {{ __('Log in') }}
                 </button>
 
-                @if (Route::has('register'))
+                <!-- @if (Route::has('register'))
                     <div class="mt-4 text-center text-sm text-gray-600">
                         {{ __("Don't have an account?") }}
                         <a class="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors duration-200 ms-1" href="{{ route('register') }}">
                             {{ __('Register') }}
                         </a>
                     </div>
-                @endif
+                @endif -->
             </div>
         </form>
     </div>
     <script>
-        // Remove captcha JS logic, keep only terms validation
+        window.history.forward();
+
+        function noBack() {
+            window.history.forward();
+        }
+
+        // Captcha refresh functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('login-form');
-            const termsCheckbox = document.getElementById('terms_agree');
-            const errorMsg = document.getElementById('terms-error');
-            form.addEventListener('submit', function(e) {
-                if (!termsCheckbox.checked) {
-                    errorMsg.classList.remove('hidden');
-                    e.preventDefault();
-                } else {
-                    errorMsg.classList.add('hidden');
-                }
-            });
-        });
-        // AJAX captcha refresh
-        document.addEventListener('DOMContentLoaded', function() {
-            const refreshBtn = document.getElementById('refreshCaptcha');
+            const refreshBtn = document.getElementById('refreshCaptchaBtn');
             const captchaContainer = document.getElementById('captchaSvgContainer');
-            refreshBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                fetch("{{ route('captcha.refresh') }}", {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    captchaContainer.innerHTML = data.captcha_svg;
+            const captchaIdInput = document.getElementById('captcha_id');
+            const captchaInput = document.getElementById('captcha_input');
+
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    // Disable button and show loading state
+                    refreshBtn.disabled = true;
+                    const icon = refreshBtn.querySelector('i');
+                    icon.classList.add('animate-spin');
+
+                    // Clear captcha input
+                    captchaInput.value = '';
+
+                    // Make AJAX request to refresh captcha
+                    fetch('{{ route("captcha.refresh") }}', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update captcha SVG
+                            const newSvg = data.captcha_svg.replace('<svg ', '<svg style="width:100%;height:44px;max-width:100%;" ');
+                            captchaContainer.innerHTML = newSvg;
+
+                            // Update captcha ID
+                            captchaIdInput.value = data.captcha_id;
+
+                            // Focus on captcha input
+                            captchaInput.focus();
+                        } else {
+                            console.error('Failed to refresh captcha');
+                            // Show error message to user instead of reloading
+                            alert('Failed to refresh captcha. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing captcha:', error);
+                        // Show error message to user instead of reloading
+                        alert('Error refreshing captcha. Please try again.');
+                    })
+                    .finally(() => {
+                        // Re-enable button and remove loading state
+                        refreshBtn.disabled = false;
+                        icon.classList.remove('animate-spin');
+                    });
                 });
-            });
+            }
         });
+
     </script>
-    <body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 </x-guest-layout>

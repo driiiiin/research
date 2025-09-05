@@ -6,25 +6,27 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('submitted_books', function (Blueprint $table) {
+        Schema::create('submitted_health_researches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('book_id');
+            $table->foreignId('health_research_id')->constrained('health_researches')->onDelete('cascade');
             $table->string('title');
             $table->string('author')->nullable();
             $table->string('isbn')->nullable();
-            $table->timestamp('submitted_at');
-            $table->timestamp('received_at')->nullable();
-            $table->string('received_status')->nullable();
+            $table->datetime('submitted_at');
             $table->timestamps();
-
-            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('submitted_books');
+        Schema::dropIfExists('submitted_health_researches');
     }
-}; 
+};

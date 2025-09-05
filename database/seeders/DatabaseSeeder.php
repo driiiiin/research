@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        // Seed library data
-        $this->call([
-            LibrarySeeder::class,
-        ]);
+        // Seed research data
+        // $this->call([
+        //     ResearchSeeder::class,
+        // ]);
     }
 }

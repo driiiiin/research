@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'health_research') }}</title>
 
         <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -14,6 +14,8 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <!-- Scripts -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,19 +23,47 @@
 
 <body class="font-sans antialiased min-h-screen flex flex-col" data-swal-success="{{ e(session('success') ?? '') }}"
     data-swal-error="{{ e(session('error') ?? '') }}">
-    <!-- Fixed Header and Navigation -->
+    <!-- SVG ICON SPRITE FOR GLOBAL USE -->
+    <svg style="display: none;">
+        <symbol id="icon-document-text" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/>
+        </symbol>
+        <symbol id="icon-beaker" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6"/>
+        </symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z"/>
+        </symbol>
+        <symbol id="icon-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20l9-5-9-5-9 5 9 5z"/>
+        </symbol>
+        <symbol id="icon-collection" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="7" width="18" height="10" rx="2" stroke-width="2"/>
+        </symbol>
+        <symbol id="icon-location-marker" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-10A8 8 0 0 0 4 12c0 5.5 8 10 8 10z"/>
+        </symbol>
+        <symbol id="icon-academic-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v7"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a9 9 0 0 1 14 0"/>
+        </symbol>
+    </svg>
+
+    <!-- Fixed Header -->
     <div class="fixed-header w-full z-50">
         @include('partials.header')
     </div>
 
-    <div>
-    @include('layouts.navigation')
+    <!-- Navigation below header -->
+    <div class="w-full bg-white border-b border-gray-200 mt-20 lg:mt-20">
+        @include('layouts.navigation')
     </div>
+
     <!-- Main Content Area -->
-    <div class="main-content flex-1 w-full container-fluid pt-4" style="padding-top: 20px;">
-        <div class="pt-2">
-            @include('layouts.navigation')
-        </div>
+    <div class="main-content flex-1 w-full container-fluid">
         <div class="content-wrapper max-w-7xl mx-auto">
             {{ $slot }}
         </div>
@@ -148,26 +178,41 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const swalSuccess = document.body.getAttribute('data-swal-success');
-        const swalError = document.body.getAttribute('data-swal-error');
-        if (swalSuccess) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: swalSuccess,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
-        if (swalError) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: swalError,
-                timer: 2000,
-                showConfirmButton: false
-            });
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle custom SweetAlert data from session
+            var swalData = @json(session('swal'));
+            if (swalData) {
+                Swal.fire({
+                    title: swalData.title,
+                    text: swalData.text,
+                    icon: swalData.icon,
+                    confirmButtonText: swalData.button,
+                    confirmButtonColor: '#6C63FF',
+                });
+            }
+
+            // Handle success messages
+            var successMsg = document.body.getAttribute('data-swal-success');
+            if (successMsg) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: successMsg,
+                    confirmButtonColor: '#6C63FF',
+                });
+            }
+
+            // Handle error messages
+            var errorMsg = document.body.getAttribute('data-swal-error');
+            if (errorMsg) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMsg,
+                    confirmButtonColor: '#6C63FF',
+                });
+            }
+        });
     </script>
 </body>
 </html>

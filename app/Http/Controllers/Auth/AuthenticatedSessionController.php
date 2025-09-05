@@ -8,6 +8,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -17,14 +20,22 @@ class AuthenticatedSessionController extends Controller
     public function create(): View
     {
         // Generate a 6-character captcha code and SVG
-        $captcha = '';
-        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-        for ($i = 0; $i < 6; $i++) {
-            $captcha .= $chars[random_int(0, strlen($chars) - 1)];
-        }
+        $captcha = $this->generateCaptchaCode();
         $svg = $this->generateCaptchaSvg($captcha);
-        session(['captcha_code' => $captcha, 'captcha_svg' => $svg]);
-        return view('auth.login', ['captcha_code' => $captcha, 'captcha_svg' => $svg]);
+
+        // Store captcha in session with unique identifier
+        $captchaId = Str::random(32);
+        session([
+            'captcha_id' => $captchaId,
+            'captcha_code_' . $captchaId => $captcha,
+            'captcha_svg_' . $captchaId => $svg,
+            'captcha_created_at_' . $captchaId => now()->timestamp
+        ]);
+
+        return view('auth.login', [
+            'captcha_id' => $captchaId,
+            'captcha_svg' => $svg
+        ]);
     }
 
     /**
@@ -32,38 +43,75 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // Validate captcha
-        if (strtolower($request->input('captcha_input')) !== strtolower(session('captcha_code'))) {
-            // Regenerate captcha for next attempt
-            $captcha = '';
-            $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-            for ($i = 0; $i < 6; $i++) {
-                $captcha .= $chars[random_int(0, strlen($chars) - 1)];
-            }
-            $svg = $this->generateCaptchaSvg($captcha);
-            session(['captcha_code' => $captcha, 'captcha_svg' => $svg]);
+        // Rate limiting for login attempts
+        $throttleKey = 'login:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
             return back()->withInput($request->except('password'))
-                ->withErrors(['captcha_input' => 'Incorrect captcha. Please try again.']);
+                ->withErrors(['email' => "Too many login attempts. Please try again in {$seconds} seconds."]);
         }
-        // Regenerate captcha for next attempt
-        $captcha = '';
-        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-        for ($i = 0; $i < 6; $i++) {
-            $captcha .= $chars[random_int(0, strlen($chars) - 1)];
+
+        // Validate captcha
+        $captchaId = $request->input('captcha_id');
+        $captchaInput = $request->input('captcha_input');
+
+        if (!$this->validateCaptcha($captchaId, $captchaInput)) {
+            RateLimiter::hit($throttleKey);
+
+            // Log failed captcha attempt
+            Log::warning('Failed captcha attempt', [
+                'ip' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'captcha_id' => $captchaId,
+                'provided_input' => $captchaInput
+            ]);
+
+            // Generate new captcha for next attempt
+            $newCaptcha = $this->generateCaptchaCode();
+            $newSvg = $this->generateCaptchaSvg($newCaptcha);
+            $newCaptchaId = Str::random(32);
+
+            session([
+                'captcha_id' => $newCaptchaId,
+                'captcha_code_' . $newCaptchaId => $newCaptcha,
+                'captcha_svg_' . $newCaptchaId => $newSvg,
+                'captcha_created_at_' . $newCaptchaId => now()->timestamp
+            ]);
+
+            return back()->withInput($request->except(['password', 'captcha_input']))
+                ->withErrors(['captcha_input' => 'Incorrect captcha. Please try again.'])
+                ->with('captcha_id', $newCaptchaId)
+                ->with('captcha_svg', $newSvg);
         }
-        $svg = $this->generateCaptchaSvg($captcha);
-        session(['captcha_code' => $captcha, 'captcha_svg' => $svg]);
+
+        // Clear captcha from session after successful validation
+        $this->clearCaptcha($captchaId);
 
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        // Store session ID
+        // Store session ID and set password change required flag
         $user = $request->user();
         $user->session_id = session()->getId();
+
+        // Set password change required to true for first-time logins or if not set
+        if (!isset($user->password_change_required)) {
+            $user->password_change_required = true;
+        }
+
         $user->save();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Clear rate limiting on successful login
+        RateLimiter::clear($throttleKey);
+
+        // Check if password change is required
+        if ($user->isPasswordChangeRequired()) {
+            return redirect()->route('password.change')
+                ->with('warning', 'Please change your password to continue.');
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false))
+            ->with('success', 'You are now logged in.');
     }
 
     /**
@@ -74,10 +122,60 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    /**
+     * Generate a random captcha code
+     */
+    private function generateCaptchaCode(): string
+    {
+        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+        $captcha = '';
+        for ($i = 0; $i < 6; $i++) {
+            $captcha .= $chars[random_int(0, strlen($chars) - 1)];
+        }
+        return $captcha;
+    }
+
+    /**
+     * Validate captcha input
+     */
+    private function validateCaptcha(?string $captchaId, ?string $captchaInput): bool
+    {
+        if (!$captchaId || !$captchaInput) {
+            return false;
+        }
+
+        $storedCode = session('captcha_code_' . $captchaId);
+        $createdAt = session('captcha_created_at_' . $captchaId);
+
+        // Check if captcha exists and is not expired (15 minutes)
+        if (!$storedCode || !$createdAt || (now()->timestamp - $createdAt) > 900) {
+            return false;
+        }
+
+        // Case-insensitive comparison with trimmed input
+        $cleanInput = trim($captchaInput);
+        if (empty($cleanInput)) {
+            return false;
+        }
+
+        return strtolower($cleanInput) === strtolower($storedCode);
+    }
+
+    /**
+     * Clear captcha from session
+     */
+    private function clearCaptcha(string $captchaId): void
+    {
+        session()->forget([
+            'captcha_code_' . $captchaId,
+            'captcha_svg_' . $captchaId,
+            'captcha_created_at_' . $captchaId
+        ]);
     }
 
     // Generate SVG with effects
@@ -113,16 +211,28 @@ class AuthenticatedSessionController extends Controller
         return $svg;
     }
 
-    // AJAX captcha refresh
-    public function refreshCaptcha(Request $request)
+    /**
+     * Refresh captcha via AJAX
+     */
+    public function refreshCaptcha()
     {
-        $captcha = '';
-        $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-        for ($i = 0; $i < 6; $i++) {
-            $captcha .= $chars[random_int(0, strlen($chars) - 1)];
-        }
+        // Generate a new 6-character captcha code and SVG
+        $captcha = $this->generateCaptchaCode();
         $svg = $this->generateCaptchaSvg($captcha);
-        session(['captcha_code' => $captcha, 'captcha_svg' => $svg]);
-        return response()->json(['captcha_svg' => $svg]);
+
+        // Store captcha in session with unique identifier
+        $captchaId = Str::random(32);
+        session([
+            'captcha_id' => $captchaId,
+            'captcha_code_' . $captchaId => $captcha,
+            'captcha_svg_' . $captchaId => $svg,
+            'captcha_created_at_' . $captchaId => now()->timestamp
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'captcha_id' => $captchaId,
+            'captcha_svg' => $svg
+        ]);
     }
 }

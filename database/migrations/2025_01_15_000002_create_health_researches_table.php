@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('health_researches', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('author');
@@ -30,8 +30,6 @@ return new class extends Migration
             $table->integer('pages')->nullable();
             $table->enum('format', ['Hardcover', 'Paperback', 'E-book', 'Audiobook'])->default('Paperback');
             $table->enum('status', ['Available', 'Maintenance', 'Lost', 'Reserved'])->default('Available');
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('library_id')->nullable()->constrained('libraries')->onDelete('set null');
             $table->timestamps();
         });
     }
@@ -41,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('health_researches');
     }
 };

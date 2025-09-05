@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Herdin') }}</title>
+        <title>{{ config('app.name', 'Health Research') }}</title>
 
        <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -22,29 +22,55 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            min-height: calc(100vh - 120px - 80px);
+            min-height: calc(100vh - 120px);
         }
 
+        /* Default content wrapper for regular pages */
         .content-wrapper {
             flex: 1;
             padding: 20px;
         }
+
+        /* Special styling for login page - center content */
+        .content-wrapper.login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .footer {
+            margin-top: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 
-<body class="font-sans antialiased min-h-screen flex flex-col items-center justify-center">
+<body class="font-sans antialiased">
     <!-- Fixed Header -->
     <div class="header-fixed w-full">
         @include('partials.header')
     </div>
 
     <!-- Main Content Area -->
-    <div class="main-content w-full flex-1 flex flex-col" style="padding-top: 70px;">
-        <div class="content-wrapper w-full">
+    <div class="main-content w-full" style="padding-top: 90px;">
+        <div class="content-wrapper {{ request()->routeIs('login') ? 'login-page' : '' }}">
             {{ $slot }}
         </div>
 

@@ -20,13 +20,13 @@
 
 /* Add padding to main content to prevent it from being hidden behind the fixed header/nav */
 .main-content {
-    padding-top: 120px; /* Adjust if your header+nav is taller/shorter */
+    padding-top: 0; /* Removed extra top padding */
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
     .main-content {
-        margin-top: 180px; /* More space for mobile */
+        margin-top: 0; /* Removed extra top margin on mobile */
     }
 
     .fixed-header {
