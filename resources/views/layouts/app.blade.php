@@ -21,8 +21,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased min-h-screen flex flex-col" data-swal-success="{{ e(session('success') ?? '') }}"
-    data-swal-error="{{ e(session('error') ?? '') }}">
+<body class="font-sans antialiased min-h-screen flex flex-col" data-swal-success="{{ e(is_string(session('success')) ? session('success') : '') }}"
+    data-swal-error="{{ e(is_string(session('error')) ? session('error') : '') }}">
     <!-- SVG ICON SPRITE FOR GLOBAL USE -->
     <svg style="display: none;">
         <symbol id="icon-document-text" viewBox="0 0 24 24" fill="none" stroke="currentColor">

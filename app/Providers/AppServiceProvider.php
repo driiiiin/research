@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Custom Blade directive to safely output old input values
+        \Blade::directive('safeOld', function ($expression) {
+            return "<?php echo e(is_array(old($expression)) ? '' : old($expression)); ?>";
+        });
     }
 }

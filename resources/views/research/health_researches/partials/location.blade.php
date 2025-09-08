@@ -20,21 +20,21 @@
         <div class="print-fields {{ old('format.' . ($index ?? 0)) == 'Non-Print' ? 'hidden' : '' }} lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
                 <x-input-label for="call_number_{{ $index }}" value="Call Number" />
-                <input id="call_number_{{ $index }}" type="text" name="call_number[]" value="{{ old('call_number.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
+                <input id="call_number_{{ $index }}" type="text" name="call_number[]" value="{{ is_array(old('call_number.' . ($index ?? 0))) ? '' : old('call_number.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
             </div>
             <div>
                 <x-input-label for="copy_number_{{ $index }}" value="Copy Number" />
-                <input id="copy_number_{{ $index }}" type="text" name="copy_number[]" value="{{ old('copy_number.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
+                <input id="copy_number_{{ $index }}" type="text" name="copy_number[]" value="{{ is_array(old('copy_number.' . ($index ?? 0))) ? '' : old('copy_number.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
             </div>
             <div>
                 <x-input-label for="shelf_location_{{ $index }}" value="Shelf Location" />
-                <input id="shelf_location_{{ $index }}" type="text" name="shelf_location[]" value="{{ old('shelf_location.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
+                <input id="shelf_location_{{ $index }}" type="text" name="shelf_location[]" value="{{ is_array(old('shelf_location.' . ($index ?? 0))) ? '' : old('shelf_location.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition">
             </div>
         </div>
 
         <div class="non-print-fields {{ old('format.' . ($index ?? 0)) == 'Non-Print' ? '' : 'hidden' }} lg:col-span-3">
             <x-input-label for="access_link_{{ $index }}" value="Access Link (optional)" />
-            <input id="access_link_{{ $index }}" type="url" name="access_link[]" value="{{ old('access_link.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="https://...">
+            <input id="access_link_{{ $index }}" type="url" name="access_link[]" value="{{ is_array(old('access_link.' . ($index ?? 0))) ? '' : old('access_link.' . ($index ?? 0)) }}" class="mt-1 block w-full border-gray-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="https://...">
         </div>
     </div>
 </div>

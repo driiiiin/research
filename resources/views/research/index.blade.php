@@ -52,8 +52,10 @@
                         <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Health Research</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Copies</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Authors</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -61,17 +63,21 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse($healthResearches as $healthResearch)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div>
-                                                <div class="text-sm font-medium text-gray-900">{{ $healthResearch->title }}</div>
-                                                <div class="text-sm text-gray-500">{{ $healthResearch->author }}</div>
-                                                @if($healthResearch->isbn)
-                                                    <div class="text-xs text-gray-400">ISBN: {{ $healthResearch->isbn }}</div>
-                                                @endif
-                                            </div>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $healthResearch->accession_no }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $healthResearch->available_copies }}/{{ $healthResearch->total_copies }}
+                                            {{ $healthResearch->research_title }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            @if($healthResearch->relationLoaded('authors') || method_exists($healthResearch, 'authors'))
+                                                {{ $healthResearch->authors->map(fn($a) => $a->full_name)->implode(', ') }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $healthResearch->date_issued_from_year ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -98,9 +104,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                                                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                        No health researches found.
-                                    </td>
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                            No health researches found.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>

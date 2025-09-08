@@ -49,6 +49,12 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('stats', 'recent_health_researches'));
 })->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
 
+// Make next-accession public and accessible to AJAX
+Route::prefix('research')->name('research.')->group(function () {
+    Route::get('/health_researches/next-accession', [App\Http\Controllers\HealthResearchController::class, 'nextAccession'])
+        ->name('health_researches.next_accession');
+});
+
 Route::middleware(['auth', 'prevent-back'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -60,10 +66,6 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
 
         // Health Researches
         Route::resource('health_researches', App\Http\Controllers\HealthResearchController::class);
-
-        // Next accession number endpoint
-        Route::get('/health_researches/next-accession', [App\Http\Controllers\HealthResearchController::class, 'nextAccession'])
-            ->name('health_researches.next_accession');
 
         // Partials for dynamic sections
         Route::get('/health_researches/partials/source', function (Illuminate\Http\Request $request) {

@@ -58,7 +58,7 @@
                                     }
                                 } else if (node.nodeType === Node.ELEMENT_NODE) {
                                     // Avoid descending into inputs/selects/textareas
-                                    if (['INPUT','SELECT','TEXTAREA'].includes(node.tagName)) return;
+                                    if (["INPUT","SELECT","TEXTAREA"].includes(node.tagName)) return;
                                     Array.from(node.childNodes).forEach(wrapAsterisksInNode);
                                 }
                             }
@@ -95,9 +95,11 @@
                                 id="accession_no"
                                 class="mt-1 block w-full border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm"
                                 style="height: 44px; min-height: 44px; padding-top: 6px; padding-bottom: 6px;"
-                                placeholder="D0001H000001"
-                                value="{{ old('accession_no', 'D0001H000001') }}"
-                                readonly>
+                                placeholder="Loading..."
+                                value=""
+                                readonly
+                                required
+                            >
                         </div>
                         <div class="flex-1">
                             <x-input-label for="research_title" value="Research Title" class="text-lg font-semibold text-gray-800 mb-2" />
@@ -111,7 +113,7 @@
                     <div class="mt-6">
                         <x-input-label value="Subtitle" class="text-lg font-semibold text-gray-800 mb-2" />
                         <div id="subtitles-container" class="space-y-4">
-                            @php $oldSubtitles = old('subtitle'); @endphp
+                            @php $oldSubtitles = old('subtitle'); if (!is_array($oldSubtitles)) $oldSubtitles = []; @endphp
                             @if(is_array($oldSubtitles) && count($oldSubtitles))
                             @foreach($oldSubtitles as $i => $sub)
                             <div class="flex items-center gap-4">
@@ -119,7 +121,7 @@
                                     class="flex-1 border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm resize-y"
                                     maxlength="500"
                                     style="height:44px; min-height:44px; max-height:180px; padding-top:10px; padding-bottom:10px;"
-                                    placeholder="Enter research subtitle (up to 500 characters)">{{ $sub }}</textarea>
+                                    placeholder="Enter research subtitle (up to 500 characters)">{{ is_string($sub) ? $sub : '' }}</textarea>
                                 @if($i > 0)
                                 <button type="button" class="text-red-600 hover:text-red-700 px-4 py-2 rounded-lg bg-red-50 font-medium transition" onclick="this.parentElement.remove()">Remove</button>
                                 @endif
@@ -455,24 +457,24 @@
                                 <div x-show="form.format === 'Print'">
                                     <!-- Physical Location -->
                                     <div class="mb-6">
-                                        <x-input-label for="physical_location" value="Physical Location" />
-                                        <x-text-input id="physical_location" name="physical_location[]" x-ref="physical_location" type="text" class="mt-1 block w-full" value="{{ old('physical_location') }}" placeholder="Location" />
+                                        <x-input-label for="physical_location_print" value="Physical Location" />
+                                        <x-text-input id="physical_location_print" name="physical_location[]" x-ref="physical_location" type="text" class="mt-1 block w-full" value="{{ is_array(old('physical_location.0')) ? '' : old('physical_location.0') }}" placeholder="Location" />
                                         <x-input-error :messages="$errors->get('physical_location.*')" class="mt-2" />
                                     </div>
 
                                     <!-- Location Number and Text Availability -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                         <div>
-                                            <x-input-label for="location_number" value="Location Number" />
-                                            <x-text-input id="location_number" name="location_number[]" type="text" class="mt-1 block w-full" value="{{ old('location_number') }}" />
+                                            <x-input-label for="location_number_print" value="Location Number" />
+                                            <x-text-input id="location_number_print" name="location_number[]" type="text" class="mt-1 block w-full" value="{{ is_array(old('location_number.0')) ? '' : old('location_number.0') }}" />
                                             <x-input-error :messages="$errors->get('location_number.*')" class="mt-2" />
                                         </div>
                                         <div>
-                                            <x-input-label for="text_availability" value="Text Availability *" />
-                                            <select id="text_availability" name="text_availability[]" x-ref="text_availability" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                            <x-input-label for="text_availability_print" value="Text Availability *" />
+                                            <select id="text_availability_print" name="text_availability[]" x-ref="text_availability" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" x-bind:required="form.format === 'Print'">
                                                 <option value="">Select Text Availability</option>
-                                                <option value="Abstract Only" {{ old('text_availability') === 'Abstract Only' ? 'selected' : '' }}>Abstract Only</option>
-                                                <option value="Full-text" {{ old('text_availability') === 'Full-text' ? 'selected' : '' }}>Full-text</option>
+                                                <option value="Abstract Only" {{ (is_array(old('text_availability.0')) ? '' : old('text_availability.0')) == 'Abstract Only' ? 'selected' : '' }}>Abstract Only</option>
+                                                <option value="Full-text" {{ (is_array(old('text_availability.0')) ? '' : old('text_availability.0')) == 'Full-text' ? 'selected' : '' }}>Full-text</option>
                                             </select>
                                             <x-input-error :messages="$errors->get('text_availability.*')" class="mt-2" />
                                         </div>
@@ -481,18 +483,18 @@
                                     <!-- Mode of Access and Institutional Email -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                         <div>
-                                            <x-input-label for="mode_of_access" value="Mode of Access *" />
-                                            <select id="mode_of_access" name="mode_of_access[]" x-model="form.mode_of_access" x-ref="mode_of_access" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                            <x-input-label for="mode_of_access_print" value="Mode of Access *" />
+                                            <select id="mode_of_access_print" name="mode_of_access[]" x-model="form.mode_of_access" x-ref="mode_of_access" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" x-bind:required="form.format === 'Print'">
                                                 <option value="">Select Mode of Access</option>
-                                                <option value="Request to Institution" {{ old('mode_of_access') === 'Request to Institution' ? 'selected' : '' }}>Request to Institution</option>
-                                                <option value="Room use Only" {{ old('mode_of_access') === 'Room use Only' ? 'selected' : '' }}>Room use Only</option>
-                                                <option value="Not available to the public" {{ old('mode_of_access') === 'Not available to the public' ? 'selected' : '' }}>Not available to the public</option>
+                                                <option value="Request to Institution" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) == 'Request to Institution' ? 'selected' : '' }}>Request to Institution</option>
+                                                <option value="Room use Only" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) == 'Room use Only' ? 'selected' : '' }}>Room use Only</option>
+                                                <option value="Not available to the public" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) == 'Not available to the public' ? 'selected' : '' }}>Not available to the public</option>
                                             </select>
                                             <x-input-error :messages="$errors->get('mode_of_access.*')" class="mt-2" />
                                         </div>
                                         <div x-show="form.mode_of_access === 'Request to Institution'">
-                                            <x-input-label for="institutional_email" value="Institutional Email *" />
-                                            <x-text-input id="institutional_email" name="institutional_email[]" type="email" class="mt-1 block w-full" value="{{ old('institutional_email') }}" placeholder="Institution Email" x-bind:required="form.mode_of_access === 'Request to Institution'" />
+                                            <x-input-label for="institutional_email_print" value="Institutional Email *" />
+                                            <x-text-input id="institutional_email_print" name="institutional_email[]" type="email" class="mt-1 block w-full" value="{{ is_array(old('institutional_email.0')) ? '' : old('institutional_email.0') }}" placeholder="Institution Email" x-bind:required="form.mode_of_access === 'Request to Institution'" />
                                             <x-input-error :messages="$errors->get('institutional_email.*')" class="mt-2" />
                                         </div>
                                     </div>
@@ -502,8 +504,8 @@
                                 <div x-show="form.format === 'Non-Print'">
                                     <!-- Location -->
                                     <div class="mb-6">
-                                        <x-input-label for="physical_location" value="Location *" />
-                                        <x-text-input id="physical_location" name="physical_location[]" x-ref="physical_location" type="text" class="mt-1 block w-full" value="{{ old('physical_location') }}" placeholder="Location" required />
+                                        <x-input-label for="physical_location_nonprint" value="Location *" />
+                                        <x-text-input id="physical_location_nonprint" name="physical_location[]" x-ref="physical_location" type="text" class="mt-1 block w-full" value="{{ is_array(old('physical_location.0')) ? '' : old('physical_location.0') }}" placeholder="Location" x-bind:required="form.format === 'Non-Print'" />
                                         <x-input-error :messages="$errors->get('physical_location.*')" class="mt-2" />
                                     </div>
 
@@ -512,13 +514,13 @@
                                         <h4 class="text-sm font-medium text-blue-900 mb-3">Please tick any of the two choices:</h4>
                                         <div class="space-y-3">
                                             <div class="flex items-center space-x-3">
-                                                <input type="checkbox" id="enter_url" name="enter_url[]" value="1" {{ old('enter_url') ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                                <label for="enter_url" class="text-sm text-blue-900">Enter URL</label>
-                                                <x-text-input type="url" name="url[]" class="flex-1 ml-2" value="{{ old('url') }}" placeholder="https://example.com" />
+                                                <input type="checkbox" id="enter_url_nonprint" name="enter_url[]" value="1" {{ (is_array(old('enter_url.0')) ? '' : old('enter_url.0')) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                <label for="enter_url_nonprint" class="text-sm text-blue-900">Enter URL</label>
+                                                <x-text-input type="url" name="url[]" class="flex-1 ml-2" value="{{ is_array(old('url.0')) ? '' : old('url.0') }}" placeholder="https://example.com" />
                                             </div>
                                             <div class="flex items-center space-x-3">
-                                                <input type="checkbox" id="upload_file" name="upload_file[]" value="1" {{ old('upload_file') ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                                <label for="upload_file" class="text-sm text-blue-900">Upload File</label>
+                                                <input type="checkbox" id="upload_file_nonprint" name="upload_file[]" value="1" {{ (is_array(old('upload_file.0')) ? '' : old('upload_file.0')) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                                <label for="upload_file_nonprint" class="text-sm text-blue-900">Upload File</label>
                                                 <input type="file" name="file[]" class="flex-1 ml-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
                                             </div>
                                         </div>
@@ -527,21 +529,21 @@
                                     <!-- Text Availability and Mode of Access for Non-Print -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                         <div>
-                                            <x-input-label for="text_availability" value="Text Availability *" />
-                                            <select id="text_availability" name="text_availability[]" x-ref="text_availability" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                            <x-input-label for="text_availability_nonprint" value="Text Availability *" />
+                                            <select id="text_availability_nonprint" name="text_availability[]" x-ref="text_availability" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" x-bind:required="form.format === 'Non-Print'">
                                                 <option value="">Select Text Availability</option>
-                                                <option value="Abstract Only" {{ old('text_availability') === 'Abstract Only' ? 'selected' : '' }}>Abstract Only</option>
-                                                <option value="Full-text" {{ old('text_availability') === 'Full-text' ? 'selected' : '' }}>Full-text</option>
+                                                <option value="Abstract Only" {{ (is_array(old('text_availability.0')) ? '' : old('text_availability.0')) == 'Abstract Only' ? 'selected' : '' }}>Abstract Only</option>
+                                                <option value="Full-text" {{ (is_array(old('text_availability.0')) ? '' : old('text_availability.0')) == 'Full-text' ? 'selected' : '' }}>Full-text</option>
                                             </select>
                                             <x-input-error :messages="$errors->get('text_availability.*')" class="mt-2" />
                                         </div>
                                         <div>
-                                            <x-input-label for="mode_of_access" value="Mode of Access" />
-                                            <select id="mode_of_access" name="mode_of_access[]" x-ref="mode_of_access" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                            <x-input-label for="mode_of_access_nonprint" value="Mode of Access" />
+                                            <select id="mode_of_access_nonprint" name="mode_of_access[]" x-ref="mode_of_access" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                                 <option value="">Select Mode of Access</option>
-                                                <option value="Online Request" {{ old('mode_of_access') === 'Online Request' ? 'selected' : '' }}>Online Request</option>
-                                                <option value="Publicly accessible" {{ old('mode_of_access') === 'Publicly accessible' ? 'selected' : '' }}>Publicly accessible</option>
-                                                <option value="Not available to the public" {{ old('mode_of_access') === 'Not available to the public' ? 'selected' : '' }}>Not available to the public</option>
+                                                <option value="Online Request" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) === 'Online Request' ? 'selected' : '' }}>Online Request</option>
+                                                <option value="Publicly accessible" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) === 'Publicly accessible' ? 'selected' : '' }}>Publicly accessible</option>
+                                                <option value="Not available to the public" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) === 'Not available to the public' ? 'selected' : '' }}>Not available to the public</option>
                                             </select>
                                             <x-input-error :messages="$errors->get('mode_of_access.*')" class="mt-2" />
                                         </div>
@@ -575,7 +577,7 @@
                             </button>
                         </div>
                         <div id="mesh_keywords_chips" class="block w-full border border-gray-300 rounded-lg px-3 py-3 min-h-[120px] focus-within:ring-emerald-500 focus-within:border-emerald-500 transition flex flex-wrap items-start content-start gap-2 bg-white"></div>
-                        <textarea id="mesh_keywords" name="mesh_keywords" rows="3" class="hidden">{{ old('mesh_keywords') }}</textarea>
+                        <textarea id="mesh_keywords" name="mesh_keywords" rows="3" class="hidden">{{ is_array(old('mesh_keywords')) ? implode('; ', old('mesh_keywords')) : old('mesh_keywords') }}</textarea>
                         <x-input-error :messages="$errors->get('mesh_keywords')" class="mt-2" />
                     </div>
                     <div class="mb-6">
@@ -589,7 +591,7 @@
                             </button>
                         </div>
                         <div id="non_mesh_keywords_chips" class="block w-full border border-gray-300 rounded-lg px-3 py-3 min-h-[120px] focus-within:ring-emerald-500 focus-within:border-emerald-500 transition flex flex-wrap items-start content-start gap-2 bg-white"></div>
-                        <textarea id="non_mesh_keywords" name="non_mesh_keywords" rows="3" class="hidden">{{ old('non_mesh_keywords') }}</textarea>
+                        <textarea id="non_mesh_keywords" name="non_mesh_keywords" rows="3" class="hidden">{{ is_array(old('non_mesh_keywords')) ? implode('; ', old('non_mesh_keywords')) : old('non_mesh_keywords') }}</textarea>
                         <x-input-error :messages="$errors->get('non_mesh_keywords')" class="mt-2" />
                     </div>
                     <script>
@@ -662,30 +664,30 @@
                             });
                         });
                     </script>
-                    <div>
+                    <!-- <div>
                         <x-input-label for="statement_245c" value="Statement of responsibility" />
                         <input type="text" name="statement_245c" id="statement_245c" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('statement_245c') }}">
-                    </div>
-                    <div>
+                    </div> -->
+                    <!-- <div>
                         <x-input-label for="research_title_url" value="Research Title (URL)" />
                         <input type="url" name="research_title_url" id="research_title_url" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('research_title_url') }}">
-                    </div>
+                    </div> -->
                     <div>
                         <x-input-label for="sdg_addressed" value="SDG Addressed" />
                         <input type="text" name="sdg_addressed" id="sdg_addressed" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('sdg_addressed') }}">
                     </div>
-                    <div>
+                    <!-- <div>
                         <x-input-label for="principal_investigator" value="Principal Investigator/ Main Author Inverted Name [Last Name, First Name MI]" />
                         <input type="text" name="principal_investigator" id="principal_investigator" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('principal_investigator') }}">
-                    </div>
-                    <div>
+                    </div> -->
+                    <!-- <div>
                         <x-input-label for="co_authors" value="Co-Authors Inverted Name" />
                         <textarea name="co_authors" id="co_authors" rows="2" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="Separate multiple authors with a semicolon (;)">{{ old('co_authors') }}</textarea>
-                    </div>
-                    <div class="lg:col-span-3">
+                    </div> -->
+                    <!-- <div class="lg:col-span-3">
                         <x-input-label for="abstract_520a" value="Abstract" />
                         <textarea name="abstract_520a" id="abstract_520a" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition">{{ old('abstract_520a') }}</textarea>
-                    </div>
+                    </div> -->
                     <div>
                         <x-input-label for="policy_brief" value="Policy Brief" />
                         <input type="text" name="policy_brief" id="policy_brief" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('policy_brief') }}">
@@ -703,36 +705,36 @@
                         <input type="text" name="cooperating_agency" id="cooperating_agency" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('cooperating_agency') }}">
                     </div>
                     <div>
-                        <x-input-label for="general_note_513a" value="General Note" />
-                        <input type="text" name="general_note_513a" id="general_note_513a" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('general_note_513a') }}">
+                        <x-input-label for="general_note" value="General Note" />
+                        <input type="text" name="general_note" id="general_note" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('general_note') }}">
                     </div>
                     <div>
                         <x-input-label for="budget" value="Budget" />
                         <input type="text" name="budget" id="budget" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('budget') }}">
                     </div>
                     <div>
-                        <x-input-label for="fund_information_536a" value="Fund Information" />
-                        <input type="text" name="fund_information_536a" id="fund_information_536a" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('fund_information_536a') }}">
+                        <x-input-label for="fund_information" value="Fund Information" />
+                        <input type="text" name="fund_information" id="fund_information" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('fund_information') }}">
                     </div>
                     <div>
-                        <x-input-label for="duration_513b" value="Duration" />
-                        <input type="text" name="duration_513b" id="duration_513b" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('duration_513b') }}">
+                        <x-input-label for="duration" value="Duration" />
+                        <input type="text" name="duration" id="duration" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('duration') }}">
                     </div>
                     <div>
                         <x-input-label for="start_date" value="Start Date" />
                         <input type="date" name="start_date" id="start_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('start_date') }}">
                     </div>
                     <div>
-                        <x-input-label for="end_date_260c" value="End Date" />
-                        <input type="date" name="end_date_260c" id="end_date_260c" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('end_date_260c') }}">
+                        <x-input-label for="end_date" value="End Date" />
+                        <input type="date" name="end_date" id="end_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('end_date') }}">
                     </div>
                     <div>
                         <x-input-label for="year_end_date" value="Year End Date" />
                         <input type="text" name="year_end_date" id="year_end_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('year_end_date') }}">
                     </div>
                     <div>
-                        <x-input-label for="keywords_653a" value="Keywords" />
-                        <input type="text" name="keywords_653a" id="keywords_653a" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('keywords_653a') }}">
+                        <x-input-label for="keywords" value="Keywords" />
+                        <input type="text" name="keywords" id="keywords" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('keywords') }}">
                     </div>
                     <div>
                         <x-input-label for="status" value="Status" />
@@ -783,9 +785,25 @@
                     .then(r => r.json())
                     .then(d => {
                         if (d && d.next) input.value = d.next;
+                        else input.value = 'Unavailable';
+                    })
+                    .catch(() => {
+                        input.value = 'Unavailable';
                     });
             }
-            if (!input.value) fetchNext();
+            fetchNext(); // Fetch on load
+            setInterval(fetchNext, 10000); // Refresh every 10 seconds
+
+            // Handle form submission to prevent focusability issues
+            formEl.addEventListener('submit', function(e) {
+                // Remove required attributes from hidden fields
+                const hiddenRequiredFields = formEl.querySelectorAll('[x-show]:not([style*="display: none"]) [required]');
+                hiddenRequiredFields.forEach(field => {
+                    if (field.closest('[x-show]').style.display === 'none') {
+                        field.removeAttribute('required');
+                    }
+                });
+            });
         });
     </script>
 </x-app-layout>

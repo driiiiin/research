@@ -13,23 +13,60 @@ return new class extends Migration
     {
         Schema::create('health_researches', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('author');
-            $table->string('isbn')->unique()->nullable();
-            $table->string('publisher')->nullable();
-            $table->integer('publication_year')->nullable();
-            $table->string('edition')->nullable();
-            $table->string('genre')->nullable();
-            $table->text('description')->nullable();
-            $table->integer('total_copies')->default(1);
-            $table->integer('available_copies')->default(1);
-            $table->string('location')->nullable();
-            $table->string('call_number')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
-            $table->string('language')->default('English');
-            $table->integer('pages')->nullable();
-            $table->enum('format', ['Hardcover', 'Paperback', 'E-book', 'Audiobook'])->default('Paperback');
-            $table->enum('status', ['Available', 'Maintenance', 'Lost', 'Reserved'])->default('Available');
+
+            // Title Section
+            $table->string('accession_no')->unique();
+            $table->string('research_title');
+            $table->json('subtitle')->nullable(); // Array of subtitles
+
+            // Source Section
+            $table->integer('date_issued_from_month')->nullable();
+            $table->integer('date_issued_from_year')->nullable();
+            $table->integer('date_issued_to_month')->nullable();
+            $table->integer('date_issued_to_year')->nullable();
+
+            // Publication Details
+            $table->string('volume_no');
+            $table->string('issue_no')->nullable();
+            $table->string('pages')->nullable();
+            $table->string('article_no')->nullable();
+            $table->string('doi')->nullable();
+            $table->text('notes')->nullable();
+
+            // Research Classification
+            $table->enum('research_category', ['Institutional', 'Collaborative', 'Commissioned']);
+            $table->enum('research_type', ['Basic', 'Applied', 'Experimental']);
+
+            // Abstract Section
+            $table->string('abstract_type')->default('Full Abstract');
+            $table->longText('research_abstract')->nullable();
+
+            // Reference Section
+            $table->longText('reference')->nullable();
+
+            // Subject Section
+            $table->text('mesh_keywords')->nullable(); // Semicolon-separated
+            $table->text('non_mesh_keywords')->nullable(); // Semicolon-separated
+
+            // Additional Fields
+            $table->string('sdg_addressed')->nullable();
+            $table->string('policy_brief')->nullable();
+            $table->string('final_report')->nullable();
+            $table->string('implementing_agency')->nullable();
+            $table->string('cooperating_agency')->nullable();
+            $table->string('general_note')->nullable();
+            $table->string('budget')->nullable();
+            $table->string('fund_information')->nullable();
+            $table->string('duration')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->string('year_end_date')->nullable();
+            $table->string('keywords')->nullable();
+            $table->string('status')->nullable();
+            $table->string('citation')->nullable();
+            $table->enum('upload_status', ['Uploaded', 'Not Uploaded'])->nullable();
+            $table->text('remarks')->nullable();
+
             $table->timestamps();
         });
     }
