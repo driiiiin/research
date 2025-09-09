@@ -3,13 +3,23 @@
         <div class="bg-white shadow rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-xl font-bold text-primary">User Management</h3>
-                <a href="{{ route('register') }}" class="inline-flex items-center justify-center w-10 h-10 bg-primary hover:bg-[#14532d] text-primary border border-primary hover:text-white transition rounded-full shadow focus:outline-none" title="Add User Account">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <a href="{{ route('register') }}" class="inline-flex items-center justify-center w-10 h-10 bg-blue-600 hover:bg-blue-700 text-white border border-blue-600 hover:border-blue-700 transition rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-300" title="Add User Account">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                         <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="2" fill="none"/>
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v10m5-5H7" />
                     </svg>
+                    <span class="sr-only">Add User Account</span>
                 </a>
             </div>
+            @if ($errors->any())
+                <div class="mb-4 p-4 rounded bg-red-100 border border-red-400 text-red-700">
+                    <ul class="list-disc pl-5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="p-6">
                 <div class="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                     <div class="flex gap-2">

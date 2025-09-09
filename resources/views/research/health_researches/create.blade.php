@@ -87,14 +87,14 @@
                         </span>
                     </div>
                     <div class="flex flex-col sm:flex-row sm:items-end gap-2">
-                        <div class="sm:w-44 w-full">
-                            <x-input-label for="accession_no" value="Accession No." class="text-lg font-semibold text-gray-800 mb-2" />
+                        <div class="flex-shrink-0" style="display: inline-block; min-width: 220px; max-width: 100%;">
+                            <x-input-label for="accession_no" value="Accession No." class="text-base font-semibold text-gray-800 mb-1" />
                             <input
                                 type="text"
                                 name="accession_no"
                                 id="accession_no"
-                                class="mt-1 block w-full border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm"
-                                style="height: 44px; min-height: 44px; padding-top: 6px; padding-bottom: 6px;"
+                                class="block border border-gray-300 rounded-lg px-3 text-base focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50 shadow-sm"
+                                style="height:36px; min-height:36px; padding-top:4px; padding-bottom:4px; width:100%; max-width:350px;"
                                 placeholder="Loading..."
                                 value=""
                                 readonly

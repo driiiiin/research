@@ -35,17 +35,6 @@ Route::middleware(['guest', 'prevent-back'])->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
-
-    // AJAX endpoints for uniqueness validation
-    Route::get('check-email-unique', [RegisteredUserController::class, 'checkEmailUnique'])
-        ->name('register.checkEmailUnique');
-    Route::get('check-username-unique', [RegisteredUserController::class, 'checkUsernameUnique'])
-        ->name('register.checkUsernameUnique');
-
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -66,4 +55,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('register', [RegisteredUserController::class, 'store']);
+    Route::get('check-email-unique', [RegisteredUserController::class, 'checkEmailUnique'])->name('register.checkEmailUnique');
+    Route::get('check-username-unique', [RegisteredUserController::class, 'checkUsernameUnique'])->name('register.checkUsernameUnique');
 });

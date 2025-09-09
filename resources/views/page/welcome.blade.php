@@ -11,92 +11,13 @@
         <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-3">
-                    <!-- Search and Filter Form -->
-                    <form method="GET" action="{{ route('welcome') }}" class="mb-8" autocomplete="off">
-                        <div class="flex flex-row items-center space-x-2 w-full">
-                            <div class="flex-1 min-w-0">
-                                <input id="search" name="search" type="text" value="" placeholder="Title, Author, ISBN, or Genre"
-                                    class="h-12 w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm px-4 text-base" />
-                            </div>
-                            <div class="w-40 min-w-[8rem]">
-                                <select id="format" name="format" class="h-12 w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm px-4 text-base">
-                                    <option value="">All Formats</option>
-                                    <option value="Paperback">Paperback</option>
-                                    <option value="Hardcover">Hardcover</option>
-                                    <option value="E-book">E-book</option>
-                                    <option value="Audiobook">Audiobook</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <button type="submit" class="h-12 px-6 flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow transition font-semibold text-base">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                    Search
-                                </button>
-                                <a href="{{ url('/') }}" class="h-12 px-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg shadow transition font-semibold text-base">
-                                    Clear
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-
                     <!-- Welcome Message -->
-                    @if(!request('search') && !request('format'))
                     <div class="text-center py-8" style="padding-top:0; padding-bottom:10px">
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
-                        <h3 class="mt-2 text-lg font-semibold text-gray-900">Welcome to our Research</h3>
-                        <p class="mt-1 text-base text-gray-500">Search for books using the form above.</p>
+                        <h3 class="mt-2 text-lg font-semibold text-gray-900">Welcome to our Health Research Repository</h3>
                     </div>
-
-                    <!-- Carousel Section and About Health Research Repository Section -->
-                    <div class="max-w-7xl mx-auto mb-8">
-                        <div x-data="{ active: 0, images: ['/images/dohelib1.png', '/images/dohelib2.png', '/images/dohelib3.png'] }" x-init="setInterval(() => { active = active === images.length - 1 ? 0 : active + 1 }, 3000)">
-                            <div class="relative overflow-hidden rounded-t-2xl shadow-lg">
-                                <div class="flex transition-transform duration-500 ease-in-out" :style="'transform: translateX(-' + (active * 100) + '%)'">
-                                    <template x-for="(img, idx) in images" :key="img">
-                                        <img :src="img" class="w-full h-65 object-cover flex-shrink-0" />
-                                    </template>
-                                </div>
-                                <!-- Prev Button -->
-                                <button @click="active = active === 0 ? images.length - 1 : active - 1" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 rounded-full p-2 shadow focus:outline-none">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
-                                <!-- Next Button -->
-                                <button @click="active = active === images.length - 1 ? 0 : active + 1" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white text-gray-700 rounded-full p-2 shadow focus:outline-none">
-                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </button>
-                                <!-- Indicators -->
-                                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex space-x-2">
-                                    <template x-for="(img, idx) in images" :key="'dot-' + idx">
-                                        <button @click="active = idx" :class="{'bg-indigo-600': active === idx, 'bg-gray-300': active !== idx}" class="w-3 h-3 rounded-full focus:outline-none border-2 border-white"></button>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- About Health Research Repository Section -->
-                        <div class="bg-white rounded-b-2xl shadow-lg p-4 border border-gray-200">
-                            <h2 class="text-2xl font-bold text-[#14543A] mb-4">About Health Research Repository</h2>
-                            <p class="text-gray-700 mb-3">
-                                The Health Research Repository, an initiative spearheaded by the Department of Health's Health Policy Development and Planning Bureau (HPDPB) in collaboration with the Knowledge Management and Information Technology Service (KMITS), shall serve as a centralized platform for collecting and managing crucial evidence from the Department's research initiatives. Its primary aim is to streamline the process of gathering, preserving, sharing, and applying essential health research findings within the Department.
-                            </p>
-                            <p class="text-gray-700 mb-3">
-                                By leveraging advanced technologies and robust data management systems, this initiative seeks to enhance the efficiency and accessibility of vital health insights. The repository encourages collaboration and knowledge exchange among health professionals, empowering the Department to develop evidence-informed policies.
-                            </p>
-                            <p class="text-gray-700">
-                                This strategic move reinforces the commitment to advancing healthcare through research, fostering a culture of continuous learning, and driving improvements in healthcare practices.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
                 <!-- Search Results Heading -->
                 @if(request('search') || request('format'))
                 <div class="max-w-7xl mx-auto mb-4">
@@ -113,63 +34,87 @@
                 @endif
 
                 <!-- Health Research Grid -->
-                @if(request('search') || request('format'))
-                @if(isset($healthResearches) && $healthResearches->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    @foreach($healthResearches as $healthResearch)
-                    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                <div class="max-w-7xl mx-auto mb-8">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs text-gray-500">{{ $healthResearch->format }}</span>
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                                <h3 class="text-lg font-semibold text-gray-800">Health Research List</h3>
+                                <button
+                                    id="printTableBtn"
+                                    class="inline-flex items-center px-4 py-2 bg-[#14543A] hover:bg-[#17694a] text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#14543A]"
+                                    type="button"
+                                    title="Print Table"
+                                >
+                                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-6 0v4m0 0h4m-4 0H8"/>
+                                    </svg>
+                                    Print Table
+                                </button>
                             </div>
-
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{ $healthResearch->title }}</h3>
-                            <p class="text-sm text-gray-600 mb-3">by {{ $healthResearch->author }}</p>
-
-                            @if($healthResearch->description)
-                            <p class="text-sm text-gray-500 mb-4 line-clamp-3">{{ Str::limit($healthResearch->description, 100) }}</p>
-                            @endif
-
-                            <div class="flex items-center justify-between text-sm text-gray-500">
-                                <span>{{ $healthResearch->available_copies }}/{{ $healthResearch->total_copies }} available</span>
-                                @if($healthResearch->isbn)
-                                <span class="text-xs">ISBN: {{ $healthResearch->isbn }}</span>
-                                @endif
+                            <div class="overflow-x-auto">
+                                <table id="welcomeResearchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[28%] min-w-[220px]">Title</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[18%] min-w-[150px]">Authors</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[7%] min-w-[60px]">Year</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse(($healthResearches ?? []) as $healthResearch)
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words">
+                                                {{ $healthResearch->accession_no ?? '-' }}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[28%] min-w-[220px]">
+                                                {{ $healthResearch->research_title ?? $healthResearch->title ?? '-' }}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[18%] min-w-[150px]">
+                                                @if(isset($healthResearch->authors) && is_iterable($healthResearch->authors) && count($healthResearch->authors))
+                                                    {{ collect($healthResearch->authors)->map(fn($a) => $a->full_name ?? $a->name ?? $a)->implode(', ') }}
+                                                @elseif(property_exists($healthResearch, 'author') && $healthResearch->author)
+                                                    {{ $healthResearch->author }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[7%] min-w-[60px]">
+                                                {{ $healthResearch->date_issued_from_year ?? $healthResearch->year ?? '-' }}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                    {{ ($healthResearch->status ?? ($healthResearch->available_copies ?? 0) > 0 ? 'Available' : 'Not Available') === 'Available' ? 'bg-green-100 text-green-800' :
+                                                       (($healthResearch->status ?? '') === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
+                                                       (($healthResearch->status ?? '') === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
+                                                    {{ $healthResearch->status ?? (isset($healthResearch->available_copies) ? ($healthResearch->available_copies > 0 ? 'Available' : 'Not Available') : '-') }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                                <a href="{{ url('/research/details/' . ($healthResearch->accession_no ?? '')) }}" class="text-blue-600 hover:text-blue-900">View</a>
+                                            </td>
+                                        </tr>
+                                        @empty
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
-
-                            @if($healthResearch->available_copies > 0)
-                            <div class="mt-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Available
-                                </span>
-                            </div>
-                            @else
-                            <div class="mt-4">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                    Not Available
-                                </span>
-                            </div>
-                            @endif
                         </div>
                     </div>
-                    @endforeach
                 </div>
 
                 <!-- Pagination -->
-                @if($healthResearches->hasPages())
+                @if(!empty($healthResearches) && is_object($healthResearches) && method_exists($healthResearches, 'hasPages') && $healthResearches->hasPages())
                 <div class="mt-8">
                     {{ $healthResearches->links() }}
                 </div>
                 @endif
-                @else
-                <div class="text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">No books found</h3>
-                    <p class="mt-1 text-sm text-gray-500">Try adjusting your search criteria.</p>
-                </div>
-                @endif
+                @if(empty($healthResearches) || count($healthResearches) === 0)
+                    <div class="px-4 py-4 text-center text-gray-500">
+                        No health researches found.
+                    </div>
                 @endif
             </div>
         </div>
@@ -193,4 +138,75 @@
     if (isReload && window.location.search.length > 0) {
         window.location.href = '/';
     }
+</script>
+<script>
+$(document).ready(function() {
+    var $table = $('#welcomeResearchTable');
+    if ($table.length) {
+        // Debug: log the number of rows and columns
+        console.log('Rows:', $table.find('tbody tr').length);
+        $table.find('tbody tr').each(function(i, tr) {
+            console.log('Row', i, 'columns:', $(tr).find('td').length);
+        });
+        new DataTable('#welcomeResearchTable', {
+            responsive: true
+        });
+    }
+
+    // Print button functionality
+    $('#printTableBtn').on('click', function() {
+        // Clone the table and remove DataTables styling for print
+        var $tableClone = $('#welcomeResearchTable').clone();
+        $tableClone.removeClass('dataTable').removeAttr('style');
+        $tableClone.find('thead').removeClass();
+        $tableClone.find('tbody tr').removeClass();
+        $tableClone.find('td, th').removeClass();
+
+        // Create a print window
+        var printWindow = window.open('', '', 'width=900,height=700');
+        var style = `
+            <style>
+                body { font-family: 'Inter', Arial, sans-serif; margin: 30px; color: #222; }
+                h2 { color: #14543A; margin-bottom: 18px; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                th, td { border: 1px solid #d1d5db; padding: 8px 12px; font-size: 14px; }
+                th { background: #f3f4f6; color: #14543A; font-weight: 600; }
+                tr:nth-child(even) { background: #f9fafb; }
+                tr:hover { background: #f1f5f9; }
+                .print-header { text-align: center; margin-bottom: 24px; }
+                @media print {
+                    body { margin: 0; }
+                    .print-header { margin-bottom: 12px; }
+                }
+            </style>
+        `;
+        var header = `
+            <div class="print-header">
+                <h2>Health Research List</h2>
+                <div style="font-size:13px; color:#555;">
+                    Printed on: ${new Date().toLocaleString()}
+                </div>
+            </div>
+        `;
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print - Health Research List</title>
+                    ${style}
+                </head>
+                <body>
+                    ${header}
+                    ${$tableClone.prop('outerHTML')}
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        setTimeout(function() {
+            printWindow.focus();
+            printWindow.print();
+            // Optionally, close after print
+            // printWindow.close();
+        }, 400);
+    });
+});
 </script>

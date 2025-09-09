@@ -293,6 +293,18 @@ class HealthResearchController extends Controller
     }
 
     /**
+     * Display the specified health research for public/guest access by accession_no.
+     */
+    public function publicShow($accession_no)
+    {
+        $healthResearch = HealthResearch::where('accession_no', $accession_no)->first();
+        if (!$healthResearch) {
+            abort(404);
+        }
+        return view('research.health_researches.show', compact('healthResearch'));
+    }
+
+    /**
      * Show the form for editing the specified health research.
      */
     public function edit(HealthResearch $healthResearch): View

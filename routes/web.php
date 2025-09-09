@@ -7,28 +7,23 @@ use App\Http\Controllers\AdminPendingUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::get('/', function (Request $request) {
-    $healthResearches = null;
+    $query = \App\Models\HealthResearch::query();
 
-    // Only fetch health researches if there's a search query
-    if ($request->filled('search') || $request->filled('format')) {
-        $query = \App\Models\HealthResearch::where('status', 'Available');
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('author', 'like', "%{$search}%")
-                  ->orWhere('isbn', 'like', "%{$search}%")
-                  ->orWhere('genre', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('format')) {
-            $query->where('format', $request->format);
-        }
-
-        $healthResearches = $query->latest()->paginate(12);
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('author', 'like', "%{$search}%")
+              ->orWhere('isbn', 'like', "%{$search}%")
+              ->orWhere('genre', 'like', "%{$search}%");
+        });
     }
+
+    if ($request->filled('format')) {
+        $query->where('format', $request->format);
+    }
+
+    $healthResearches = $query->latest()->paginate(12);
 
     return view('page.welcome', compact('healthResearches'));
 })->name('welcome');
@@ -54,6 +49,8 @@ Route::prefix('research')->name('research.')->group(function () {
     Route::get('/health_researches/next-accession', [App\Http\Controllers\HealthResearchController::class, 'nextAccession'])
         ->name('health_researches.next_accession');
 });
+
+Route::get('/research/details/{accession_no}', [App\Http\Controllers\HealthResearchController::class, 'publicShow'])->name('public.health_research.details');
 
 Route::middleware(['auth', 'prevent-back'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

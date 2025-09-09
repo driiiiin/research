@@ -155,7 +155,7 @@
             // Get all form fields
             const firstName = document.getElementById('first_name');
             const lastName = document.getElementById('last_name');
-            // const middleName = document.getElementById('middle_name');
+            const middleName = document.getElementById('middle_name');
             const username = document.getElementById('username');
             const email = document.getElementById('email');
             const password = document.getElementById('password');
@@ -164,7 +164,7 @@
             // Get error display elements
             const firstNameError = document.getElementById('first_name_error');
             const lastNameError = document.getElementById('last_name_error');
-            // const middleNameError = document.getElementById('middle_name_error');
+            const middleNameError = document.getElementById('middle_name_error');
             const usernameError = document.getElementById('username_error');
             const emailError = document.getElementById('email_error');
             const passwordError = document.getElementById('password_error');
@@ -185,6 +185,12 @@
                 password: false,
                 passwordConfirmation: false
             };
+            let isChecking = {
+                username: false,
+                email: false
+            };
+            let usernameCheckCounter = 0;
+            let emailCheckCounter = 0;
 
             // Helper function to show error
             function showError(element, message) {
@@ -192,6 +198,14 @@
                 element.classList.remove('hidden');
                 element.classList.add('block');
                 resetSubmitButtonOnError();
+            }
+
+            // Helper function to show success
+            function showSuccess(element, message) {
+                element.textContent = message;
+                element.classList.remove('hidden');
+                element.classList.remove('text-red-600');
+                element.classList.add('block', 'text-green-600');
             }
 
             // Helper function to hide error
@@ -286,19 +300,19 @@
                 return true;
             }
 
-            // function validateMiddleName() {
-            //     const value = middleName.value.trim();
-            //     if (value.length > 0 && value.length < 2) {
-            //         showError(middleNameError, 'Middle name must be at least 2 characters long if provided');
-            //         return false;
-            //     }
-            //     if (value.length > 0 && !/^[a-zA-Z\s]+$/.test(value)) {
-            //         showError(middleNameError, 'Middle name can only contain letters and spaces');
-            //         return false;
-            //     }
-            //     hideError(middleNameError);
-            //     return true;
-            // }
+            function validateMiddleName() {
+                const value = middleName.value.trim();
+                if (value.length > 0 && value.length < 2) {
+                    showError(middleNameError, 'Middle name must be at least 2 characters long if provided');
+                    return false;
+                }
+                if (value.length > 0 && !/^[a-zA-Z\s]+$/.test(value)) {
+                    showError(middleNameError, 'Middle name can only contain letters and spaces');
+                    return false;
+                }
+                hideError(middleNameError);
+                return true;
+            }
 
                         function validateUsername() {
                 const value = username.value.trim();
@@ -354,12 +368,13 @@
 
             // Function to check email uniqueness
             function checkEmailUniqueness(email) {
-                // Show loading state
+                emailCheckCounter++;
+                const currentCheck = emailCheckCounter;
+                isChecking.email = true;
+                updateSubmitButtonState();
                 emailError.textContent = 'Checking email availability...';
-                emailError.classList.remove('hidden', 'text-blue-600');
-                emailError.classList.add('block', 'text-red-600');
-
-                // Make AJAX request to check email uniqueness
+                emailError.classList.remove('hidden', 'text-green-600');
+                emailError.classList.add('block', 'text-blue-600');
                 fetch(`/check-email-unique?email=${encodeURIComponent(email)}`, {
                     method: 'GET',
                     headers: {
@@ -369,30 +384,36 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    if (currentCheck !== emailCheckCounter) return; // Only update for latest
+                    isChecking.email = false;
                     if (data.exists) {
                         showError(emailError, 'This email address is already registered');
                         isValid.email = false;
                     } else {
-                        hideError(emailError);
+                        showSuccess(emailError, '✓ Email is available');
                         isValid.email = true;
                     }
+                    updateSubmitButtonState();
                 })
                 .catch(error => {
+                    if (currentCheck !== emailCheckCounter) return;
+                    isChecking.email = false;
                     console.error('Error checking email uniqueness:', error);
-                    // If there's an error, we'll let server-side validation handle it
                     hideError(emailError);
                     isValid.email = true;
+                    updateSubmitButtonState();
                 });
             }
 
             // Function to check username uniqueness
             function checkUsernameUniqueness(username) {
-                // Show loading state
+                usernameCheckCounter++;
+                const currentCheck = usernameCheckCounter;
+                isChecking.username = true;
+                updateSubmitButtonState();
                 usernameError.textContent = 'Checking username availability...';
-                usernameError.classList.remove('hidden', 'text-blue-600');
-                usernameError.classList.add('block', 'text-red-600');
-
-                // Make AJAX request to check username uniqueness
+                usernameError.classList.remove('hidden', 'text-green-600');
+                usernameError.classList.add('block', 'text-blue-600');
                 fetch(`/check-username-unique?username=${encodeURIComponent(username)}`, {
                     method: 'GET',
                     headers: {
@@ -402,20 +423,34 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    if (currentCheck !== usernameCheckCounter) return; // Only update for latest
+                    isChecking.username = false;
                     if (data.exists) {
                         showError(usernameError, 'This username is already taken');
                         isValid.username = false;
                     } else {
-                        hideError(usernameError);
+                        showSuccess(usernameError, '✓ Username is available');
                         isValid.username = true;
                     }
+                    updateSubmitButtonState();
                 })
                 .catch(error => {
+                    if (currentCheck !== usernameCheckCounter) return;
+                    isChecking.username = false;
                     console.error('Error checking username uniqueness:', error);
-                    // If there's an error, we'll let server-side validation handle it
                     hideError(usernameError);
                     isValid.username = true;
+                    updateSubmitButtonState();
                 });
+            }
+
+            // Update submit button state based on checking
+            function updateSubmitButtonState() {
+                if (isChecking.username || isChecking.email) {
+                    submitBtn.disabled = true;
+                } else {
+                    submitBtn.disabled = false;
+                }
             }
 
             function validatePassword() {
@@ -482,19 +517,26 @@
             username.addEventListener('input', function() {
                 clearTimeout(usernameTimeout);
                 const value = username.value.trim();
-
+                // Always clear previous messages
+                hideError(usernameError);
+                usernameError.classList.remove('text-green-600', 'text-blue-600');
+                isValid.username = false;
                 if (value.length === 0) {
                     showError(usernameError, 'This field is required');
-                    isValid.username = false;
+                    isChecking.username = false;
+                    updateSubmitButtonState();
                 } else if (value.length < 3) {
                     showError(usernameError, 'Username must be at least 3 characters long');
-                    isValid.username = false;
+                    isChecking.username = false;
+                    updateSubmitButtonState();
                 } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
                     showError(usernameError, 'Username can only contain letters, numbers, and underscores');
-                    isValid.username = false;
+                    isChecking.username = false;
+                    updateSubmitButtonState();
                 } else {
-                    hideError(usernameError);
                     // Debounce the uniqueness check
+                    isChecking.username = true;
+                    updateSubmitButtonState();
                     usernameTimeout = setTimeout(() => {
                         checkUsernameUniqueness(value);
                     }, 500); // Wait 500ms after user stops typing
@@ -508,16 +550,22 @@
                 clearTimeout(emailTimeout);
                 const value = email.value.trim();
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+                // Always clear previous messages
+                hideError(emailError);
+                emailError.classList.remove('text-green-600', 'text-blue-600');
+                isValid.email = false;
                 if (value.length === 0) {
                     showError(emailError, 'This field is required');
-                    isValid.email = false;
+                    isChecking.email = false;
+                    updateSubmitButtonState();
                 } else if (!emailRegex.test(value)) {
                     showError(emailError, 'Please enter a valid email address');
-                    isValid.email = false;
+                    isChecking.email = false;
+                    updateSubmitButtonState();
                 } else {
-                    hideError(emailError);
                     // Debounce the uniqueness check
+                    isChecking.email = true;
+                    updateSubmitButtonState();
                     emailTimeout = setTimeout(() => {
                         checkEmailUniqueness(value);
                     }, 500); // Wait 500ms after user stops typing
@@ -556,49 +604,52 @@
                 // Check if all required fields are valid
                 if (!firstNameValid || !lastNameValid || !usernameValid || !emailValid || !passwordValid || !passwordConfirmationValid) {
                     e.preventDefault();
-
-                    // Show general error message
                     if (!firstNameValid) firstName.focus();
                     else if (!lastNameValid) lastName.focus();
                     else if (!usernameValid) username.focus();
                     else if (!emailValid) email.focus();
                     else if (!passwordValid) password.focus();
                     else if (!passwordConfirmationValid) passwordConfirmation.focus();
-
-                    // Scroll to first error
                     const firstError = document.querySelector('.text-red-600:not(.hidden)');
                     if (firstError) {
                         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-
                     return false;
                 }
 
-                // Check if uniqueness validations have passed
-                if (!checkAllUniquenessValid()) {
+                // Prevent submission if uniqueness checks are in progress
+                if (isChecking.username || isChecking.email) {
                     e.preventDefault();
-
-                    // Show message about checking uniqueness
-                    if (!isValid.username) {
+                    if (isChecking.username) {
                         username.focus();
                         showError(usernameError, 'Please wait for username availability check to complete');
-                    } else if (!isValid.email) {
+                    } else if (isChecking.email) {
                         email.focus();
                         showError(emailError, 'Please wait for email availability check to complete');
                     }
+                    return false;
+                }
 
+                // Prevent submission if username/email are not valid (taken)
+                if (!isValid.username) {
+                    e.preventDefault();
+                    username.focus();
+                    showError(usernameError, 'This username is already taken');
+                    return false;
+                }
+                if (!isValid.email) {
+                    e.preventDefault();
+                    email.focus();
+                    showError(emailError, 'This email address is already registered');
                     return false;
                 }
 
                 // If all validations pass, show loading state
                 const submitText = document.getElementById('submitText');
                 const submitLoading = document.getElementById('submitLoading');
-
                 submitText.classList.add('hidden');
                 submitLoading.classList.remove('hidden');
                 submitBtn.disabled = true;
-
-                // Allow form submission
                 return true;
             });
 
