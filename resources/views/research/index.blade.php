@@ -19,67 +19,54 @@
                             </span>
                             <span class="font-semibold text-blue-800 text-base">Add Health Research</span>
                         </a>
+                        <!-- <a href="#" class="flex flex-col items-center justify-center h-32 w-full md:w-1/4 bg-pink-50 rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 border border-pink-100 focus:outline-none focus:ring-2 focus:ring-pink-300">
+                            <span class="flex items-center justify-center w-12 h-12 rounded-full bg-pink-100 mb-2 mt-2">
+                                <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 18h16"/>
+                                </svg>
+                            </span>
+                            <span class="font-semibold text-pink-800 text-base">Add Policy Brief</span>
+                        </a> -->
                     </div>
                 </div>
-            </div>
-            <!-- Data Table Controls -->
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-8 mb-4 gap-4">
-                <form method="GET" class="flex items-center gap-2">
-                    <label for="per_page" class="text-sm text-gray-700">Show</label>
-                    <select name="per_page" id="per_page" onchange="this.form.submit()" class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm">
-                        @foreach([5, 10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('per_page', $healthResearches->perPage()) == $size ? 'selected' : '' }}>{{ $size }}</option>
-                        @endforeach
-                    </select>
-                    <span class="text-sm text-gray-700">entries</span>
-                    @if(request('search'))
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                    @endif
-                </form>
-                <form method="GET" class="flex items-center gap-2" id="searchForm">
-                    @if(request('per_page'))
-                        <input type="hidden" name="per_page" value="{{ request('per_page') }}">
-                    @endif
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search health researches..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
-                    <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Search</button>
-                </form>
             </div>
             <!-- Health Research Table (List of Health Research) -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Health Research List</h3>
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 border border-gray-200">
+                        <!-- DataTables Bootstrap 5 CSS -->
+                        <table id="researchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Authors</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[28%] min-w-[220px]">Title</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[18%] min-w-[150px]">Authors</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[7%] min-w-[60px]">Year</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody id="researchTableBody" class="bg-white divide-y divide-gray-200">
                                 @forelse($healthResearches as $healthResearch)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words">
                                             {{ $healthResearch->accession_no }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[28%] min-w-[220px]">
                                             {{ $healthResearch->research_title }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[18%] min-w-[150px]">
                                             @if($healthResearch->relationLoaded('authors') || method_exists($healthResearch, 'authors'))
                                                 {{ $healthResearch->authors->map(fn($a) => $a->full_name)->implode(', ') }}
                                             @else
                                                 N/A
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[7%] min-w-[60px]">
                                             {{ $healthResearch->date_issued_from_year ?? 'N/A' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td class="px-4 py-4 whitespace-nowrap">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                 {{ $healthResearch->status === 'Available' ? 'bg-green-100 text-green-800' :
                                                    ($healthResearch->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
@@ -87,7 +74,7 @@
                                                 {{ $healthResearch->status }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('research.health_researches.show', $healthResearch) }}"
                                                    class="text-blue-600 hover:text-blue-900">View</a>
@@ -104,7 +91,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="6" class="px-4 py-4 text-center text-gray-500">
                                             No health researches found.
                                         </td>
                                     </tr>
@@ -130,32 +117,10 @@
             </div>
         </div>
     </div>
-    <script>
-        // On page load, if navigation type is reload, remove search param from URL and reload
-        document.addEventListener('DOMContentLoaded', function() {
-            if (performance && performance.getEntriesByType) {
-                const navEntries = performance.getEntriesByType('navigation');
-                if (navEntries.length > 0 && navEntries[0].type === 'reload') {
-                    // Remove 'search' param from URL and reload
-                    const url = new URL(window.location.href);
-                    if (url.searchParams.has('search')) {
-                        url.searchParams.delete('search');
-                        // Also reset page param if present
-                        url.searchParams.delete('page');
-                        window.location.replace(url.toString());
-                    }
-                }
-            } else if (performance && performance.navigation) {
-                // Fallback for older browsers
-                if (performance.navigation.type === 1) {
-                    const url = new URL(window.location.href);
-                    if (url.searchParams.has('search')) {
-                        url.searchParams.delete('search');
-                        url.searchParams.delete('page');
-                        window.location.replace(url.toString());
-                    }
-                }
-            }
-        });
-    </script>
 </x-app-layout>
+
+<script>
+    let table = new DataTable('#researchTable', {
+        responsive: true
+    });
+</script>

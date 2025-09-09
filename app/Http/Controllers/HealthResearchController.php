@@ -15,7 +15,7 @@ class HealthResearchController extends Controller
     /**
      * Display a listing of health researches.
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|string
     {
         $query = HealthResearch::query();
 
@@ -36,6 +36,10 @@ class HealthResearchController extends Controller
         }
 
         $healthResearches = $query->latest()->paginate(15);
+
+        if ($request->ajax()) {
+            return view('research.partials.table_body', compact('healthResearches'))->render();
+        }
 
         return view('research.index', compact('healthResearches'));
     }

@@ -516,12 +516,12 @@
                                             <div class="flex items-center space-x-3">
                                                 <input type="checkbox" id="enter_url_nonprint" name="enter_url[]" value="1" {{ (is_array(old('enter_url.0')) ? '' : old('enter_url.0')) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                                 <label for="enter_url_nonprint" class="text-sm text-blue-900">Enter URL</label>
-                                                <x-text-input type="url" name="url[]" class="flex-1 ml-2" value="{{ is_array(old('url.0')) ? '' : old('url.0') }}" placeholder="https://example.com" />
+                                                <input type="url" name="url[]" id="url_input_nonprint" class="flex-1 ml-2 text-sm text-gray-500 border border-gray-300 rounded px-3 py-2" value="{{ is_array(old('url.0')) ? '' : old('url.0') }}" placeholder="https://example.com" disabled />
                                             </div>
                                             <div class="flex items-center space-x-3">
                                                 <input type="checkbox" id="upload_file_nonprint" name="upload_file[]" value="1" {{ (is_array(old('upload_file.0')) ? '' : old('upload_file.0')) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                                 <label for="upload_file_nonprint" class="text-sm text-blue-900">Upload File</label>
-                                                <input type="file" name="file[]" class="flex-1 ml-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+                                                <input type="file" name="file[]" id="file_upload_nonprint" class="flex-1 ml-2 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" disabled />
                                             </div>
                                         </div>
                                     </div>
@@ -804,6 +804,28 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlCheckbox = document.getElementById('enter_url_nonprint');
+            const urlInput = document.getElementById('url_input_nonprint');
+            const uploadCheckbox = document.getElementById('upload_file_nonprint');
+            const fileInput = document.getElementById('file_upload_nonprint');
+            if (urlCheckbox && urlInput) {
+                function toggleUrlInput() {
+                    urlInput.disabled = !urlCheckbox.checked;
+                }
+                urlCheckbox.addEventListener('change', toggleUrlInput);
+                toggleUrlInput();
+            }
+            if (uploadCheckbox && fileInput) {
+                function toggleFileInput() {
+                    fileInput.disabled = !uploadCheckbox.checked;
+                }
+                uploadCheckbox.addEventListener('change', toggleFileInput);
+                toggleFileInput();
+            }
         });
     </script>
 </x-app-layout>

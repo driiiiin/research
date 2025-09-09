@@ -24,7 +24,7 @@
             <div class="mt-6">
                 <h3 class="text-xl font-semibold text-[#14543A] mb-2">Health Policy Development and Planning Bureau - Health Research Division</h3>
                 <ol class="list-decimal list-inside space-y-1 text-gray-800">
-                    <li>Dr. Kenneth G. Ronquillo, MPHM, CESO III</li>
+                    <li>Dr. Lilibeth C. David, MPH, MPM, CESO I</li>
                     <li>Dr. Lester M. Tan, MPH, MSC</li>
                     <li>Mr. Pio Justin V. Asuncion, RN, MPH, MOHRE, FRSPH</li>
                     <li>Ms. Renee Lyn Cabanero-Gasgonia, RN, MPH</li>

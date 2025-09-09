@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-2xl text-gray-900 leading-tight tracking-tight">
                 {{ __('Health Research Details') }}
             </h2>
             <div class="flex space-x-2">
@@ -14,178 +14,153 @@
             </div>
         </div>
     </x-slot>
-
-    <div>
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <!-- Book Header -->
-                    <div class="mb-6">
-                        <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ $book->title }}</h1>
-                        <p class="text-xl text-gray-600 mb-4">by {{ $book->author }}</p>
-
-                        <div class="flex items-center space-x-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                {{ $book->status === 'Available' ? 'bg-green-100 text-green-800' :
-                                   ($book->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
-                                   ($book->status === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
-                                {{ $book->status }}
-                            </span>
-                        </div>
+    <div class="py-10 min-h-screen">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="bg-white rounded-2xl shadow-xl px-10 pb-10 pt-0 space-y-10">
+                <!-- TITLE Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">TITLE</h3>
+                    </span>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+                    <div class="sm:w-44 w-full">
+                        <div class="text-lg font-semibold text-gray-800 mb-2">Accession No.</div>
+                        <div class="text-lg text-gray-900">{{ $healthResearch->accession_no }}</div>
                     </div>
-
-                    <!-- Book Information Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <!-- Basic Information -->
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Basic Information</h3>
-                            <dl class="space-y-3">
-                                @if($book->isbn)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">ISBN</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->isbn }}</dd>
-                                    </div>
-                                @endif
-                                @if($book->publisher)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Publisher</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->publisher }}</dd>
-                                    </div>
-                                @endif
-                                @if($book->publication_year)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Publication Year</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->publication_year }}</dd>
-                                    </div>
-                                @endif
-                                @if($book->edition)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Edition</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->edition }}</dd>
-                                    </div>
-                                @endif
-                                @if($book->genre)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Genre</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->genre }}</dd>
-                                    </div>
-                                @endif
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Language</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->language }}</dd>
-                                </div>
-                                @if($book->pages)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Pages</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->pages }}</dd>
-                                    </div>
-                                @endif
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Format</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->format }}</dd>
-                                </div>
-                                @if($book->price)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Price</dt>
-                                        <dd class="text-sm text-gray-900">${{ number_format($book->price, 2) }}</dd>
-                                    </div>
-                                @endif
-                            </dl>
-                        </div>
-
-                        <!-- Inventory Information -->
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Inventory Information</h3>
-                            <dl class="space-y-3">
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Total Copies</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->total_copies }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Available Copies</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->available_copies }}</dd>
-                                </div>
-                                @if($book->location)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Location</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->location }}</dd>
-                                    </div>
-                                @endif
-                                @if($book->call_number)
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Call Number</dt>
-                                        <dd class="text-sm text-gray-900">{{ $book->call_number }}</dd>
-                                    </div>
-                                @endif
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Added</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->created_at->format('M d, Y') }}</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
-                                    <dd class="text-sm text-gray-900">{{ $book->updated_at->format('M d, Y') }}</dd>
-                                </div>
-                            </dl>
-                        </div>
+                    <div class="flex-1">
+                        <div class="text-lg font-semibold text-gray-800 mb-2">Research Title</div>
+                        <div class="text-lg text-gray-900">{{ $healthResearch->research_title }}</div>
                     </div>
-
-                    <!-- Description -->
-                    @if($book->description)
-                        <div class="mb-8">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Description</h3>
-                            <p class="text-gray-700 leading-relaxed">{{ $book->description }}</p>
-                        </div>
-                    @endif
-
-                    <!-- Borrowing History -->
-                    @if($book->borrowings->count() > 0)
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-200 pb-2">Borrowing History</h3>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Borrowed</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Returned</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @foreach($book->borrowings as $borrowing)
-                                            <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {{ $borrowing->user->name }}
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {{ $borrowing->borrowed_at->format('M d, Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {{ $borrowing->due_date->format('M d, Y') }}
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {{ $borrowing->returned_at ? $borrowing->returned_at->format('M d, Y') : '-' }}
-                                                </td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                        {{ $borrowing->status === 'Borrowed' ? 'bg-blue-100 text-blue-800' :
-                                                           ($borrowing->status === 'Returned' ? 'bg-green-100 text-green-800' :
-                                                           'bg-red-100 text-red-800') }}">
-                                                        {{ $borrowing->status }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                </div>
+                @if(!empty($healthResearch->subtitle))
+                <div class="mt-6">
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Subtitle</div>
+                    <ul class="list-disc ml-6">
+                        @foreach((is_array($healthResearch->subtitle) ? $healthResearch->subtitle : (array)json_decode($healthResearch->subtitle, true)) as $sub)
+                            @if($sub)
+                                <li>{{ $sub }}</li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                <!-- SOURCE Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">SOURCE</h3>
+                    </span>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Date Issued</div>
+                    <div class="mb-2">From: {{ $healthResearch->date_issued_from_month }}/{{ $healthResearch->date_issued_from_year }} To: {{ $healthResearch->date_issued_to_month }}/{{ $healthResearch->date_issued_to_year }}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><span class="font-semibold">Volume No.:</span> {{ $healthResearch->volume_no }}</div>
+                        <div><span class="font-semibold">Issue No.:</span> {{ $healthResearch->issue_no }}</div>
+                        <div><span class="font-semibold">Pages:</span> {{ $healthResearch->pages }}</div>
+                        <div><span class="font-semibold">Article No.:</span> {{ $healthResearch->article_no }}</div>
+                        <div class="md:col-span-2"><span class="font-semibold">DOI:</span> {{ $healthResearch->doi }}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Notes</div>
+                    <div class="text-lg text-gray-900">{{ $healthResearch->notes }}</div>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Research Category</div>
+                    <div>{{ $healthResearch->research_category }}</div>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Research Type</div>
+                    <div>{{ $healthResearch->research_type }}</div>
+                </div>
+                <!-- AUTHOR Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">AUTHOR</h3>
+                    </span>
+                </div>
+                <div>
+                    @if(isset($healthResearch->authors) && is_iterable($healthResearch->authors))
+                        <ul class="list-disc ml-6">
+                            @foreach($healthResearch->authors as $author)
+                                <li>{{ $author->full_name }}</li>
+                            @endforeach
+                        </ul>
                     @else
-                        <div class="text-center py-8">
-                            <p class="text-gray-500">No borrowing history for this book.</p>
-                        </div>
+                        <div>{{ $healthResearch->author }}</div>
                     @endif
+                </div>
+                <!-- ABSTRACT Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">ABSTRACT</h3>
+                    </span>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Abstract Type</div>
+                    <div>{{ $healthResearch->abstract_type }}</div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2 mt-4">Abstract Content</div>
+                    <div class="text-lg text-gray-900">{{ $healthResearch->research_abstract }}</div>
+                </div>
+                <!-- REFERENCE Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">REFERENCE</h3>
+                    </span>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">Reference</div>
+                    <div class="text-lg text-gray-900">{{ $healthResearch->reference }}</div>
+                </div>
+                <!-- LOCATION Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">LOCATION</h3>
+                    </span>
+                </div>
+                <div>
+                    @if(isset($healthResearch->locations) && is_iterable($healthResearch->locations))
+                        <ul class="list-disc ml-6">
+                            @foreach($healthResearch->locations as $location)
+                                <li>{{ $location->format }} - {{ $location->physical_location }} - {{ $location->mode_of_access }}</li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <div>{{ $healthResearch->location }}</div>
+                    @endif
+                </div>
+                <!-- SUBJECT Section -->
+                <div class="w-full flex justify-center mb-4 mt-2">
+                    <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">
+                        <h3 class="text-xl font-extrabold text-white tracking-tight text-center w-full">SUBJECT</h3>
+                    </span>
+                </div>
+                <div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2">MeSH Keywords</div>
+                    <div>{{ $healthResearch->mesh_keywords }}</div>
+                    <div class="text-lg font-semibold text-gray-800 mb-2 mt-4">Non-MeSH Keywords</div>
+                    <div>{{ $healthResearch->non_mesh_keywords }}</div>
+                </div>
+                <!-- Additional Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                    <div><span class="font-semibold">SDG Addressed:</span> {{ $healthResearch->sdg_addressed }}</div>
+                    <div><span class="font-semibold">Policy Brief:</span> {{ $healthResearch->policy_brief }}</div>
+                    <div><span class="font-semibold">Final Report:</span> {{ $healthResearch->final_report }}</div>
+                    <div><span class="font-semibold">Implementing Agency:</span> {{ $healthResearch->implementing_agency }}</div>
+                    <div><span class="font-semibold">Cooperating Agency:</span> {{ $healthResearch->cooperating_agency }}</div>
+                    <div><span class="font-semibold">General Note:</span> {{ $healthResearch->general_note }}</div>
+                    <div><span class="font-semibold">Budget:</span> {{ $healthResearch->budget }}</div>
+                    <div><span class="font-semibold">Fund Information:</span> {{ $healthResearch->fund_information }}</div>
+                    <div><span class="font-semibold">Duration:</span> {{ $healthResearch->duration }}</div>
+                    <div><span class="font-semibold">Start Date:</span> {{ $healthResearch->start_date }}</div>
+                    <div><span class="font-semibold">End Date:</span> {{ $healthResearch->end_date }}</div>
+                    <div><span class="font-semibold">Year End Date:</span> {{ $healthResearch->year_end_date }}</div>
+                    <div><span class="font-semibold">Keywords:</span> {{ $healthResearch->keywords }}</div>
+                    <div><span class="font-semibold">Status:</span> {{ $healthResearch->status }}</div>
+                    <div><span class="font-semibold">Citation:</span> {{ $healthResearch->citation }}</div>
+                    <div><span class="font-semibold">Upload Status:</span> {{ $healthResearch->upload_status }}</div>
+                    <div><span class="font-semibold">Remarks:</span> {{ $healthResearch->remarks }}</div>
                 </div>
             </div>
         </div>
