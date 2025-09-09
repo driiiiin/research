@@ -12,6 +12,7 @@
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
                             <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Organization</th>
                             <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -25,6 +26,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->organization }}</td>
                                 <td class="px-4 py-3 text-center">
                                     <div class="flex justify-center gap-2">
                                         <form action="{{ route('admin.pending-users.approve', $user->id) }}" method="POST" class="approve-user-form">

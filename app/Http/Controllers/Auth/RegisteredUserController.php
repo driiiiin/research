@@ -34,6 +34,7 @@ class RegisteredUserController extends Controller
             'first_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'last_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
             'middle_name' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'organization' => ['required', 'string', 'exists:ref_organizations,organization_code'],
             'username' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:pending_users,username', 'unique:users,username'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:pending_users,email', 'unique:users,email'],
             'password' => [
@@ -56,6 +57,7 @@ class RegisteredUserController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'middle_name' => $request->middle_name,
+            'organization' => $request->organization,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="max-w-6xl mx-auto py-8">
+    <div class="max-w-7xl mx-auto py-8">
         <div class="bg-white shadow rounded-xl overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-xl font-bold text-primary">User Management</h3>
@@ -26,28 +26,16 @@
                         <button id="approvedTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-blue-600 text-white focus:outline-none">Approved Users</button>
                         <button id="pendingTabBtn" class="px-4 py-2 rounded-lg text-sm font-semibold bg-gray-200 text-gray-700 focus:outline-none">Pending Users</button>
                     </div>
-                    <form method="GET" action="{{ route('users.index') }}" class="flex items-center gap-2 mt-2 md:mt-0">
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Search users..."
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm" />
-                        <button
-                            type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
-                            Search
-                        </button>
-                    </form>
                 </div>
                 <div id="approvedTab" class="block">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table id="approvedUsersTable" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No.</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Organization</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
@@ -59,58 +47,80 @@
                                 <td class="px-4 py-3 whitespace-nowrap">{{ $user->full_name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ optional(\App\Models\ref_organizations::where('organization_code', $user->organization)->first())->organization_desc ?? $user->organization }}</td>
                                 <td class="px-4 py-3 text-gray-700">
                                     @if($user->session_id)
-                                    <span class="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">Logged In</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded" title="User is currently logged in">
+                                        <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z" clip-rule="evenodd" /></svg>
+                                        Logged In
+                                    </span>
                                     @else
-                                    <span class="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-600 rounded">Logged Out</span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-600 rounded" title="User is logged out">
+                                        <svg class="w-3 h-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6" /></svg>
+                                        Logged Out
+                                    </span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-center">
-                                    <div class="flex justify-center gap-2">
-                                        <a href="{{ route('users.show', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-semibold rounded shadow-sm transition">Show</a>
-                                        <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-semibold rounded shadow-sm transition">Edit</a>
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="delete-user-form">
+                                    <div class="flex flex-wrap justify-center gap-2 items-center">
+                                        <a href="{{ route('users.show', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold rounded shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-300" title="Show User" aria-label="Show User">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                            Show
+                                        </a>
+                                        <a href="{{ route('users.edit', $user->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold rounded shadow-sm transition focus:outline-none focus:ring-2 focus:ring-yellow-300" title="Edit User" aria-label="Edit User">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" /></svg>
+                                            Edit
+                                        </a>
+                                        <span class="w-px h-6 bg-gray-200 mx-1"></span>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="delete-user-form" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm transition">Delete</button>
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm transition focus:outline-none focus:ring-2 focus:ring-red-300" title="Delete User" aria-label="Delete User">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                Delete
+                                            </button>
                                         </form>
                                         <form action="{{ route('users.logoutSession', $user->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
-                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-400 hover:bg-red-600 text-white text-xs font-semibold rounded shadow-sm transition">Force Logout</button>
+                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-400 hover:bg-red-600 text-white text-xs font-semibold rounded shadow-sm transition focus:outline-none focus:ring-2 focus:ring-red-200" title="Force Logout" aria-label="Force Logout">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" /></svg>
+                                                Force Logout
+                                            </button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
+                                <td colspan="7" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-4">
-                        {{ $users->links() }}
-                    </div>
+                    <!-- Removed Laravel pagination for DataTables -->
                 </div>
                 <div id="pendingTab" class="hidden">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table id="pendingUsersTable" class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">No.</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Organization</th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @forelse($pendingUsers as $user)
                             <tr class="hover:bg-blue-50 transition">
-                                <td class="px-4 py-3 text-gray-700">{{ ($pendingUsers->currentPage() - 1) * $pendingUsers->perPage() + $loop->iteration }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $loop->iteration }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
                                 <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 text-gray-700">
+                                    {{ optional(\App\Models\ref_organizations::where('organization_code', $user->organization)->first())->organization_desc ?? $user->organization }}
+                                </td>
                                 <td class="px-4 py-3 text-center">
                                     <div class="flex justify-center gap-2">
                                         <form action="{{ route('admin.pending-users.approve', $user->id) }}" method="POST" class="approve-user-form">
@@ -138,14 +148,12 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-gray-400 text-lg">No pending users.</td>
+                                <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No pending users.</td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-4">
-                        {{ $pendingUsers->links() }}
-                    </div>
+                    <!-- Removed Laravel pagination for DataTables -->
                 </div>
             </div>
         </div>
@@ -190,7 +198,7 @@
         });
         document.querySelectorAll('.delete-user-form').forEach(function(form) {
             form.addEventListener('submit', function(e) {
-                e.preventDefault();
+                e.preventDefault(); // Prevent immediate submit
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'This action cannot be undone!',
@@ -245,6 +253,59 @@
                 if (changed) {
                     window.location.replace(url.pathname + url.search);
                 }
+            }
+        });
+    </script>
+    <script>
+        // DataTables initialization for approved users table
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.jQuery && $('#approvedUsersTable').length) {
+                $('#approvedUsersTable').DataTable({
+                    responsive: true,
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 10,
+                    language: {
+                        search: 'Filter:',
+                        lengthMenu: 'Show _MENU_ entries',
+                        info: 'Showing _START_ to _END_ of _TOTAL_ users',
+                        infoEmpty: 'No users available',
+                        zeroRecords: 'No matching users found',
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: -1 } // Disable ordering on Actions column
+                    ],
+                    order: [[0, 'desc']]
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.jQuery && $('#pendingUsersTable').length) {
+                $('#pendingUsersTable').DataTable({
+                    responsive: true,
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    lengthChange: true,
+                    pageLength: 10,
+                    language: {
+                        search: 'Filter:',
+                        lengthMenu: 'Show _MENU_ entries',
+                        info: 'Showing _START_ to _END_ of _TOTAL_ users',
+                        infoEmpty: 'No users available',
+                        zeroRecords: 'No matching users found',
+                    },
+                    columnDefs: [
+                        { orderable: false, targets: -1 } // Disable ordering on Actions column
+                    ],
+                    order: [[0, 'desc']]
+                });
             }
         });
     </script>

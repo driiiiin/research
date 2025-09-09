@@ -15,6 +15,7 @@ class PendingUser extends Model
         'first_name',
         'last_name',
         'middle_name',
+        'organization',
         'username',
         'email',
         'password',

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('password_change_required')->default(false)->after('password');
+        Schema::create('ref_sgds', function (Blueprint $table) {
+            $table->string('sgd_code')->primary();
+            $table->string('sgd_desc');
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('password_change_required');
-        });
+        Schema::dropIfExists('ref_sgds');
     }
 };

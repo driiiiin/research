@@ -112,51 +112,12 @@
                     </div>
                     <div class="mt-6">
                         <x-input-label value="Subtitle" class="text-lg font-semibold text-gray-800 mb-2" />
-                        <div id="subtitles-container" class="space-y-4">
-                            @php $oldSubtitles = old('subtitle'); if (!is_array($oldSubtitles)) $oldSubtitles = []; @endphp
-                            @if(is_array($oldSubtitles) && count($oldSubtitles))
-                            @foreach($oldSubtitles as $i => $sub)
-                            <div class="flex items-center gap-4">
-                                <textarea name="subtitle[]"
-                                    class="flex-1 border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm resize-y"
-                                    maxlength="500"
-                                    style="height:44px; min-height:44px; max-height:180px; padding-top:10px; padding-bottom:10px;"
-                                    placeholder="Enter research subtitle (up to 500 characters)">{{ is_string($sub) ? $sub : '' }}</textarea>
-                                @if($i > 0)
-                                <button type="button" class="text-red-600 hover:text-red-700 px-4 py-2 rounded-lg bg-red-50 font-medium transition" onclick="this.parentElement.remove()">Remove</button>
-                                @endif
-                            </div>
-                            @endforeach
-                            @else
-                            <div class="flex items-center gap-4">
-                                <textarea name="subtitle[]"
-                                    class="flex-1 border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm resize-y"
-                                    maxlength="500"
-                                    style="height:44px; min-height:44px; max-height:180px; padding-top:10px; padding-bottom:10px;"
-                                    placeholder="Enter research subtitle (up to 500 characters)"></textarea>
-                            </div>
-                            @endif
-                        </div>
-                        <button type="button" id="add-subtitle" class="mt-3 text-emerald-700 text-base font-semibold hover:underline transition">+ Add Subtitle</button>
+                        <textarea name="subtitle" id="subtitle"
+                            class="flex-1 border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm resize-y"
+                            maxlength="500"
+                            style="height:44px; min-height:44px; max-height:180px; padding-top:10px; padding-bottom:10px;"
+                            placeholder="Enter research subtitle (up to 500 characters)">{{ old('subtitle') }}</textarea>
                     </div>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            document.getElementById('add-subtitle').addEventListener('click', function() {
-                                const container = document.getElementById('subtitles-container');
-                                const div = document.createElement('div');
-                                div.className = 'flex items-center gap-4';
-                                div.innerHTML = `
-                                    <textarea name="subtitle[]"
-                                        class="flex-1 border border-gray-300 rounded-xl px-5 text-lg focus:ring-emerald-500 focus:border-emerald-500 transition bg-gray-50 shadow-sm resize-y"
-                                        maxlength="500"
-                                        style="height:44px; min-height:44px; max-height:180px; padding-top:10px; padding-bottom:10px;"
-                                        placeholder="Enter research subtitle (up to 500 characters)"></textarea>
-                                    <button type="button" class="text-red-600 hover:text-red-700 px-4 py-2 rounded-lg bg-red-50 font-medium transition" onclick="this.parentElement.remove()">Remove</button>
-                                `;
-                                container.appendChild(div);
-                            });
-                        });
-                    </script>
                     <!-- Source Section -->
                     <div class="w-full flex justify-center mb-4 mt-2">
                         <span class="inline-flex items-center justify-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-600 shadow-lg">

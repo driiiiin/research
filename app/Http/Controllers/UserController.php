@@ -55,8 +55,7 @@ class UserController extends Controller
                 });
             })
             ->orderBy('id', 'asc')
-            ->paginate(10, ['*'], 'pending_page')
-            ->withQueryString();
+            ->get();
 
         return view('users.index', compact('users', 'pendingUsers', 'search', 'verified', 'blocked'));
     }
@@ -106,6 +105,7 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
+            'organization' => 'required|string|exists:ref_organizations,organization_code',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'session_id' => 'nullable|string|max:255',
@@ -153,7 +153,16 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        // Prevent deleting yourself
+        if (auth()->id() == $user->id) {
+            return redirect()->route('users.index')->with('error', 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully!');
     }
 
     public function logoutSession($id)

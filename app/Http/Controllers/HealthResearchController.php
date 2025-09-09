@@ -35,7 +35,7 @@ class HealthResearchController extends Controller
             $query->where('status', $request->status);
         }
 
-        $healthResearches = $query->latest()->paginate(15);
+        $healthResearches = $query->with('authors')->latest()->paginate(15);
 
         if ($request->ajax()) {
             return view('research.partials.table_body', compact('healthResearches'))->render();
@@ -61,8 +61,7 @@ class HealthResearchController extends Controller
         $validated = $request->validate([
             'accession_no' => 'nullable|string|max:20|unique:health_researches',
             'research_title' => 'required|string|max:255',
-            'subtitle' => 'nullable|array',
-            'subtitle.*' => 'nullable|string|max:255',
+            'subtitle' => 'nullable|string|max:500',
             'date_issued_from_month' => 'required|integer|min:1|max:12',
             'date_issued_from_year' => 'required|integer|min:1970|max:2025',
             'date_issued_to_month' => 'required|integer|min:1|max:12',
@@ -320,8 +319,7 @@ class HealthResearchController extends Controller
         $validated = $request->validate([
             'accession_no' => 'nullable|string|max:20|unique:health_researches,accession_no,' . $healthResearch->id,
             'research_title' => 'required|string|max:255',
-            'subtitle' => 'nullable|array',
-            'subtitle.*' => 'nullable|string|max:255',
+            'subtitle' => 'nullable|string|max:500',
             'date_issued_from_month' => 'required|integer|min:1|max:12',
             'date_issued_from_year' => 'required|integer|min:1970|max:2025',
             'date_issued_to_month' => 'required|integer|min:1|max:12',

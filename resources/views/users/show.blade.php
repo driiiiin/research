@@ -20,6 +20,12 @@
                         <dd class="text-gray-900">{{ $user->email }}</dd>
                     </div>
                     <div class="py-3 flex justify-between">
+                        <dt class="font-semibold text-gray-700">Organization</dt>
+                        <dd class="text-gray-900">
+                            {{ optional(\App\Models\ref_organizations::where('organization_code', $user->organization)->first())->organization_desc ?? $user->organization }}
+                        </dd>
+                    </div>
+                    <div class="py-3 flex justify-between">
                         <dt class="font-semibold text-gray-700">Created At</dt>
                         <dd class="text-gray-900">{{ $user->created_at }}</dd>
                     </div>

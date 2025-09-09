@@ -26,6 +26,7 @@ class AdminPendingUserController extends Controller
             'first_name' => $pendingUser->first_name,
             'last_name' => $pendingUser->last_name,
             'middle_name' => $pendingUser->middle_name,
+            'organization' => $pendingUser->organization,
             'username' => $pendingUser->username,
             'email' => $pendingUser->email,
             'password' => $pendingUser->password, // Already hashed
@@ -33,7 +34,7 @@ class AdminPendingUserController extends Controller
         $pendingUser->approval_status = 'approved';
         $pendingUser->save();
         $pendingUser->delete();
-        return redirect()->route('admin.pending-users.index')->with('status', 'User approved and added to users table.');
+        return redirect()->route('users.index')->with('status', 'User approved and added to users table.');
     }
 
     // Reject a pending user

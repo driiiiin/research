@@ -54,7 +54,7 @@ class HealthResearch extends Model
     ];
 
     protected $casts = [
-        'subtitle' => 'array',
+        'subtitle' => 'string',
         'date_issued_from_month' => 'integer',
         'date_issued_from_year' => 'integer',
         'date_issued_to_month' => 'integer',

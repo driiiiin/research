@@ -134,6 +134,22 @@
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
             </div>
 
+            <!-- Organization -->
+            <div class="mt-4">
+                <div class="flex items-center">
+                    <x-input-label for="organization" :value="__('Organization')" />
+                    <span class="text-red-500 ml-1">*</span>
+                </div>
+                <select id="organization" name="organization" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required autocomplete="organization">
+                    <option value="" disabled {{ old('organization') ? '' : 'selected' }}>Select your organization</option>
+                    @foreach(\App\Models\ref_organizations::orderBy('organization_desc')->get() as $org)
+                        <option value="{{ $org->organization_code }}" {{ old('organization') == $org->organization_code ? 'selected' : '' }}>{{ $org->organization_desc }}</option>
+                    @endforeach
+                </select>
+                <div id="organization_error" class="hidden mt-2 text-sm text-red-600"></div>
+                <x-input-error :messages="$errors->get('organization')" class="mt-2" />
+            </div>
+
             <div class="flex items-center justify-end mt-4">
                 <!-- <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
                     {{ __('Already registered?') }}

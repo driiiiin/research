@@ -29,6 +29,15 @@
                     <input type="email" name="email" value="{{ old('email', $user->email) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
                 </div>
                 <div>
+                    <label class="block text-gray-700">Organization</label>
+                    <select name="organization" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <option value="" disabled {{ old('organization', $user->organization) ? '' : 'selected' }}>Select your organization</option>
+                        @foreach(\App\Models\ref_organizations::orderBy('organization_desc')->get() as $org)
+                            <option value="{{ $org->organization_code }}" {{ old('organization', $user->organization) == $org->organization_code ? 'selected' : '' }}>{{ $org->organization_desc }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label class="block text-gray-700">New Password</label>
                     <input type="password" name="password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" autocomplete="new-password" />
                 </div>

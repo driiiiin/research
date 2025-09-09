@@ -1,5 +1,5 @@
 <tbody id="researchTableBody" class="bg-white divide-y divide-gray-200">
-    @forelse($healthResearches as $healthResearch)
+    @foreach($healthResearches as $healthResearch)
         <tr class="hover:bg-gray-50">
             <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words">
                 {{ $healthResearch->accession_no }}
@@ -40,11 +40,5 @@
                 </div>
             </td>
         </tr>
-    @empty
-        <tr>
-            <td colspan="6" class="px-4 py-4 text-center text-gray-500">
-                No health researches found.
-            </td>
-        </tr>
-    @endforelse
+    @endforeach
 </tbody>

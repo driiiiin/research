@@ -17,7 +17,7 @@ return new class extends Migration
             // Title Section
             $table->string('accession_no')->unique();
             $table->string('research_title');
-            $table->json('subtitle')->nullable(); // Array of subtitles
+            $table->string('subtitle', 500)->nullable(); // Single subtitle
 
             // Source Section
             $table->integer('date_issued_from_month')->nullable();
