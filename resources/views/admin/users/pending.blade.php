@@ -29,6 +29,7 @@
                                     <div class="flex justify-center gap-2">
                                         <form action="{{ route('admin.pending-users.approve', $user->id) }}" method="POST" class="approve-user-form">
                                             @csrf
+                                            @method('PATCH')
                                             <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition approve-btn">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                                                 Approve
@@ -36,6 +37,7 @@
                                         </form>
                                         <form action="{{ route('admin.pending-users.reject', $user->id) }}" method="POST" class="reject-user-form">
                                             @csrf
+                                            @method('DELETE')
                                             <button type="submit" class="inline-flex items-center px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-sm transition reject-btn">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                                 Reject
@@ -59,9 +61,13 @@
         document.querySelectorAll('.reject-user-form').forEach(function(form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
+                // Find the closest row and extract user info
+                const row = form.closest('tr');
+                const name = row.querySelector('td:nth-child(1) .font-medium').textContent.trim();
+                const email = row.querySelector('td:nth-child(3)').textContent.trim();
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'Are you sure you want to reject this user?',
+                    title: 'Reject User?',
+                    html: `<b>${name}</b><br><small>${email}</small><br><br>Are you sure you want to reject this user?`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -96,25 +102,25 @@
         });
     </script>
     @if(session('status') && Str::contains(session('status'), 'approved'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'User Approved',
-            text: @json(session('status')),
-            timer: 2000,
-            showConfirmButton: false
-        });
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'User Approved',
+                text: @json(session('status')),
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
     @endif
     @if(session('status') && Str::contains(session('status'), 'rejected'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'User Rejected',
-            text: @json(session('status')),
-            timer: 2000,
-            showConfirmButton: false
-        });
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'User Rejected',
+                text: @json(session('status')),
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
     @endif
 </x-app-layout>

@@ -22,6 +22,7 @@ class AdminPendingUserController extends Controller
         $pendingUser = PendingUser::findOrFail($id);
         // Move to users table
         $user = User::create([
+            'name' => $pendingUser->first_name . ' ' . trim(($pendingUser->middle_name ? $pendingUser->middle_name . ' ' : '') . $pendingUser->last_name),
             'first_name' => $pendingUser->first_name,
             'last_name' => $pendingUser->last_name,
             'middle_name' => $pendingUser->middle_name,
