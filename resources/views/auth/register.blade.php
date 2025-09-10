@@ -30,7 +30,18 @@
                     <x-input-label for="first_name" :value="__('First Name')" />
                     <span class="text-red-500 ml-1">*</span>
                 </div>
-                <x-text-input id="first_name" class="block mt-1 w-full" type="text" name="first_name" :value="old('first_name')" required autofocus autocomplete="given-name" />
+                <x-text-input
+                    id="first_name"
+                    class="block mt-1 w-full"
+                    type="text"
+                    name="first_name"
+                    :value="old('first_name')"
+                    required
+                    autofocus
+                    autocomplete="given-name"
+                    pattern="^[A-Za-zÀ-ÿÑñ\s\-]+$"
+                    title="First name may include letters, spaces, hyphens, and ñ/Ñ."
+                />
                 <div id="first_name_error" class="hidden mt-2 text-sm text-red-600"></div>
                 <x-input-error :messages="$errors->get('first_name')" class="mt-2" />
             </div>
@@ -41,7 +52,17 @@
                     <x-input-label for="last_name" :value="__('Last Name')" />
                     <span class="text-red-500 ml-1">*</span>
                 </div>
-                <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autocomplete="family-name" />
+                <x-text-input
+                    id="last_name"
+                    class="block mt-1 w-full"
+                    type="text"
+                    name="last_name"
+                    :value="old('last_name')"
+                    required
+                    autocomplete="family-name"
+                    pattern="^[A-Za-zÀ-ÿÑñ\s\-]+$"
+                    title="Last name may include letters, spaces, hyphens, and ñ/Ñ."
+                />
                 <div id="last_name_error" class="hidden mt-2 text-sm text-red-600"></div>
                 <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
             </div>
@@ -49,7 +70,16 @@
             <!-- Middle Name -->
             <div class="mt-4">
                 <x-input-label for="middle_name" :value="__('Middle Name (Optional)')" />
-                <x-text-input id="middle_name" class="block mt-1 w-full" type="text" name="middle_name" :value="old('middle_name')" autocomplete="additional-name" />
+                <x-text-input
+                    id="middle_name"
+                    class="block mt-1 w-full"
+                    type="text"
+                    name="middle_name"
+                    :value="old('middle_name')"
+                    autocomplete="additional-name"
+                    pattern="^[A-Za-zÀ-ÿÑñ\s\-]*$"
+                    title="Middle name may include letters, spaces, hyphens, and ñ/Ñ."
+                />
                 <div id="middle_name_error" class="hidden mt-2 text-sm text-red-600"></div>
                 <x-input-error :messages="$errors->get('middle_name')" class="mt-2" />
             </div>
@@ -270,8 +300,8 @@
                     isValid.firstName = false;
                     return false;
                 }
-                if (!/^[a-zA-Z\s]+$/.test(value)) {
-                    showError(firstNameError, 'First name can only contain letters and spaces');
+                if (!/^[a-zA-ZÀ-ÿÑñ\s\-]+$/.test(value)) {
+                    showError(firstNameError, 'First name can only contain letters, spaces, hyphens, and ñ/Ñ');
                     isValid.firstName = false;
                     return false;
                 }
@@ -292,8 +322,8 @@
                     isValid.lastName = false;
                     return false;
                 }
-                if (!/^[a-zA-Z\s]+$/.test(value)) {
-                    showError(lastNameError, 'Last name can only contain letters and spaces');
+                if (!/^[a-zA-ZÀ-ÿÑñ\s\-]+$/.test(value)) {
+                    showError(lastNameError, 'Last name can only contain letters, spaces, hyphens, and ñ/Ñ');
                     isValid.lastName = false;
                     return false;
                 }
@@ -308,8 +338,8 @@
                     showError(middleNameError, 'Middle name must be at least 2 characters long if provided');
                     return false;
                 }
-                if (value.length > 0 && !/^[a-zA-Z\s]+$/.test(value)) {
-                    showError(middleNameError, 'Middle name can only contain letters and spaces');
+                if (value.length > 0 && !/^[a-zA-ZÀ-ÿÑñ\s\-]+$/.test(value)) {
+                    showError(middleNameError, 'Middle name can only contain letters, spaces, hyphens, and ñ/Ñ');
                     return false;
                 }
                 hideError(middleNameError);

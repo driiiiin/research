@@ -115,11 +115,11 @@
                             @forelse($pendingUsers as $user)
                             <tr class="hover:bg-blue-50 transition">
                                 <td class="px-4 py-3 text-gray-700">{{ $loop->iteration }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $user->username }}</td>
-                                <td class="px-4 py-3 text-gray-700">{{ $user->email }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap">{{ ($user->first_name ?? '') }} {{ ($user->middle_name ?? '') }} {{ ($user->last_name ?? '') }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->username ?? '' }}</td>
+                                <td class="px-4 py-3 text-gray-700">{{ $user->email ?? '' }}</td>
                                 <td class="px-4 py-3 text-gray-700">
-                                    {{ optional(\App\Models\ref_organizations::where('organization_code', $user->organization)->first())->organization_desc ?? $user->organization }}
+                                    {{ optional(\App\Models\ref_organizations::where('organization_code', $user->organization ?? null)->first())->organization_desc ?? ($user->organization ?? '') }}
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <div class="flex justify-center gap-2">

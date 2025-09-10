@@ -58,15 +58,15 @@
                 #health-research-form input[type="url"]:focus,
                 #health-research-form textarea:focus,
                 #health-research-form select:focus {
-                    border-color: #10b981;
-                    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    border-color: #14532d;
+                    box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                     background: #ffffff;
                 }
 
                 /* Section header styling */
                 .section-header {
-                    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);
+                    background: linear-gradient(135deg, #14532d 0%, #14532d 100%);
+                    box-shadow: 0 4px 14px 0 rgba(20, 83, 45, 0.3);
                 }
 
                 /* Card styling for form sections */
@@ -79,6 +79,13 @@
 
                 .form-card:hover {
                     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                }
+                /* Main title color override */
+                .bg-gradient-to-r.from-emerald-600.to-emerald-800.bg-clip-text.text-transparent {
+                    background: none !important;
+                    color: #14532d !important;
+                    -webkit-background-clip: unset !important;
+                    -webkit-text-fill-color: unset !important;
                 }
             </style>
             <form id="health-research-form" method="POST" action="{{ route('research.health_researches.store') }}" enctype="multipart/form-data" class="bg-white rounded-3xl shadow-2xl px-12 pb-12 space-y-12" data-next-accession-url="{{ route('research.health_researches.next_accession') }}">
@@ -312,8 +319,8 @@
                         <x-input-label value="Publication Details" class="text-lg font-semibold text-gray-800 mb-6" />
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <x-input-label for="volume_no" value="Volume No. *" class="text-sm font-medium text-gray-700 mb-2" />
-                                <input id="volume_no" name="volume_no" type="text" class="block w-full rounded-xl px-4 py-3 font-medium" value="{{ old('volume_no') }}" required />
+                                <x-input-label for="volume_no" value="Volume No." class="text-sm font-medium text-gray-700 mb-2" />
+                                <input id="volume_no" name="volume_no" type="text" class="block w-full rounded-xl px-4 py-3 font-medium" value="{{ old('volume_no') }}"/>
                                 <x-input-error :messages="$errors->get('volume_no')" class="mt-2" />
                             </div>
                             <div>
@@ -806,7 +813,7 @@
                 <div class="w-full flex justify-center mb-6 mt-2">
                     <span class="section-header inline-flex items-center justify-center w-full px-6 py-3 rounded-xl">
                         <h3 class="text-xl font-bold text-white tracking-wide text-center w-full flex items-center justify-center gap-2">
-                            Sustainable Development Goals
+                            Focus Area
                         </h3>
                     </span>
                 </div>
@@ -932,7 +939,7 @@
                     </div>
                     <x-input-error :messages="$errors->get('mthria_addressed')" class="mt-2" />
                     <div class="form-card rounded-2xl p-8">
-                        <x-input-label value="AGENDA" class="text-lg font-semibold text-gray-800 mb-6" />
+                        <x-input-label value="Innovation" class="text-lg font-semibold text-gray-800 mb-6" />
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach(\App\Models\ref_agenda::all() as $agenda)
                             <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm cursor-pointer transition hover:bg-emerald-100 hover:shadow-md">

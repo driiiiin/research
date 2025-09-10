@@ -31,9 +31,9 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'first_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'last_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
-            'middle_name' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'first_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZÀ-ÿÑñ\s\-]+$/'],
+            'last_name' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZÀ-ÿÑñ\s\-]+$/'],
+            'middle_name' => ['nullable', 'string', 'max:255', 'regex:/^[a-zA-ZÀ-ÿÑñ\s\-]+$/'],
             'organization' => ['required', 'string', 'exists:ref_organizations,organization_code'],
             'username' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z0-9_]+$/', 'unique:pending_users,username', 'unique:users,username'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:pending_users,email', 'unique:users,email'],
@@ -43,9 +43,9 @@ class RegisteredUserController extends Controller
                 Rules\Password::min(8)->letters()->numbers()->symbols(),
             ],
         ], [
-            'first_name.regex' => 'First name can only contain letters and spaces.',
-            'last_name.regex' => 'Last name can only contain letters and spaces.',
-            'middle_name.regex' => 'Middle name can only contain letters and spaces.',
+            'first_name.regex' => 'First name can only contain letters, spaces, hyphens, and ñ/Ñ.',
+            'last_name.regex' => 'Last name can only contain letters, spaces, hyphens, and ñ/Ñ.',
+            'middle_name.regex' => 'Middle name can only contain letters, spaces, hyphens, and ñ/Ñ.',
             'username.min' => 'Username must be at least 3 characters long.',
             'username.regex' => 'Username can only contain letters, numbers, and underscores.',
             'email.unique' => 'This email address is already registered.',
