@@ -719,7 +719,15 @@
                                             </select>
                                             <x-input-error :messages="$errors->get('mode_of_access.*')" class="mt-2" />
                                         </div>
-
+                                        <div class="flex flex-col">
+                                            <x-input-label for="status_print" value="Status" class="text-sm font-medium text-gray-700 mb-2" />
+                                            <select name="status[]" id="status_print" class="block w-full rounded-xl px-4 py-3 font-medium">
+                                                <option value="">Select Status</option>
+                                                <option value="Ongoing" {{ (is_array(old('status.0')) ? '' : old('status.0')) == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                                <option value="Completed" {{ (is_array(old('status.0')) ? '' : old('status.0')) == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                            </select>
+                                            <x-input-error :messages="$errors->get('status.*')" class="mt-2" />
+                                        </div>
                                     </div>
 
                                     <!-- Institutional Email (conditional) -->
@@ -779,7 +787,15 @@
                                             </select>
                                             <x-input-error :messages="$errors->get('mode_of_access.*')" class="mt-2" />
                                         </div>
-
+                                        <div class="flex flex-col">
+                                            <x-input-label for="status_nonprint" value="Status" class="text-sm font-medium text-gray-700 mb-2" />
+                                            <select name="status[]" id="status_nonprint" class="block w-full rounded-xl px-4 py-3 font-medium">
+                                                <option value="">Select Status</option>
+                                                <option value="Ongoing" {{ (is_array(old('status.0')) ? '' : old('status.0')) == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
+                                                <option value="Completed" {{ (is_array(old('status.0')) ? '' : old('status.0')) == 'Completed' ? 'selected' : '' }}>Completed</option>
+                                            </select>
+                                            <x-input-error :messages="$errors->get('status.*')" class="mt-2" />
+                                        </div>
                                     </div>
                                     <p id="nonprint-upload-url-error" class="text-red-600 text-sm hidden">Please select at least Enter URL or Upload File for Non-Print.</p>
                                 </div>
@@ -793,16 +809,6 @@
                             </svg>
                         </button>
                     </div>
-                </div>
-                <!-- Global Status Field -->
-                <div class="form-card rounded-2xl p-8">
-                    <x-input-label for="status" value="Status" class="text-sm font-medium text-gray-700 mb-2" />
-                    <select name="status" id="status" class="block w-full rounded-xl px-4 py-3 font-medium">
-                        <option value="">Select Status</option>
-                        <option value="Ongoing" {{ old('status') == 'Ongoing' ? 'selected' : '' }}>Ongoing</option>
-                        <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                    </select>
-                    <x-input-error :messages="$errors->get('status')" class="mt-2" />
                 </div>
                 <!-- SDG Section (Required, Multiple) -->
                 <div class="w-full flex justify-center mb-6 mt-2">

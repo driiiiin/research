@@ -91,9 +91,6 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="7" class="px-4 py-8 text-center text-gray-400 text-lg">No approved users.</td>
-                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -147,9 +144,6 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
-                                <td colspan="6" class="px-4 py-8 text-center text-gray-400 text-lg">No pending users.</td>
-                            </tr>
                             @endforelse
                         </tbody>
                     </table>

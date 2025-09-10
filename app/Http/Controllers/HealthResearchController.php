@@ -90,27 +90,16 @@ class HealthResearchController extends Controller
             'mthria_others' => 'nullable|string|max:255',
             'agenda_addressed' => 'nullable|array',
             'agenda_addressed.*' => 'nullable|string',
-            'policy_brief' => 'nullable|string|max:255',
-            'final_report' => 'nullable|string|max:255',
             'implementing_agency' => 'nullable|string|max:255',
             'cooperating_agency' => 'nullable|string|max:255',
             'funding_agency' => 'nullable|string|max:255',
             'is_gov_fund' => 'nullable|in:yes,no',
             'budget' => 'nullable|numeric|min:0',
             'currency_code' => 'nullable|string|max:10',
-            'general_note' => 'nullable|string|max:255',
-            'fund_information' => 'nullable|string|max:255',
-            'duration' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'year_end_date' => 'nullable|string|max:50',
-            'keywords' => 'nullable|string|max:255',
-            // Note: form uses per-location status[]; accept array to avoid validation failure
-            'status' => 'nullable|array',
-            'status.*' => 'nullable|string|max:100',
-            'citation' => 'nullable|string|max:255',
-            'upload_status' => 'nullable|in:Uploaded,Not Uploaded',
-            'remarks' => 'nullable|string',
+            // removed: general_note, fund_information, duration, start_date,
+            // end_date, year_end_date, keywords, policy_brief, final_report
+            'status' => 'nullable|string|max:100',
+            // removed: citation, upload_status, remarks
             // Author fields
             'author_last_name' => 'nullable|array',
             'author_last_name.*' => 'nullable|string|max:100',
@@ -212,10 +201,7 @@ class HealthResearchController extends Controller
             $validated['nuhra_addressed'] = $this->implodeArray($request->input('nuhra_addressed', []));
             $validated['mthria_addressed'] = $this->implodeArray($request->input('mthria_addressed', []));
             $validated['agenda_addressed'] = $this->implodeArray($request->input('agenda_addressed', []));
-            // Remove per-location status array from root payload
-            if (isset($validated['status']) && is_array($validated['status'])) {
-                unset($validated['status']);
-            }
+            // status is a single field for the whole research; keep as-is
             try {
                 $healthResearch = HealthResearch::create($validated);
                 $created = true;
@@ -406,26 +392,16 @@ class HealthResearchController extends Controller
             'mthria_others' => 'nullable|string|max:255',
             'agenda_addressed' => 'nullable|array',
             'agenda_addressed.*' => 'nullable|string',
-            'policy_brief' => 'nullable|string|max:255',
-            'final_report' => 'nullable|string|max:255',
             'implementing_agency' => 'nullable|string|max:255',
             'cooperating_agency' => 'nullable|string|max:255',
             'funding_agency' => 'nullable|string|max:255',
             'is_gov_fund' => 'nullable|in:yes,no',
             'budget' => 'nullable|numeric|min:0',
             'currency_code' => 'nullable|string|max:10',
-            'general_note' => 'nullable|string|max:255',
-            'fund_information' => 'nullable|string|max:255',
-            'duration' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'year_end_date' => 'nullable|string|max:50',
-            'keywords' => 'nullable|string|max:255',
-            'status' => 'nullable|array',
-            'status.*' => 'nullable|string|max:100',
-            'citation' => 'nullable|string|max:255',
-            'upload_status' => 'nullable|in:Uploaded,Not Uploaded',
-            'remarks' => 'nullable|string',
+            // removed: general_note, fund_information, duration, start_date,
+            // end_date, year_end_date, keywords, policy_brief, final_report
+            'status' => 'nullable|string|max:100',
+            // removed: citation, upload_status, remarks
             // Author fields
             'author_last_name' => 'nullable|array',
             'author_last_name.*' => 'nullable|string|max:100',
@@ -518,10 +494,7 @@ class HealthResearchController extends Controller
         $validated['mthria_addressed'] = $this->implodeArray($request->input('mthria_addressed', []));
         $validated['agenda_addressed'] = $this->implodeArray($request->input('agenda_addressed', []));
 
-        // Remove per-location status array from root payload
-        if (isset($validated['status']) && is_array($validated['status'])) {
-            unset($validated['status']);
-        }
+        // status is a single field for the whole research; keep as-is
 
         $healthResearch->update($validated);
 

@@ -56,8 +56,6 @@ return new class extends Migration
             $table->text('mthria_addressed')->nullable();
             $table->string('mthria_others')->nullable();
             $table->text('agenda_addressed')->nullable();
-            $table->string('policy_brief')->nullable();
-            $table->string('final_report')->nullable();
             $table->string('implementing_agency')->nullable();
             $table->string('cooperating_agency')->nullable();
             $table->string('funding_agency')->nullable();
@@ -65,17 +63,7 @@ return new class extends Migration
             $table->enum('is_gov_fund', ['yes','no'])->nullable();
             $table->string('budget')->nullable();
             $table->string('currency_code')->nullable();
-            $table->string('general_note')->nullable();
-            $table->string('fund_information')->nullable();
-            $table->string('duration')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->string('year_end_date')->nullable();
-            $table->string('keywords')->nullable();
             $table->string('status')->nullable();
-            $table->string('citation')->nullable();
-            $table->enum('upload_status', ['Uploaded', 'Not Uploaded'])->nullable();
-            $table->text('remarks')->nullable();
 
             $table->timestamps();
         });

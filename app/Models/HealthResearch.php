@@ -41,8 +41,6 @@ class HealthResearch extends Model
         'mthria_addressed',
         'mthria_others',
         'agenda_addressed',
-        'policy_brief',
-        'final_report',
         'implementing_agency',
         'cooperating_agency',
         'funding_agency',
@@ -50,17 +48,10 @@ class HealthResearch extends Model
         'is_gov_fund',
         'budget',
         'currency_code',
-        'general_note',
-        'fund_information',
-        'duration',
-        'start_date',
-        'end_date',
-        'year_end_date',
-        'keywords',
         'status',
-        'citation',
-        'upload_status',
-        'remarks',
+        // removed unused DB columns: policy_brief, final_report, general_note,
+        // fund_information, duration, start_date, end_date, year_end_date,
+        // keywords, citation, upload_status, remarks
     ];
 
     protected $casts = [
@@ -69,8 +60,6 @@ class HealthResearch extends Model
         'date_issued_from_year' => 'integer',
         'date_issued_to_month' => 'integer',
         'date_issued_to_year' => 'integer',
-        'start_date' => 'date',
-        'end_date' => 'date',
     ];
 
     /**
