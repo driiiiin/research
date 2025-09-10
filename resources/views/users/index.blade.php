@@ -80,7 +80,7 @@
                                                 Delete
                                             </button>
                                         </form>
-                                        <form action="{{ route('users.logoutSession', $user->id) }}" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('users.logoutSession', $user->id) }}" method="POST" class="force-logout-form" style="display:inline-block;">
                                             @csrf
                                             <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-400 hover:bg-red-600 text-white text-xs font-semibold rounded shadow-sm transition focus:outline-none focus:ring-2 focus:ring-red-200" title="Force Logout" aria-label="Force Logout">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7" /></svg>
@@ -196,9 +196,11 @@
             approvedTabBtn.classList.add('bg-gray-200', 'text-gray-700');
             localStorage.setItem('userTab', 'pending');
         });
-        document.querySelectorAll('.delete-user-form').forEach(function(form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // Prevent immediate submit
+        // Delegated SweetAlert confirmation for Delete
+        document.addEventListener('submit', function(e) {
+            const deleteForm = e.target.closest('.delete-user-form');
+            if (deleteForm) {
+                e.preventDefault();
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'This action cannot be undone!',
@@ -210,11 +212,32 @@
                     cancelButtonText: 'Cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit();
+                        deleteForm.submit();
                     }
                 });
-            });
-        });
+            }
+        }, true);
+        // Delegated SweetAlert confirmation for Force Logout
+        document.addEventListener('submit', function(e) {
+            const logoutForm = e.target.closest('.force-logout-form');
+            if (logoutForm) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Force Logout?',
+                    text: 'This will immediately log out the user from all sessions.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, logout',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        logoutForm.submit();
+                    }
+                });
+            }
+        }, true);
     </script>
     <script>
         window.addEventListener('DOMContentLoaded', function() {

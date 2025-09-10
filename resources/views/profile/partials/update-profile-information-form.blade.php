@@ -61,10 +61,6 @@
         <div>
             <x-input-label for="organization" :value="__('Organization')" />
             <select id="organization" name="organization" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                <option value="">{{ __('Select Organization') }}</option>
-                <option value="superadmin" {{ old('organization', $user->organization) == 'superadmin' ? 'selected' : '' }}>
-                    {{ __('SuperAdmin') }}
-                </option>
                 @foreach(\App\Models\ref_organizations::all() as $organization)
                     <option value="{{ $organization->organization_code }}" {{ old('organization', $user->organization) == $organization->organization_code ? 'selected' : '' }}>
                         {{ $organization->organization_desc }}
