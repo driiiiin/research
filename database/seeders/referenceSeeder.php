@@ -14,11 +14,12 @@ class referenceSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->seedFromCSV('references/ref_sgds.csv', 'ref_sgds', ['sgd_code', 'sgd_desc']);
+        $this->seedFromCSV('references/ref_sdgs.csv', 'ref_sdgs', ['sdg_code', 'sdg_desc']);
         $this->seedFromCSV('references/ref_organizations.csv', 'ref_organizations', ['organization_code', 'organization_desc']);
-
-
-
+        $this->seedFromCSV('references/ref_currency.csv', 'ref_currency', ['currency_code', 'currency_desc']);
+        $this->seedFromCSV('references/ref_nuhra.csv', 'ref_nuhra', ['nuhra_code', 'nuhra_desc']);
+        $this->seedFromCSV('references/ref_mthria.csv', 'ref_mthria', ['mthria_code', 'mthria_desc']);
+        $this->seedFromCSV('references/ref_agenda.csv', 'ref_agenda', ['agenda_code', 'agenda_desc']);
 
     }
     private function seedFromCSV(string $filePath, string $tableName, array $columns): void

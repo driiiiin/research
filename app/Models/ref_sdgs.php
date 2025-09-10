@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ref_sgds extends Model
+class ref_sdgs extends Model
 {
-    protected $table = 'ref_sgds';
+    protected $table = 'ref_sdgs';
 
     protected $fillable = [
-        'sgd_code', 'sgd_desc',
+        'sdg_code', 'sdg_desc',
     ];
 }

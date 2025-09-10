@@ -1073,6 +1073,76 @@
                             });
                         });
                     </script>
+                    <!-- <div>
+                        <x-input-label for="statement_245c" value="Statement of responsibility" />
+                        <input type="text" name="statement_245c" id="statement_245c" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('statement_245c') }}">
+                    </div> -->
+                    <!-- <div>
+                        <x-input-label for="research_title_url" value="Research Title (URL)" />
+                        <input type="url" name="research_title_url" id="research_title_url" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('research_title_url') }}">
+                    </div> -->
+                    <!-- <div>
+                        <x-input-label for="principal_investigator" value="Principal Investigator/ Main Author Inverted Name [Last Name, First Name MI]" />
+                        <input type="text" name="principal_investigator" id="principal_investigator" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('principal_investigator') }}">
+                    </div> -->
+                    <!-- <div>
+                        <x-input-label for="co_authors" value="Co-Authors Inverted Name" />
+                        <textarea name="co_authors" id="co_authors" rows="2" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" placeholder="Separate multiple authors with a semicolon (;)">{{ old('co_authors') }}</textarea>
+                    </div> -->
+                    <!-- <div class="lg:col-span-3">
+                        <x-input-label for="abstract_520a" value="Abstract" />
+                        <textarea name="abstract_520a" id="abstract_520a" rows="4" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition">{{ old('abstract_520a') }}</textarea>
+                    </div> -->
+                    <!-- <div>
+                        <x-input-label for="policy_brief" value="Policy Brief" />
+                        <input type="text" name="policy_brief" id="policy_brief" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('policy_brief') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="final_report" value="Final Report" />
+                        <input type="text" name="final_report" id="final_report" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('final_report') }}">
+                    </div> -->
+                    <!-- <div>
+                        <x-input-label for="general_note" value="General Note" />
+                        <input type="text" name="general_note" id="general_note" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('general_note') }}">
+                    </div> -->
+
+                    <!-- <div>
+                        <x-input-label for="duration" value="Duration" />
+                        <input type="text" name="duration" id="duration" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('duration') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="start_date" value="Start Date" />
+                        <input type="date" name="start_date" id="start_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('start_date') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="end_date" value="End Date" />
+                        <input type="date" name="end_date" id="end_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('end_date') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="year_end_date" value="Year End Date" />
+                        <input type="text" name="year_end_date" id="year_end_date" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('year_end_date') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="keywords" value="Keywords" />
+                        <input type="text" name="keywords" id="keywords" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('keywords') }}">
+                    </div> -->
+
+                    <!-- <div>
+                        <x-input-label for="citation" value="Citation" />
+                        <input type="text" name="citation" id="citation" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition" value="{{ old('citation') }}">
+                    </div>
+                    <div>
+                        <x-input-label for="upload_status" value="Upload Status" />
+                        <select name="upload_status" id="upload_status" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition">
+                            <option value="">Select Status</option>
+                            <option value="Uploaded" {{ old('upload_status') == 'Uploaded' ? 'selected' : '' }}>Uploaded</option>
+                            <option value="Not Uploaded" {{ old('upload_status') == 'Not Uploaded' ? 'selected' : '' }}>Not Uploaded</option>
+                        </select>
+                    </div>
+                    <div>
+                        <x-input-label for="remarks" value="Remarks" />
+                        <textarea name="remarks" id="remarks" rows="2" class="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-emerald-500 focus:border-emerald-500 transition">{{ old('remarks') }}</textarea>
+                    </div> -->
                 </div>
         </div>
 

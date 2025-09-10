@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ref_sgds', function (Blueprint $table) {
-            $table->string('sgd_code')->primary();
-            $table->string('sgd_desc');
+        Schema::create('ref_sdgs', function (Blueprint $table) {
+            $table->string('sdg_code')->primary();
+            $table->string('sdg_desc');
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ref_sgds');
+        Schema::dropIfExists('ref_sdgs');
     }
 };
