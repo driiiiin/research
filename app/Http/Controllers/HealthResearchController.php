@@ -60,13 +60,13 @@ class HealthResearchController extends Controller
         Log::info('HealthResearchController@store called', ['request' => $request->all()]);
         $validated = $request->validate([
             'accession_no' => 'nullable|string|max:20|unique:health_researches',
-            'research_title' => 'required|string|max:255',
+            'research_title' => 'required|string|max:500',
             'subtitle' => 'nullable|string|max:500',
-            'date_issued_from_month' => 'required|integer|min:1|max:12',
-            'date_issued_from_year' => 'required|integer|min:1970|max:2025',
-            'date_issued_to_month' => 'required|integer|min:1|max:12',
-            'date_issued_to_year' => 'required|integer|min:1970|max:2025',
-            'volume_no' => 'required|string|max:50',
+            'date_issued_from_month' => 'nullable|integer|min:1|max:12',
+            'date_issued_from_year' => 'required|integer|min:1900|max:2100',
+            'date_issued_to_month' => 'nullable|integer|min:1|max:12',
+            'date_issued_to_year' => 'nullable|integer|min:1900|max:2100',
+            'volume_no' => 'nullable|string|max:50',
             'issue_no' => 'nullable|string|max:50',
             'pages' => 'nullable|string|max:50',
             'article_no' => 'nullable|string|max:50',
@@ -79,20 +79,35 @@ class HealthResearchController extends Controller
             'reference' => 'nullable|string',
             'mesh_keywords' => 'nullable|string',
             'non_mesh_keywords' => 'nullable|string',
-            'sdg_addressed' => 'nullable|string|max:255',
+            // Focus areas come in as checkbox arrays
+            'sdg_addressed' => 'required|array|min:1',
+            'sdg_addressed.*' => 'nullable|string',
+            'nuhra_addressed' => 'required|array|min:1',
+            'nuhra_addressed.*' => 'nullable|string',
+            'nuhra_others' => 'nullable|string|max:255',
+            'mthria_addressed' => 'required|array|min:1',
+            'mthria_addressed.*' => 'nullable|string',
+            'mthria_others' => 'nullable|string|max:255',
+            'agenda_addressed' => 'nullable|array',
+            'agenda_addressed.*' => 'nullable|string',
             'policy_brief' => 'nullable|string|max:255',
             'final_report' => 'nullable|string|max:255',
             'implementing_agency' => 'nullable|string|max:255',
             'cooperating_agency' => 'nullable|string|max:255',
+            'funding_agency' => 'nullable|string|max:255',
+            'is_gov_fund' => 'nullable|in:yes,no',
+            'budget' => 'nullable|numeric|min:0',
+            'currency_code' => 'nullable|string|max:10',
             'general_note' => 'nullable|string|max:255',
-            'budget' => 'nullable|string|max:255',
             'fund_information' => 'nullable|string|max:255',
             'duration' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'year_end_date' => 'nullable|string|max:50',
             'keywords' => 'nullable|string|max:255',
-            'status' => 'nullable|string|max:100',
+            // Note: form uses per-location status[]; accept array to avoid validation failure
+            'status' => 'nullable|array',
+            'status.*' => 'nullable|string|max:100',
             'citation' => 'nullable|string|max:255',
             'upload_status' => 'nullable|in:Uploaded,Not Uploaded',
             'remarks' => 'nullable|string',
@@ -129,6 +144,21 @@ class HealthResearchController extends Controller
         ]);
         Log::info('Validation passed', ['validated' => $validated]);
 
+        // Conditional date rules depending on mode
+        $dateMode = $request->input('date_issued_mode', 'month_year');
+        if ($dateMode === 'month_year') {
+            $request->validate([
+                'date_issued_from_month' => 'required|integer|min:1|max:12',
+                'date_issued_to_month' => 'required|integer|min:1|max:12',
+                'date_issued_to_year' => 'required|integer|min:1900|max:2100',
+            ]);
+        } else {
+            // year_only
+            $validated['date_issued_from_month'] = null;
+            $validated['date_issued_to_month'] = null;
+            $validated['date_issued_to_year'] = null;
+        }
+
         // Custom validation for location fields based on format
         if ($request->has('format') && is_array($request->format)) {
             foreach ($request->format as $index => $format) {
@@ -155,6 +185,16 @@ class HealthResearchController extends Controller
                     if (empty($request->text_availability[$index])) {
                         return back()->withErrors(["text_availability.{$index}" => 'Text availability is required for Non-Print format.']);
                     }
+
+                    // Mode of access is also required for Non-Print, same as Print
+                    if (empty($request->mode_of_access[$index])) {
+                        return back()->withErrors(["mode_of_access.{$index}" => 'Mode of access is required for Non-Print format.']);
+                    }
+
+                    // If mode is "Request to Institution", email is required
+                    if ($request->mode_of_access[$index] === 'Request to Institution' && empty($request->institutional_email[$index])) {
+                        return back()->withErrors(["institutional_email.{$index}" => 'Institutional email is required when mode of access is "Request to Institution".']);
+                    }
                 }
             }
         }
@@ -167,6 +207,15 @@ class HealthResearchController extends Controller
         while (!$created && $attempts < 5) {
             $attempts++;
             $validated['accession_no'] = $this->generateNextAccessionNo();
+            // Serialize checkbox arrays
+            $validated['sdg_addressed'] = $this->implodeArray($request->input('sdg_addressed', []));
+            $validated['nuhra_addressed'] = $this->implodeArray($request->input('nuhra_addressed', []));
+            $validated['mthria_addressed'] = $this->implodeArray($request->input('mthria_addressed', []));
+            $validated['agenda_addressed'] = $this->implodeArray($request->input('agenda_addressed', []));
+            // Remove per-location status array from root payload
+            if (isset($validated['status']) && is_array($validated['status'])) {
+                unset($validated['status']);
+            }
             try {
                 $healthResearch = HealthResearch::create($validated);
                 $created = true;
@@ -283,6 +332,16 @@ class HealthResearchController extends Controller
         return $prefix . str_pad((string) $next, 6, '0', STR_PAD_LEFT);
     }
 
+    private function implodeArray($value): ?string
+    {
+        if (is_array($value)) {
+            return implode('; ', array_values(array_filter($value, function ($v) {
+                return $v !== null && $v !== '';
+            })));
+        }
+        return $value ?: null;
+    }
+
     /**
      * Display the specified health research.
      */
@@ -318,13 +377,13 @@ class HealthResearchController extends Controller
     {
         $validated = $request->validate([
             'accession_no' => 'nullable|string|max:20|unique:health_researches,accession_no,' . $healthResearch->id,
-            'research_title' => 'required|string|max:255',
+            'research_title' => 'required|string|max:500',
             'subtitle' => 'nullable|string|max:500',
-            'date_issued_from_month' => 'required|integer|min:1|max:12',
-            'date_issued_from_year' => 'required|integer|min:1970|max:2025',
-            'date_issued_to_month' => 'required|integer|min:1|max:12',
-            'date_issued_to_year' => 'required|integer|min:1970|max:2025',
-            'volume_no' => 'required|string|max:50',
+            'date_issued_from_month' => 'nullable|integer|min:1|max:12',
+            'date_issued_from_year' => 'required|integer|min:1900|max:2100',
+            'date_issued_to_month' => 'nullable|integer|min:1|max:12',
+            'date_issued_to_year' => 'nullable|integer|min:1900|max:2100',
+            'volume_no' => 'nullable|string|max:50',
             'issue_no' => 'nullable|string|max:50',
             'pages' => 'nullable|string|max:50',
             'article_no' => 'nullable|string|max:50',
@@ -337,20 +396,33 @@ class HealthResearchController extends Controller
             'reference' => 'nullable|string',
             'mesh_keywords' => 'nullable|string',
             'non_mesh_keywords' => 'nullable|string',
-            'sdg_addressed' => 'nullable|string|max:255',
+            'sdg_addressed' => 'required|array|min:1',
+            'sdg_addressed.*' => 'nullable|string',
+            'nuhra_addressed' => 'required|array|min:1',
+            'nuhra_addressed.*' => 'nullable|string',
+            'nuhra_others' => 'nullable|string|max:255',
+            'mthria_addressed' => 'required|array|min:1',
+            'mthria_addressed.*' => 'nullable|string',
+            'mthria_others' => 'nullable|string|max:255',
+            'agenda_addressed' => 'nullable|array',
+            'agenda_addressed.*' => 'nullable|string',
             'policy_brief' => 'nullable|string|max:255',
             'final_report' => 'nullable|string|max:255',
             'implementing_agency' => 'nullable|string|max:255',
             'cooperating_agency' => 'nullable|string|max:255',
+            'funding_agency' => 'nullable|string|max:255',
+            'is_gov_fund' => 'nullable|in:yes,no',
+            'budget' => 'nullable|numeric|min:0',
+            'currency_code' => 'nullable|string|max:10',
             'general_note' => 'nullable|string|max:255',
-            'budget' => 'nullable|string|max:255',
             'fund_information' => 'nullable|string|max:255',
             'duration' => 'nullable|string|max:255',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'year_end_date' => 'nullable|string|max:50',
             'keywords' => 'nullable|string|max:255',
-            'status' => 'nullable|string|max:100',
+            'status' => 'nullable|array',
+            'status.*' => 'nullable|string|max:100',
             'citation' => 'nullable|string|max:255',
             'upload_status' => 'nullable|in:Uploaded,Not Uploaded',
             'remarks' => 'nullable|string',
@@ -412,8 +484,43 @@ class HealthResearchController extends Controller
                     if (empty($request->text_availability[$index])) {
                         return back()->withErrors(["text_availability.{$index}" => 'Text availability is required for Non-Print format.']);
                     }
+
+                    // Mode of access is also required for Non-Print, same as Print
+                    if (empty($request->mode_of_access[$index])) {
+                        return back()->withErrors(["mode_of_access.{$index}" => 'Mode of access is required for Non-Print format.']);
+                    }
+
+                    // If mode is "Request to Institution", email is required
+                    if ($request->mode_of_access[$index] === 'Request to Institution' && empty($request->institutional_email[$index])) {
+                        return back()->withErrors(["institutional_email.{$index}" => 'Institutional email is required when mode of access is "Request to Institution".']);
+                    }
                 }
             }
+        }
+
+        // Conditional date rules depending on mode
+        $dateMode = $request->input('date_issued_mode', 'month_year');
+        if ($dateMode === 'month_year') {
+            $request->validate([
+                'date_issued_from_month' => 'required|integer|min:1|max:12',
+                'date_issued_to_month' => 'required|integer|min:1|max:12',
+                'date_issued_to_year' => 'required|integer|min:1900|max:2100',
+            ]);
+        } else {
+            $validated['date_issued_from_month'] = null;
+            $validated['date_issued_to_month'] = null;
+            $validated['date_issued_to_year'] = null;
+        }
+
+        // Serialize checkbox arrays
+        $validated['sdg_addressed'] = $this->implodeArray($request->input('sdg_addressed', []));
+        $validated['nuhra_addressed'] = $this->implodeArray($request->input('nuhra_addressed', []));
+        $validated['mthria_addressed'] = $this->implodeArray($request->input('mthria_addressed', []));
+        $validated['agenda_addressed'] = $this->implodeArray($request->input('agenda_addressed', []));
+
+        // Remove per-location status array from root payload
+        if (isset($validated['status']) && is_array($validated['status'])) {
+            unset($validated['status']);
         }
 
         $healthResearch->update($validated);

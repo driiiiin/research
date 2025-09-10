@@ -285,7 +285,7 @@
                                     </div>
                                 </template>
                                 <template x-if="mode === 'year_only'">
-                                    <div class="flex flex-wrap gap-4 w-full">
+                                    <div class="flex flex-wrap gap-4">
                                         <div class="flex-1 min-w-[200px]">
                                             <x-input-label for="date_issued_from_year" value="Year" class="text-sm font-medium text-gray-700 mb-1" />
                                             <input
@@ -778,8 +778,8 @@
                                             <x-input-error :messages="$errors->get('text_availability.*')" class="mt-2" />
                                         </div>
                                         <div class="flex flex-col">
-                                            <x-input-label for="mode_of_access_nonprint" value="Mode of Access" class="text-sm font-medium text-gray-700 mb-2" />
-                                            <select id="mode_of_access_nonprint" name="mode_of_access[]" x-ref="mode_of_access" class="block w-full rounded-xl px-4 py-3 font-medium">
+                                            <x-input-label for="mode_of_access_nonprint" value="Mode of Access *" class="text-sm font-medium text-gray-700 mb-2" />
+                                            <select id="mode_of_access_nonprint" name="mode_of_access[]" x-ref="mode_of_access" class="block w-full rounded-xl px-4 py-3 font-medium" x-bind:required="form.format === 'Non-Print'">
                                                 <option value="">Select Mode of Access</option>
                                                 <option value="Online Request" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) === 'Online Request' ? 'selected' : '' }}>Online Request</option>
                                                 <option value="Publicly accessible" {{ (is_array(old('mode_of_access.0')) ? '' : old('mode_of_access.0')) === 'Publicly accessible' ? 'selected' : '' }}>Publicly accessible</option>
@@ -797,6 +797,7 @@
                                             <x-input-error :messages="$errors->get('status.*')" class="mt-2" />
                                         </div>
                                     </div>
+                                    <p id="nonprint-upload-url-error" class="text-red-600 text-sm hidden">Please select at least Enter URL or Upload File for Non-Print.</p>
                                 </div>
                             </div>
                     </div>
@@ -830,7 +831,6 @@
                                 value="{{ $sdg->sdg_code }}"
                                 class="form-checkbox text-emerald-600 focus:ring-emerald-500 rounded"
                                 {{ (collect(old('sdg_addressed'))->contains($sdg->sdg_code)) ? 'checked' : '' }}
-                                @if($loop->first) required @endif
                             >
                             <span class="ml-3 text-gray-800 font-medium text-sm">{{ $sdg->sdg_desc }}</span>
                         </label>
@@ -860,7 +860,6 @@
                                 value="{{ $nuhra->nuhra_code }}"
                                 class="form-checkbox text-emerald-600 focus:ring-emerald-500 rounded"
                                 {{ (collect(old('nuhra_addressed'))->contains($nuhra->nuhra_code)) ? 'checked' : '' }}
-                                @if($loop->first) required @endif
                             >
                             <span class="ml-3 text-gray-800 font-medium text-sm">{{ $nuhra->nuhra_desc }}</span>
                         </label>
@@ -910,7 +909,6 @@
                                 value="{{ $mthria->mthria_code }}"
                                 class="form-checkbox text-emerald-600 focus:ring-emerald-500 rounded"
                                 {{ (collect(old('mthria_addressed'))->contains($mthria->mthria_code)) ? 'checked' : '' }}
-                                @if($loop->first) required @endif
                             >
                             <span class="ml-3 text-gray-800 font-medium text-sm">{{ $mthria->mthria_desc }}</span>
                         </label>
@@ -1120,10 +1118,19 @@
 
             // Handle form submission to prevent focusability issues
             formEl.addEventListener('submit', function(e) {
-                // Remove required attributes from hidden fields
-                const hiddenRequiredFields = formEl.querySelectorAll('[x-show]:not([style*="display: none"]) [required]');
-                hiddenRequiredFields.forEach(field => {
-                    if (field.closest('[x-show]').style.display === 'none') {
+                // Disable inputs inside hidden x-show sections to avoid submitting empty values
+                const hiddenSections = formEl.querySelectorAll('[x-show][style*="display: none"]');
+                hiddenSections.forEach(section => {
+                    section.querySelectorAll('input, select, textarea').forEach(el => {
+                        el.disabled = true;
+                    });
+                });
+
+                // Also remove required from any hidden required fields as a safeguard
+                const requiredFields = formEl.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    const container = field.closest('[x-show]');
+                    if (container && container.style.display === 'none') {
                         field.removeAttribute('required');
                     }
                 });
@@ -1136,6 +1143,7 @@
             const urlInput = document.getElementById('url_input_nonprint');
             const uploadCheckbox = document.getElementById('upload_file_nonprint');
             const fileInput = document.getElementById('file_upload_nonprint');
+            const nonprintError = document.getElementById('nonprint-upload-url-error');
             if (urlCheckbox && urlInput) {
                 function toggleUrlInput() {
                     urlInput.disabled = !urlCheckbox.checked;
@@ -1150,6 +1158,27 @@
                 uploadCheckbox.addEventListener('change', toggleFileInput);
                 toggleFileInput();
             }
+
+            // Validate that at least one of URL or File is selected for Non-Print before submit
+            const form = document.getElementById('health-research-form');
+            form.addEventListener('submit', function(e) {
+                const formatSelect = document.querySelector('[name="format[]"]');
+                const isNonPrint = formatSelect && formatSelect.value === 'Non-Print';
+                if (isNonPrint) {
+                    const hasUrl = urlCheckbox && urlCheckbox.checked && urlInput && urlInput.value.trim().length > 0;
+                    const hasFile = uploadCheckbox && uploadCheckbox.checked && fileInput && fileInput.files && fileInput.files.length > 0;
+                    if (!hasUrl && !hasFile) {
+                        e.preventDefault();
+                        if (nonprintError) {
+                            nonprintError.classList.remove('hidden');
+                        }
+                        // Focus URL checkbox for guidance
+                        if (urlCheckbox) urlCheckbox.focus();
+                    } else if (nonprintError) {
+                        nonprintError.classList.add('hidden');
+                    }
+                }
+            });
         });
     </script>
     <script>
