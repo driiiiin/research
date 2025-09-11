@@ -81,10 +81,11 @@
                                                 <a href="{{ route('research.health_researches.edit', $healthResearch) }}"
                                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                                 <form method="POST" action="{{ route('research.health_researches.destroy', $healthResearch) }}"
-                                                      class="inline" onsubmit="return confirm('Are you sure you want to delete this health research?')">
+                                                      class="inline delete-form">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                    <button type="button" class="text-red-600 hover:text-red-900 delete-btn"
+                                                            data-title="{{ $healthResearch->research_title }}">Delete</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -118,5 +119,45 @@
 <script>
     let table = new DataTable('#researchTable', {
         responsive: true
+    });
+
+    // SweetAlert confirmation for delete buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use event delegation to handle dynamically loaded delete buttons
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) {
+                e.preventDefault();
+
+                const button = e.target;
+                const form = button.closest('.delete-form');
+                const title = button.getAttribute('data-title');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `You are about to delete "${title}". This action cannot be undone!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state
+                        Swal.fire({
+                            title: 'Deleting...',
+                            text: 'Please wait while we delete the health research.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Submit the form
+                        form.submit();
+                    }
+                });
+            }
+        });
     });
 </script>

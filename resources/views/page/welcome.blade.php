@@ -219,6 +219,12 @@
             </button>
         </div>
     </div>
+
+    <!-- Hidden element to pass survey status to JavaScript -->
+    <div id="survey-status"
+         data-has-submitted="{{ $hasSubmittedSurvey ? 'true' : 'false' }}"
+         data-has-seen-today="{{ $hasSeenSurveyToday ? 'true' : 'false' }}"
+         style="display: none;"></div>
 </x-guest-layout>
 <script>
     // Detect if the page load is a reload/refresh
@@ -310,13 +316,17 @@ $(document).ready(function() {
 
     // Survey functionality
     let surveyShown = false;
+    const hasSubmittedSurvey = document.getElementById('survey-status').getAttribute('data-has-submitted') === 'true';
+    const hasSeenSurveyToday = document.getElementById('survey-status').getAttribute('data-has-seen-today') === 'true';
 
-    // Show survey after 5 seconds
+    // Show survey after 5 seconds only if:
+    // 1. IP hasn't submitted before
+    // 2. IP hasn't seen survey today
     setTimeout(function() {
-        if (!surveyShown) {
+        if (!surveyShown && !hasSubmittedSurvey && !hasSeenSurveyToday) {
             showSurveyModal();
         }
-    }, 5000);
+    }, 10000);
 
     // Function to show survey modal
     function showSurveyModal() {
@@ -324,6 +334,17 @@ $(document).ready(function() {
         if (modal) {
             modal.style.display = 'flex';
             surveyShown = true;
+
+            // Mark survey as shown in database
+            fetch('{{ route("survey.mark-shown") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json'
+                }
+            }).catch(error => {
+                console.error('Error marking survey as shown:', error);
+            });
         }
     }
 

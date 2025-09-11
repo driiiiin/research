@@ -9,6 +9,56 @@ use Illuminate\Support\Facades\Validator;
 class SurveyController extends Controller
 {
     /**
+     * Check if IP has already submitted a survey or seen it today.
+     */
+    public function checkIpStatus(Request $request)
+    {
+        $ipAddress = $request->ip();
+        $today = now()->toDateString();
+
+        // Check if IP has submitted a survey
+        $hasSubmitted = SurveyResponse::where('ip_address', $ipAddress)
+            ->whereNotNull('sex') // Has actual survey data
+            ->exists();
+
+        // Check if IP has seen survey today (even if not submitted)
+        $hasSeenToday = SurveyResponse::where('ip_address', $ipAddress)
+            ->where('survey_shown_date', $today)
+            ->exists();
+
+        return response()->json([
+            'has_submitted' => $hasSubmitted,
+            'has_seen_today' => $hasSeenToday
+        ]);
+    }
+
+    /**
+     * Mark that survey was shown to this IP today.
+     */
+    public function markSurveyShown(Request $request)
+    {
+        $ipAddress = $request->ip();
+        $today = now()->toDateString();
+
+        // Check if we already have a record for this IP today
+        $existingRecord = SurveyResponse::where('ip_address', $ipAddress)
+            ->where('survey_shown_date', $today)
+            ->first();
+
+        if (!$existingRecord) {
+            // Create a record to track that survey was shown today
+            SurveyResponse::create([
+                'ip_address' => $ipAddress,
+                'user_agent' => $request->userAgent(),
+                'survey_shown_date' => $today,
+                // Leave other fields null since this is just tracking
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
      * Store a new survey response.
      */
     public function store(Request $request)
@@ -38,6 +88,7 @@ class SurveyController extends Controller
                 'satisfaction' => $request->satisfaction,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
+                'survey_shown_date' => now()->toDateString(),
             ]);
 
             return response()->json([

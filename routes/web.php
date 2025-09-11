@@ -25,7 +25,19 @@ Route::get('/', function (Request $request) {
 
     $healthResearches = $query->latest()->paginate(12);
 
-    return view('page.welcome', compact('healthResearches'));
+    // Check if IP has already submitted a survey or seen it today
+    $ipAddress = $request->ip();
+    $today = now()->toDateString();
+
+    $hasSubmittedSurvey = \App\Models\SurveyResponse::where('ip_address', $ipAddress)
+        ->whereNotNull('sex') // Has actual survey data
+        ->exists();
+
+    $hasSeenSurveyToday = \App\Models\SurveyResponse::where('ip_address', $ipAddress)
+        ->where('survey_shown_date', $today)
+        ->exists();
+
+    return view('page.welcome', compact('healthResearches', 'hasSubmittedSurvey', 'hasSeenSurveyToday'));
 })->name('welcome');
 
 Route::get('/contact', function () {
@@ -37,6 +49,8 @@ Route::get('/about', function () {
 })->name('about');
 
 // Survey routes
+Route::get('/survey/check-ip', [App\Http\Controllers\SurveyController::class, 'checkIpStatus'])->name('survey.check-ip');
+Route::post('/survey/mark-shown', [App\Http\Controllers\SurveyController::class, 'markSurveyShown'])->name('survey.mark-shown');
 Route::post('/survey/submit', [App\Http\Controllers\SurveyController::class, 'store'])->name('survey.submit');
 
 Route::get('/dashboard', function () {

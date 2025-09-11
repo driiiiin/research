@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('satisfaction');
             $table->string('ip_address')->nullable();
             $table->string('user_agent')->nullable();
+            $table->date('survey_shown_date')->nullable(); // Track when survey was shown to this IP
             $table->timestamps();
         });
     }

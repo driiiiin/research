@@ -13,11 +13,13 @@ class SurveyResponse extends Model
         'reason',
         'satisfaction',
         'ip_address',
-        'user_agent'
+        'user_agent',
+        'survey_shown_date'
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'survey_shown_date' => 'date',
     ];
 }
