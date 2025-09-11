@@ -345,7 +345,7 @@ class HealthResearchController extends Controller
         if (!$healthResearch) {
             abort(404);
         }
-        return view('research.health_researches.show', compact('healthResearch'));
+        return view('research.health_researches.show_public', compact('healthResearch'));
     }
 
     /**
