@@ -36,6 +36,9 @@ Route::get('/about', function () {
     return view('page.about');
 })->name('about');
 
+// Survey routes
+Route::post('/survey/submit', [App\Http\Controllers\SurveyController::class, 'store'])->name('survey.submit');
+
 Route::get('/dashboard', function () {
     $stats = [
         'total_health_researches' => \App\Models\HealthResearch::count(),

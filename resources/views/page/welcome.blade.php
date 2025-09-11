@@ -120,6 +120,105 @@
         </div>
     </div>
     </div>
+
+    <!-- Quick Survey Modal -->
+    <div id="quickSurveyModal" style="display:none; position:fixed; top:0; right:0; left:0; bottom:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:12px; max-width:500px; width:90%; margin:auto; padding:0; box-shadow:0 10px 25px rgba(0,0,0,0.3); position:relative;">
+            <!-- Header -->
+            <div style="background:#14543A; color:#fff; padding:20px 24px; border-radius:12px 12px 0 0; position:relative;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="margin:0; font-size:20px; font-weight:600;">Quick Survey</h3>
+                        <div style="margin-top:8px; color:#fff; font-size:14px;">
+                            <strong>Dear Visitor</strong><br>
+                            Thank you for visiting our website. Before you proceed, may we ask you to help us out on a survey to further improve our services.
+                        </div>
+                    </div>
+                    <button onclick="closeSurveyModal()" style="position:absolute; right:16px; top:16px; background:none; border:none; color:#fff; font-size:24px; cursor:pointer; padding:4px; border-radius:4px; transition:background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.2)'" onmouseout="this.style.backgroundColor='transparent'">&times;</button>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="surveyForm" style="padding:24px;">
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:500; color:#374151;">1. Sex:</label>
+                    <select name="sex" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:6px; font-size:14px; background:#fff; transition:border-color 0.2s;" onfocus="this.style.borderColor='#14543A'" onblur="this.style.borderColor='#e5e7eb'">
+                        <option value="">Select Sex</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:500; color:#374151;">2. Age:</label>
+                    <select name="age" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:6px; font-size:14px; background:#fff; transition:border-color 0.2s;" onfocus="this.style.borderColor='#14543A'" onblur="this.style.borderColor='#e5e7eb'">
+                        <option value="">Select Age Range</option>
+                        <option value="18 to 24">18 to 24</option>
+                        <option value="25 to 34">25 to 34</option>
+                        <option value="35 to 44">35 to 44</option>
+                        <option value="45 to 54">45 to 54</option>
+                        <option value="55 and above">55 and above</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:500; color:#374151;">3. From what sector:</label>
+                    <select name="sector" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:6px; font-size:14px; background:#fff; transition:border-color 0.2s;" onfocus="this.style.borderColor='#14543A'" onblur="this.style.borderColor='#e5e7eb'">
+                        <option value="">Select Sector</option>
+                        <option value="National Government Agency (NGA)">National Government Agency (NGA)</option>
+                        <option value="Government-Owned and Controlled Corporation (GOCC)">Government-Owned and Controlled Corporation (GOCC)</option>
+                        <option value="State Universities and College (SUC)">State Universities and College (SUC)</option>
+                        <option value="Local Water District">Local Water District</option>
+                        <option value="Local Government Unit (LGU)">Local Government Unit (LGU)</option>
+                        <option value="Private">Private</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:500; color:#374151;">4. Reason/s for viewing/downloading the research/es:</label>
+                    <select name="reason" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:6px; font-size:14px; background:#fff; transition:border-color 0.2s;" onfocus="this.style.borderColor='#14543A'" onblur="this.style.borderColor='#e5e7eb'">
+                        <option value="">Select Reason</option>
+                        <option value="For policy formulation">For policy formulation</option>
+                        <option value="For research and academic purposes">For research and academic purposes</option>
+                        <option value="For reference in drafting official communication">For reference in drafting official communication</option>
+                        <option value="For personal use">For personal use</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; margin-bottom:6px; font-weight:500; color:#374151;">5. How satisfied were you with this issuance?:</label>
+                    <select name="satisfaction" required style="width:100%; padding:10px; border:2px solid #e5e7eb; border-radius:6px; font-size:14px; background:#fff; transition:border-color 0.2s;" onfocus="this.style.borderColor='#14543A'" onblur="this.style.borderColor='#e5e7eb'">
+                        <option value="">Select Satisfaction Level</option>
+                        <option value="5 - Very Satisfied">5 - Very Satisfied</option>
+                        <option value="4 - Satisfied">4 - Satisfied</option>
+                        <option value="3 - Neutral">3 - Neutral</option>
+                        <option value="2 - Dissatisfied">2 - Dissatisfied</option>
+                        <option value="1 - Very Dissatisfied">1 - Very Dissatisfied</option>
+                    </select>
+                </div>
+
+                <div style="text-align:right;">
+                    <button type="submit" style="background:#14543A; color:#fff; border:none; padding:12px 24px; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; transition:background-color 0.2s;" onmouseover="this.style.backgroundColor='#0f3d2a'" onmouseout="this.style.backgroundColor='#14543A'">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Message Modal -->
+    <div id="successModal" style="display:none; position:fixed; top:0; right:0; left:0; bottom:0; background:rgba(0,0,0,0.5); z-index:10000; align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:12px; max-width:400px; width:90%; margin:auto; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.3); text-align:center;">
+            <div style="color:#10b981; font-size:48px; margin-bottom:16px;">✓</div>
+            <h3 style="margin:0 0 12px 0; color:#14543A; font-size:18px;">Thank You!</h3>
+            <p style="margin:0 0 20px 0; color:#6b7280; font-size:14px;">Your feedback has been successfully recorded.</p>
+            <button id="closeSuccessBtn" style="background:#14543A; color:#fff; border:none; padding:10px 20px; border-radius:6px; font-size:14px; cursor:pointer; transition:background-color 0.2s;" onmouseover="this.style.backgroundColor='#0f3d2a'" onmouseout="this.style.backgroundColor='#14543A'">
+                Close
+            </button>
+        </div>
+    </div>
 </x-guest-layout>
 <script>
     // Detect if the page load is a reload/refresh
@@ -208,5 +307,124 @@ $(document).ready(function() {
             // printWindow.close();
         }, 400);
     });
+
+    // Survey functionality
+    let surveyShown = false;
+
+    // Show survey after 5 seconds
+    setTimeout(function() {
+        if (!surveyShown) {
+            showSurveyModal();
+        }
+    }, 5000);
+
+    // Function to show survey modal
+    function showSurveyModal() {
+        const modal = document.getElementById('quickSurveyModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            surveyShown = true;
+        }
+    }
+
+    // Function to close survey modal
+    function closeSurveyModal() {
+        const modal = document.getElementById('quickSurveyModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Function to close success modal
+    function closeSuccessModal() {
+        const modal = document.getElementById('successModal');
+        if (modal) {
+            modal.style.display = 'none';
+            console.log('Success modal closed');
+        } else {
+            console.log('Success modal not found');
+        }
+    }
+
+    // Handle survey form submission
+    document.getElementById('surveyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        // Debug: Log form data
+        console.log('Form data being sent:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ': ' + value);
+        }
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+
+        // Show loading state
+        submitButton.textContent = 'Submitting...';
+        submitButton.disabled = true;
+
+        // Submit form via AJAX
+        fetch('{{ route("survey.submit") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close survey modal
+                closeSurveyModal();
+                // Show success modal
+                const successModal = document.getElementById('successModal');
+                if (successModal) {
+                    successModal.style.display = 'flex';
+                    console.log('Success modal shown');
+                }
+            } else {
+                alert(data.message || 'An error occurred. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        })
+        .finally(() => {
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        });
+    });
+
+    // Close modals when clicking outside - ensure elements exist first
+    const quickSurveyModal = document.getElementById('quickSurveyModal');
+    const successModal = document.getElementById('successModal');
+
+    if (quickSurveyModal) {
+        quickSurveyModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSurveyModal();
+            }
+        });
+    }
+
+    if (successModal) {
+        successModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSuccessModal();
+            }
+        });
+    }
+
+    // Add event listener for the close button
+    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+    if (closeSuccessBtn) {
+        closeSuccessBtn.addEventListener('click', function() {
+            closeSuccessModal();
+        });
+    }
 });
 </script>
