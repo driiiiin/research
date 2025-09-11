@@ -17,6 +17,7 @@ class HealthResearch extends Model
         'accession_no',
         'research_title',
         'subtitle',
+        'source_type',
         'date_issued_from_month',
         'date_issued_from_year',
         'date_issued_to_month',

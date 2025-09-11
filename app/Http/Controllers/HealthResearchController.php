@@ -62,6 +62,7 @@ class HealthResearchController extends Controller
             'accession_no' => 'nullable|string|max:20|unique:health_researches',
             'research_title' => 'required|string|max:500',
             'subtitle' => 'nullable|string|max:500',
+            'source_type' => 'nullable|string|max:255',
             'date_issued_from_month' => 'nullable|integer|min:1|max:12',
             'date_issued_from_year' => 'required|integer|min:1900|max:2100',
             'date_issued_to_month' => 'nullable|integer|min:1|max:12',
@@ -196,6 +197,10 @@ class HealthResearchController extends Controller
         while (!$created && $attempts < 5) {
             $attempts++;
             $validated['accession_no'] = $this->generateNextAccessionNo();
+            // Set default source_type if not provided
+            if (empty($validated['source_type'])) {
+                $validated['source_type'] = 'Technical/Terminal Report';
+            }
             // Serialize checkbox arrays
             $validated['sdg_addressed'] = $this->implodeArray($request->input('sdg_addressed', []));
             $validated['nuhra_addressed'] = $this->implodeArray($request->input('nuhra_addressed', []));
@@ -365,6 +370,7 @@ class HealthResearchController extends Controller
             'accession_no' => 'nullable|string|max:20|unique:health_researches,accession_no,' . $healthResearch->id,
             'research_title' => 'required|string|max:500',
             'subtitle' => 'nullable|string|max:500',
+            'source_type' => 'nullable|string|max:255',
             'date_issued_from_month' => 'nullable|integer|min:1|max:12',
             'date_issued_from_year' => 'required|integer|min:1900|max:2100',
             'date_issued_to_month' => 'nullable|integer|min:1|max:12',
@@ -486,6 +492,11 @@ class HealthResearchController extends Controller
             $validated['date_issued_from_month'] = null;
             $validated['date_issued_to_month'] = null;
             $validated['date_issued_to_year'] = null;
+        }
+
+        // Set default source_type if not provided
+        if (empty($validated['source_type'])) {
+            $validated['source_type'] = 'Technical/Terminal Report';
         }
 
         // Serialize checkbox arrays

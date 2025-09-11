@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('subtitle', 500)->nullable(); // Single subtitle
 
             // Source Section
+            $table->string('source_type')->default('Technical/Terminal Report');
             $table->integer('date_issued_from_month')->nullable();
             $table->integer('date_issued_from_year')->nullable();
             $table->integer('date_issued_to_month')->nullable();
