@@ -53,13 +53,9 @@ Route::get('/survey/check-ip', [App\Http\Controllers\SurveyController::class, 'c
 Route::post('/survey/mark-shown', [App\Http\Controllers\SurveyController::class, 'markSurveyShown'])->name('survey.mark-shown');
 Route::post('/survey/submit', [App\Http\Controllers\SurveyController::class, 'store'])->name('survey.submit');
 
-Route::get('/dashboard', function () {
-    $stats = [
-        'total_health_researches' => \App\Models\HealthResearch::count(),
-    ];
-    $recent_health_researches = \App\Models\HealthResearch::latest()->take(5)->get();
-    return view('dashboard', compact('stats', 'recent_health_researches'));
-})->middleware(['auth', 'verified', 'prevent-back'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified', 'prevent-back'])
+    ->name('dashboard');
 
 // Make next-accession public and accessible to AJAX
 Route::prefix('research')->name('research.')->group(function () {

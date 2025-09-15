@@ -39,34 +39,41 @@
                         <table id="researchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[28%] min-w-[220px]">Title</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[18%] min-w-[150px]">Authors</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[7%] min-w-[60px]">Year</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%] min-w-[60px]">No.</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[40%] min-w-[320px]">Research Title / Subtitle</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[20%] min-w-[150px]">Authors</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%] min-w-[70px]">Year</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%] min-w-[90px]">Status</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[15%] min-w-[120px]">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="researchTableBody" class="bg-white divide-y divide-gray-200">
-                                @forelse($healthResearches as $healthResearch)
+                                @forelse($healthResearches as $index => $healthResearch)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words">
-                                            {{ $healthResearch->accession_no }}
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[5%] min-w-[60px]">
+                                            {{ $loop->iteration }}
                                         </td>
-                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[28%] min-w-[220px]">
-                                            {{ $healthResearch->research_title }}
+                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[40%] min-w-[320px]">
+                                            <div class="font-medium text-gray-900">
+                                                {{ $healthResearch->research_title ?? $healthResearch->title ?? '-' }}
+                                            </div>
+                                            @if($healthResearch->research_subtitle ?? $healthResearch->subtitle ?? null)
+                                            <div class="text-gray-600 text-xs mt-1">
+                                                {{ $healthResearch->research_subtitle ?? $healthResearch->subtitle }}
+                                            </div>
+                                            @endif
                                         </td>
-                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[18%] min-w-[150px]">
+                                        <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[20%] min-w-[150px]">
                                             @if($healthResearch->relationLoaded('authors') || method_exists($healthResearch, 'authors'))
                                                 {{ $healthResearch->authors->map(fn($a) => $a->full_name)->implode(', ') }}
                                             @else
                                                 N/A
                                             @endif
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[7%] min-w-[60px]">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[8%] min-w-[70px]">
                                             {{ $healthResearch->date_issued_from_year ?? 'N/A' }}
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap">
+                                        <td class="px-4 py-4 whitespace-nowrap w-[10%] min-w-[90px]">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                 {{ $healthResearch->status === 'Available' ? 'bg-green-100 text-green-800' :
                                                    ($healthResearch->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
@@ -74,7 +81,7 @@
                                                 {{ $healthResearch->status }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium w-[15%] min-w-[120px]">
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('research.health_researches.show', $healthResearch) }}"
                                                    class="text-blue-600 hover:text-blue-900">View</a>

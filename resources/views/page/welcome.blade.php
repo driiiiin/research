@@ -18,107 +18,113 @@
                         </svg>
                         <h3 class="mt-2 text-lg font-semibold text-gray-900">Welcome to our Health Research Repository</h3>
                     </div>
-                <!-- Search Results Heading -->
-                @if(request('search') || request('format'))
-                <div class="max-w-7xl mx-auto mb-4">
-                    <h2 class="text-xl font-bold text-[#14543A]">Search Results</h2>
-                    <div class="text-gray-600 text-sm mt-1">
-                        @if(request('search'))
-                        <span>Keyword: <span class="font-semibold">{{ request('search') }}</span></span>
-                        @endif
-                        @if(request('format'))
-                        <span class="ml-2">Format: <span class="font-semibold">{{ request('format') }}</span></span>
-                        @endif
+                    <!-- Search Results Heading -->
+                    @if(request('search') || request('format'))
+                    <div class="max-w-7xl mx-auto mb-4">
+                        <h2 class="text-xl font-bold text-[#14543A]">Search Results</h2>
+                        <div class="text-gray-600 text-sm mt-1">
+                            @if(request('search'))
+                            <span>Keyword: <span class="font-semibold">{{ request('search') }}</span></span>
+                            @endif
+                            @if(request('format'))
+                            <span class="ml-2">Format: <span class="font-semibold">{{ request('format') }}</span></span>
+                            @endif
+                        </div>
                     </div>
-                </div>
-                @endif
+                    @endif
 
-                <!-- Health Research Grid -->
-                <div class="max-w-7xl mx-auto mb-8">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="p-6">
-                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                                <h3 class="text-lg font-semibold text-gray-800">Health Research List</h3>
-                                <button
-                                    id="printTableBtn"
-                                    class="inline-flex items-center px-4 py-2 bg-[#14543A] hover:bg-[#17694a] text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#14543A]"
-                                    type="button"
-                                    title="Print Table"
-                                >
-                                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-6 0v4m0 0h4m-4 0H8"/>
-                                    </svg>
-                                    Print Table
-                                </button>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table id="welcomeResearchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accession No</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[28%] min-w-[220px]">Title</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[18%] min-w-[150px]">Authors</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[7%] min-w-[60px]">Year</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse(($healthResearches ?? []) as $healthResearch)
-                                        <tr class="hover:bg-gray-50">
-                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words">
-                                                {{ $healthResearch->accession_no ?? '-' }}
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[28%] min-w-[220px]">
-                                                {{ $healthResearch->research_title ?? $healthResearch->title ?? '-' }}
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[18%] min-w-[150px]">
-                                                @if(isset($healthResearch->authors) && is_iterable($healthResearch->authors) && count($healthResearch->authors))
+                    <!-- Health Research Grid -->
+                    <div class="max-w-7xl mx-auto mb-8">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-6">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+                                    <h3 class="text-lg font-semibold text-gray-800">Health Research List</h3>
+                                    <button
+                                        id="printTableBtn"
+                                        class="inline-flex items-center px-4 py-2 bg-[#14543A] hover:bg-[#17694a] text-white text-sm font-medium rounded-lg shadow transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#14543A]"
+                                        type="button"
+                                        title="Print Table">
+                                        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-6 0v4m0 0h4m-4 0H8" />
+                                        </svg>
+                                        Print Table
+                                    </button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table id="welcomeResearchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[7%] min-w-[70px]">No.</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[45%] min-w-[350px]">Research Title / Subtitle</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[20%] min-w-[150px]">Authors</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%] min-w-[70px]">Year</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[12%] min-w-[100px]">Status</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%] min-w-[70px]">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse(($healthResearches ?? []) as $index => $healthResearch)
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[4%] min-w-[40px]">
+                                                    {{ $loop->iteration }}
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[45%] min-w-[350px]">
+                                                    <div class="font-medium text-gray-900">
+                                                        {{ $healthResearch->research_title ?? $healthResearch->title ?? '-' }}
+                                                    </div>
+                                                    @if($healthResearch->research_subtitle ?? $healthResearch->subtitle ?? null)
+                                                    <div class="text-gray-600 text-xs mt-1">
+                                                        {{ $healthResearch->research_subtitle ?? $healthResearch->subtitle }}
+                                                    </div>
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[20%] min-w-[150px]">
+                                                    @if(isset($healthResearch->authors) && is_iterable($healthResearch->authors) && count($healthResearch->authors))
                                                     {{ collect($healthResearch->authors)->map(fn($a) => $a->full_name ?? $a->name ?? $a)->implode(', ') }}
-                                                @elseif(property_exists($healthResearch, 'author') && $healthResearch->author)
+                                                    @elseif(property_exists($healthResearch, 'author') && $healthResearch->author)
                                                     {{ $healthResearch->author }}
-                                                @else
+                                                    @else
                                                     -
-                                                @endif
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[7%] min-w-[60px]">
-                                                {{ $healthResearch->date_issued_from_year ?? $healthResearch->year ?? '-' }}
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-nowrap">
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[6%] min-w-[50px]">
+                                                    {{ $healthResearch->date_issued_from_year ?? $healthResearch->year ?? '-' }}
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-nowrap w-[12%] min-w-[100px]">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                     {{ ($healthResearch->status ?? ($healthResearch->available_copies ?? 0) > 0 ? 'Available' : 'Not Available') === 'Available' ? 'bg-green-100 text-green-800' :
                                                        (($healthResearch->status ?? '') === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
                                                        (($healthResearch->status ?? '') === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
-                                                    {{ $healthResearch->status ?? (isset($healthResearch->available_copies) ? ($healthResearch->available_copies > 0 ? 'Available' : 'Not Available') : '-') }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium">
-                                                <a href="{{ url('/research/details/' . ($healthResearch->accession_no ?? '')) }}" class="text-blue-600 hover:text-blue-900">View</a>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                                                        {{ $healthResearch->status ?? (isset($healthResearch->available_copies) ? ($healthResearch->available_copies > 0 ? 'Available' : 'Not Available') : '-') }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium w-[8%] min-w-[70px]">
+                                                    <a href="{{ url('/research/details/' . ($healthResearch->accession_no ?? '')) }}" class="text-blue-600 hover:text-blue-900">View</a>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Pagination -->
-                @if(!empty($healthResearches) && is_object($healthResearches) && method_exists($healthResearches, 'hasPages') && $healthResearches->hasPages())
-                <div class="mt-8">
-                    {{ $healthResearches->links() }}
-                </div>
-                @endif
-                @if(empty($healthResearches) || count($healthResearches) === 0)
+                    <!-- Pagination -->
+                    @if(!empty($healthResearches) && is_object($healthResearches) && method_exists($healthResearches, 'hasPages') && $healthResearches->hasPages())
+                    <div class="mt-8">
+                        {{ $healthResearches->links() }}
+                    </div>
+                    @endif
+                    @if(empty($healthResearches) || count($healthResearches) === 0)
                     <div class="px-4 py-4 text-center text-gray-500">
                         No health researches found.
                     </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Quick Survey Modal -->
@@ -222,9 +228,9 @@
 
     <!-- Hidden element to pass survey status to JavaScript -->
     <div id="survey-status"
-         data-has-submitted="{{ $hasSubmittedSurvey ? 'true' : 'false' }}"
-         data-has-seen-today="{{ $hasSeenSurveyToday ? 'true' : 'false' }}"
-         style="display: none;"></div>
+        data-has-submitted="{{ $hasSubmittedSurvey ? 'true' : 'false' }}"
+        data-has-seen-today="{{ $hasSeenSurveyToday ? 'true' : 'false' }}"
+        style="display: none;"></div>
 </x-guest-layout>
 <script>
     // Detect if the page load is a reload/refresh
@@ -245,31 +251,31 @@
     }
 </script>
 <script>
-$(document).ready(function() {
-    var $table = $('#welcomeResearchTable');
-    if ($table.length) {
-        // Debug: log the number of rows and columns
-        console.log('Rows:', $table.find('tbody tr').length);
-        $table.find('tbody tr').each(function(i, tr) {
-            console.log('Row', i, 'columns:', $(tr).find('td').length);
-        });
-        new DataTable('#welcomeResearchTable', {
-            responsive: true
-        });
-    }
+    $(document).ready(function() {
+        var $table = $('#welcomeResearchTable');
+        if ($table.length) {
+            // Debug: log the number of rows and columns
+            console.log('Rows:', $table.find('tbody tr').length);
+            $table.find('tbody tr').each(function(i, tr) {
+                console.log('Row', i, 'columns:', $(tr).find('td').length);
+            });
+            new DataTable('#welcomeResearchTable', {
+                responsive: true
+            });
+        }
 
-    // Print button functionality
-    $('#printTableBtn').on('click', function() {
-        // Clone the table and remove DataTables styling for print
-        var $tableClone = $('#welcomeResearchTable').clone();
-        $tableClone.removeClass('dataTable').removeAttr('style');
-        $tableClone.find('thead').removeClass();
-        $tableClone.find('tbody tr').removeClass();
-        $tableClone.find('td, th').removeClass();
+        // Print button functionality
+        $('#printTableBtn').on('click', function() {
+            // Clone the table and remove DataTables styling for print
+            var $tableClone = $('#welcomeResearchTable').clone();
+            $tableClone.removeClass('dataTable').removeAttr('style');
+            $tableClone.find('thead').removeClass();
+            $tableClone.find('tbody tr').removeClass();
+            $tableClone.find('td, th').removeClass();
 
-        // Create a print window
-        var printWindow = window.open('', '', 'width=900,height=700');
-        var style = `
+            // Create a print window
+            var printWindow = window.open('', '', 'width=900,height=700');
+            var style = `
             <style>
                 body { font-family: 'Inter', Arial, sans-serif; margin: 30px; color: #222; }
                 h2 { color: #14543A; margin-bottom: 18px; }
@@ -285,7 +291,7 @@ $(document).ready(function() {
                 }
             </style>
         `;
-        var header = `
+            var header = `
             <div class="print-header">
                 <h2>Health Research List</h2>
                 <div style="font-size:13px; color:#555;">
@@ -293,7 +299,7 @@ $(document).ready(function() {
                 </div>
             </div>
         `;
-        printWindow.document.write(`
+            printWindow.document.write(`
             <html>
                 <head>
                     <title>Print - Health Research List</title>
@@ -305,147 +311,147 @@ $(document).ready(function() {
                 </body>
             </html>
         `);
-        printWindow.document.close();
+            printWindow.document.close();
+            setTimeout(function() {
+                printWindow.focus();
+                printWindow.print();
+                // Optionally, close after print
+                // printWindow.close();
+            }, 400);
+        });
+
+        // Survey functionality
+        let surveyShown = false;
+        const hasSubmittedSurvey = document.getElementById('survey-status').getAttribute('data-has-submitted') === 'true';
+        const hasSeenSurveyToday = document.getElementById('survey-status').getAttribute('data-has-seen-today') === 'true';
+
+        // Show survey after 5 seconds only if:
+        // 1. IP hasn't submitted before
+        // 2. IP hasn't seen survey today
         setTimeout(function() {
-            printWindow.focus();
-            printWindow.print();
-            // Optionally, close after print
-            // printWindow.close();
-        }, 400);
-    });
+            if (!surveyShown && !hasSubmittedSurvey && !hasSeenSurveyToday) {
+                showSurveyModal();
+            }
+        }, 10000);
 
-    // Survey functionality
-    let surveyShown = false;
-    const hasSubmittedSurvey = document.getElementById('survey-status').getAttribute('data-has-submitted') === 'true';
-    const hasSeenSurveyToday = document.getElementById('survey-status').getAttribute('data-has-seen-today') === 'true';
+        // Function to show survey modal
+        function showSurveyModal() {
+            const modal = document.getElementById('quickSurveyModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                surveyShown = true;
 
-    // Show survey after 5 seconds only if:
-    // 1. IP hasn't submitted before
-    // 2. IP hasn't seen survey today
-    setTimeout(function() {
-        if (!surveyShown && !hasSubmittedSurvey && !hasSeenSurveyToday) {
-            showSurveyModal();
+                // Mark survey as shown in database
+                fetch('{{ route("survey.mark-shown") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                }).catch(error => {
+                    console.error('Error marking survey as shown:', error);
+                });
+            }
         }
-    }, 10000);
 
-    // Function to show survey modal
-    function showSurveyModal() {
-        const modal = document.getElementById('quickSurveyModal');
-        if (modal) {
-            modal.style.display = 'flex';
-            surveyShown = true;
+        // Function to close survey modal
+        function closeSurveyModal() {
+            const modal = document.getElementById('quickSurveyModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
 
-            // Mark survey as shown in database
-            fetch('{{ route("survey.mark-shown") }}', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json'
+        // Function to close success modal
+        function closeSuccessModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.style.display = 'none';
+                console.log('Success modal closed');
+            } else {
+                console.log('Success modal not found');
+            }
+        }
+
+        // Handle survey form submission
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // Debug: Log form data
+            console.log('Form data being sent:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
+            }
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+
+            // Show loading state
+            submitButton.textContent = 'Submitting...';
+            submitButton.disabled = true;
+
+            // Submit form via AJAX
+            fetch('{{ route("survey.submit") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Close survey modal
+                        closeSurveyModal();
+                        // Show success modal
+                        const successModal = document.getElementById('successModal');
+                        if (successModal) {
+                            successModal.style.display = 'flex';
+                            console.log('Success modal shown');
+                        }
+                    } else {
+                        alert(data.message || 'An error occurred. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
+        });
+
+        // Close modals when clicking outside - ensure elements exist first
+        const quickSurveyModal = document.getElementById('quickSurveyModal');
+        const successModal = document.getElementById('successModal');
+
+        if (quickSurveyModal) {
+            quickSurveyModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSurveyModal();
                 }
-            }).catch(error => {
-                console.error('Error marking survey as shown:', error);
             });
         }
-    }
 
-    // Function to close survey modal
-    function closeSurveyModal() {
-        const modal = document.getElementById('quickSurveyModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Function to close success modal
-    function closeSuccessModal() {
-        const modal = document.getElementById('successModal');
-        if (modal) {
-            modal.style.display = 'none';
-            console.log('Success modal closed');
-        } else {
-            console.log('Success modal not found');
-        }
-    }
-
-    // Handle survey form submission
-    document.getElementById('surveyForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-
-        // Debug: Log form data
-        console.log('Form data being sent:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key + ': ' + value);
-        }
-
-        const submitButton = this.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-
-        // Show loading state
-        submitButton.textContent = 'Submitting...';
-        submitButton.disabled = true;
-
-        // Submit form via AJAX
-        fetch('{{ route("survey.submit") }}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Close survey modal
-                closeSurveyModal();
-                // Show success modal
-                const successModal = document.getElementById('successModal');
-                if (successModal) {
-                    successModal.style.display = 'flex';
-                    console.log('Success modal shown');
+        if (successModal) {
+            successModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeSuccessModal();
                 }
-            } else {
-                alert(data.message || 'An error occurred. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-        })
-        .finally(() => {
-            // Reset button state
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
-        });
-    });
+            });
+        }
 
-    // Close modals when clicking outside - ensure elements exist first
-    const quickSurveyModal = document.getElementById('quickSurveyModal');
-    const successModal = document.getElementById('successModal');
-
-    if (quickSurveyModal) {
-        quickSurveyModal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSurveyModal();
-            }
-        });
-    }
-
-    if (successModal) {
-        successModal.addEventListener('click', function(e) {
-            if (e.target === this) {
+        // Add event listener for the close button
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+        if (closeSuccessBtn) {
+            closeSuccessBtn.addEventListener('click', function() {
                 closeSuccessModal();
-            }
-        });
-    }
-
-    // Add event listener for the close button
-    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
-    if (closeSuccessBtn) {
-        closeSuccessBtn.addEventListener('click', function() {
-            closeSuccessModal();
-        });
-    }
-});
+            });
+        }
+    });
 </script>

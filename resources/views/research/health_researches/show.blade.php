@@ -6,7 +6,7 @@
                     <svg class="w-7 h-7" style="color: #14532d;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                {{ __('Health Research Details') }}
+                    {{ __('Health Research Details') }}
                 </span>
             </h2>
         </div>
@@ -76,9 +76,12 @@
                     body * {
                         visibility: hidden;
                     }
-                    #health-research-details, #health-research-details * {
+
+                    #health-research-details,
+                    #health-research-details * {
                         visibility: visible;
                     }
+
                     #health-research-details {
                         position: absolute;
                         left: 0;
@@ -88,16 +91,19 @@
                         box-shadow: none !important;
                         padding: 20px !important;
                     }
+
                     .section-header {
                         background: #14532d !important;
                         color: white !important;
                         -webkit-print-color-adjust: exact;
                         print-color-adjust: exact;
                     }
+
                     .form-card {
                         break-inside: avoid;
                         page-break-inside: avoid;
                     }
+
                     .no-print {
                         display: none !important;
                     }
@@ -139,30 +145,32 @@
                             <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="height:40px; min-height:40px; max-width:350px;">
                                 {{ $healthResearch->accession_no }}
                             </div>
-                    </div>
-                    <div class="flex-1">
-                            <div class="text-sm font-semibold text-gray-800 mb-2">Research Title</div>
-                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height:40px;">
-                                {{ $healthResearch->research_title }}
+                        </div>
+                        <div class="flex-1">
+                            <div class="text-sm font-semibold text-gray-800 mb-2">Research Title / Subtitle</div>
+                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height:60px;">
+                                @php
+                                    $subtitle = $healthResearch->subtitle;
+                                    $subtitleStr = '';
+                                    if (!empty($subtitle)) {
+                                        if (is_array($subtitle)) {
+                                            $subtitleStr = implode(': ', $subtitle);
+                                        } elseif (is_string($subtitle) && ($decoded = json_decode($subtitle, true)) && is_array($decoded)) {
+                                            $subtitleStr = implode(': ', $decoded);
+                                        } else {
+                                            $subtitleStr = $subtitle;
+                                        }
+                                    }
+                                @endphp
+                                <strong class="text-lg">
+                                    {{ $healthResearch->research_title }}@if($subtitleStr):@endif
+                                </strong>
+                                @if($subtitleStr)
+                                    {{ ' ' . $subtitleStr }}
+                                @endif
                             </div>
-                    </div>
-                </div>
-                @if(!empty($healthResearch->subtitle))
-                    <div class="mt-4">
-                        <div class="text-sm font-semibold text-gray-800 mb-2">Subtitle</div>
-                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height:40px;">
-                            @if(is_array($healthResearch->subtitle) || is_string($healthResearch->subtitle) && json_decode($healthResearch->subtitle, true))
-                        @foreach((is_array($healthResearch->subtitle) ? $healthResearch->subtitle : (array)json_decode($healthResearch->subtitle, true)) as $sub)
-                            @if($sub)
-                                        <div class="mb-1 text-xs">• {{ $sub }}</div>
-                                    @endif
-                                @endforeach
-                            @else
-                                {{ $healthResearch->subtitle }}
-                            @endif
                         </div>
                     </div>
-                    @endif
                 </div>
                 <!-- SOURCE Section -->
                 <div class="w-full flex justify-center mb-4 mt-1">
@@ -181,12 +189,12 @@
                     <div class="text-sm font-semibold text-gray-800 mb-3">Date Issued</div>
                     <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium mb-3">
                         @php
-                            $months = [
-                                1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
-                                7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
-                            ];
-                            $fromMonth = $healthResearch->date_issued_from_month ?? null;
-                            $toMonth = $healthResearch->date_issued_to_month ?? null;
+                        $months = [
+                        1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+                        7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December'
+                        ];
+                        $fromMonth = $healthResearch->date_issued_from_month ?? null;
+                        $toMonth = $healthResearch->date_issued_to_month ?? null;
                         @endphp
                         From: {{ $fromMonth && isset($months[$fromMonth]) ? $months[$fromMonth] : ($fromMonth ?: 'N/A') }}/{{ $healthResearch->date_issued_from_year }}
                         To: {{ $toMonth && isset($months[$toMonth]) ? $months[$toMonth] : ($toMonth ?: 'N/A') }}/{{ $healthResearch->date_issued_to_year }}
@@ -243,11 +251,11 @@
                                 <div class="text-xs font-medium text-gray-700 mb-1">Currency</div>
                                 <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
                                     @php
-                                        $currencyDesc = null;
-                                        if (!empty($healthResearch->currency_code)) {
-                                            $currency = \App\Models\ref_currency::where('currency_code', $healthResearch->currency_code)->first();
-                                            $currencyDesc = $currency ? $currency->currency_desc : $healthResearch->currency_code;
-                                        }
+                                    $currencyDesc = null;
+                                    if (!empty($healthResearch->currency_code)) {
+                                    $currency = \App\Models\ref_currency::where('currency_code', $healthResearch->currency_code)->first();
+                                    $currencyDesc = $currency ? $currency->currency_desc : $healthResearch->currency_code;
+                                    }
                                     @endphp
                                     {{ $currencyDesc ?: 'N/A' }}
                                 </div>
@@ -297,32 +305,32 @@
 
                 <div class="form-card rounded-2xl p-6">
                     @if(isset($healthResearch->authors) && is_iterable($healthResearch->authors))
-                        <div class="space-y-3">
-                            @foreach($healthResearch->authors as $index => $author)
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg">
-                                    <div>
-                                        <div class="text-xs font-medium text-gray-700 mb-1">Last Name</div>
-                                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->last_name ?: 'N/A' }}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-medium text-gray-700 mb-1">First Name</div>
-                                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->first_name ?: 'N/A' }}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-medium text-gray-700 mb-1">Middle Name</div>
-                                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->middle_name ?: 'N/A' }}</div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-medium text-gray-700 mb-1">Suffix</div>
-                                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->suffix ?: 'N/A' }}</div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="space-y-3">
+                        @foreach($healthResearch->authors as $index => $author)
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <div class="text-xs font-medium text-gray-700 mb-1">Last Name</div>
+                                <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->last_name ?: 'N/A' }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-700 mb-1">First Name</div>
+                                <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->first_name ?: 'N/A' }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-700 mb-1">Middle Name</div>
+                                <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->middle_name ?: 'N/A' }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-gray-700 mb-1">Suffix</div>
+                                <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $author->suffix ?: 'N/A' }}</div>
+                            </div>
                         </div>
+                        @endforeach
+                    </div>
                     @else
-                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
-                            {{ $healthResearch->author ?: 'No author information available' }}
-                        </div>
+                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
+                        {{ $healthResearch->author ?: 'No author information available' }}
+                    </div>
                     @endif
                 </div>
                 <!-- ABSTRACT Section -->
@@ -341,8 +349,8 @@
                     <div class="mb-4">
                         <div class="text-xs font-medium text-gray-700 mb-1">Abstract Type</div>
                         <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $healthResearch->abstract_type ?: 'N/A' }}</div>
-                </div>
-                <div>
+                    </div>
+                    <div>
                         <div class="text-xs font-medium text-gray-700 mb-1">Abstract Content</div>
                         <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height: 150px;">
                             {{ $healthResearch->research_abstract ?: 'No abstract available' }}
@@ -382,52 +390,52 @@
 
                 <div class="form-card rounded-2xl p-6">
                     @if(isset($healthResearch->locations) && is_iterable($healthResearch->locations))
-                        <div class="space-y-4">
-                            @foreach($healthResearch->locations as $index => $location)
-                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Format</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->format ?: 'N/A' }}</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Physical Location</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->physical_location ?: 'N/A' }}</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Location Number</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->location_number ?: 'N/A' }}</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Text Availability</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->text_availability ?: 'N/A' }}</div>
-                                        </div>
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Mode of Access</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->mode_of_access ?: 'N/A' }}</div>
-                                        </div>
-                                        @if($location->institutional_email)
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">Institutional Email</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->institutional_email }}</div>
-                                        </div>
-                                        @endif
-                                        @if($location->url)
-                                        <div>
-                                            <div class="text-xs font-medium text-gray-700 mb-1">URL</div>
-                                            <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
-                                                <a href="{{ $location->url }}" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-xs">{{ $location->url }}</a>
-                                            </div>
-                                        </div>
-                                        @endif
+                    <div class="space-y-4">
+                        @foreach($healthResearch->locations as $index => $location)
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Format</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->format ?: 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Physical Location</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->physical_location ?: 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Location Number</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->location_number ?: 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Text Availability</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->text_availability ?: 'N/A' }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Mode of Access</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->mode_of_access ?: 'N/A' }}</div>
+                                </div>
+                                @if($location->institutional_email)
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">Institutional Email</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">{{ $location->institutional_email }}</div>
+                                </div>
+                                @endif
+                                @if($location->url)
+                                <div>
+                                    <div class="text-xs font-medium text-gray-700 mb-1">URL</div>
+                                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
+                                        <a href="{{ $location->url }}" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-xs">{{ $location->url }}</a>
                                     </div>
                                 </div>
-                            @endforeach
+                                @endif
+                            </div>
                         </div>
+                        @endforeach
+                    </div>
                     @else
-                        <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
-                            {{ $healthResearch->location ?: 'No location information available' }}
-                        </div>
+                    <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium">
+                        {{ $healthResearch->location ?: 'No location information available' }}
+                    </div>
                     @endif
                 </div>
                 <!-- Status Section -->
@@ -450,21 +458,21 @@
                     <div class="text-sm font-semibold text-gray-800 mb-4">SDG Addressed</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         @if($healthResearch->sdg_addressed)
-                            @php
-                                $sdgAddressed = is_string($healthResearch->sdg_addressed) ? explode(';', $healthResearch->sdg_addressed) : (array)$healthResearch->sdg_addressed;
-                            @endphp
-                            @foreach($sdgAddressed as $sdg)
-                                @if(trim($sdg))
-                                    @php
-                                        $sdgModel = \App\Models\ref_sdgs::where('sdg_code', trim($sdg))->first();
-                                    @endphp
-                                    <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                        <span class="text-gray-800 font-medium text-xs">{{ $sdgModel ? $sdgModel->sdg_desc : trim($sdg) }}</span>
-                                    </div>
-                                @endif
-                            @endforeach
+                        @php
+                        $sdgAddressed = is_string($healthResearch->sdg_addressed) ? explode(';', $healthResearch->sdg_addressed) : (array)$healthResearch->sdg_addressed;
+                        @endphp
+                        @foreach($sdgAddressed as $sdg)
+                        @if(trim($sdg))
+                        @php
+                        $sdgModel = \App\Models\ref_sdgs::where('sdg_code', trim($sdg))->first();
+                        @endphp
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">{{ $sdgModel ? $sdgModel->sdg_desc : trim($sdg) }}</span>
+                        </div>
+                        @endif
+                        @endforeach
                         @else
-                            <div class="text-gray-500 italic">No SDG information available</div>
+                        <div class="text-gray-500 italic">No SDG information available</div>
                         @endif
                     </div>
                 </div>
@@ -481,27 +489,27 @@
                     <div class="text-sm font-semibold text-gray-800 mb-4">NUHRA</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         @if($healthResearch->nuhra_addressed)
-                            @php
-                                $nuhraAddressed = is_string($healthResearch->nuhra_addressed) ? explode(';', $healthResearch->nuhra_addressed) : (array)$healthResearch->nuhra_addressed;
-                            @endphp
-                            @foreach($nuhraAddressed as $nuhra)
-                                @if(trim($nuhra))
-                                    @if(trim($nuhra) === 'OTHERS')
-                                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                            <span class="text-gray-800 font-medium text-xs">OTHERS: {{ $healthResearch->nuhra_others ?: 'Not specified' }}</span>
-                                        </div>
-                                    @else
-                                        @php
-                                            $nuhraModel = \App\Models\ref_nuhra::where('nuhra_code', trim($nuhra))->first();
-                                        @endphp
-                                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                            <span class="text-gray-800 font-medium text-xs">{{ $nuhraModel ? $nuhraModel->nuhra_desc : trim($nuhra) }}</span>
-                                        </div>
-                                    @endif
-                                @endif
-                            @endforeach
+                        @php
+                        $nuhraAddressed = is_string($healthResearch->nuhra_addressed) ? explode(';', $healthResearch->nuhra_addressed) : (array)$healthResearch->nuhra_addressed;
+                        @endphp
+                        @foreach($nuhraAddressed as $nuhra)
+                        @if(trim($nuhra))
+                        @if(trim($nuhra) === 'OTHERS')
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">OTHERS: {{ $healthResearch->nuhra_others ?: 'Not specified' }}</span>
+                        </div>
                         @else
-                            <div class="text-gray-500 italic">No NUHRA information available</div>
+                        @php
+                        $nuhraModel = \App\Models\ref_nuhra::where('nuhra_code', trim($nuhra))->first();
+                        @endphp
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">{{ $nuhraModel ? $nuhraModel->nuhra_desc : trim($nuhra) }}</span>
+                        </div>
+                        @endif
+                        @endif
+                        @endforeach
+                        @else
+                        <div class="text-gray-500 italic">No NUHRA information available</div>
                         @endif
                     </div>
                 </div>
@@ -518,27 +526,27 @@
                     <div class="text-sm font-semibold text-gray-800 mb-4">MTHRIA</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-4">
                         @if($healthResearch->mthria_addressed)
-                            @php
-                                $mthriaAddressed = is_string($healthResearch->mthria_addressed) ? explode(';', $healthResearch->mthria_addressed) : (array)$healthResearch->mthria_addressed;
-                            @endphp
-                            @foreach($mthriaAddressed as $mthria)
-                                @if(trim($mthria))
-                                    @if(trim($mthria) === 'OTHERS')
-                                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                            <span class="text-gray-800 font-medium text-xs">OTHERS: {{ $healthResearch->mthria_others ?: 'Not specified' }}</span>
-                                        </div>
-                                    @else
-                                        @php
-                                            $mthriaModel = \App\Models\ref_mthria::where('mthria_code', trim($mthria))->first();
-                                        @endphp
-                                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                            <span class="text-gray-800 font-medium text-xs">{{ $mthriaModel ? $mthriaModel->mthria_desc : trim($mthria) }}</span>
-                                        </div>
-                                    @endif
-                                @endif
-                            @endforeach
+                        @php
+                        $mthriaAddressed = is_string($healthResearch->mthria_addressed) ? explode(';', $healthResearch->mthria_addressed) : (array)$healthResearch->mthria_addressed;
+                        @endphp
+                        @foreach($mthriaAddressed as $mthria)
+                        @if(trim($mthria))
+                        @if(trim($mthria) === 'OTHERS')
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">OTHERS: {{ $healthResearch->mthria_others ?: 'Not specified' }}</span>
+                        </div>
                         @else
-                            <div class="text-gray-500 italic">No MTHRIA information available</div>
+                        @php
+                        $mthriaModel = \App\Models\ref_mthria::where('mthria_code', trim($mthria))->first();
+                        @endphp
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">{{ $mthriaModel ? $mthriaModel->mthria_desc : trim($mthria) }}</span>
+                        </div>
+                        @endif
+                        @endif
+                        @endforeach
+                        @else
+                        <div class="text-gray-500 italic">No MTHRIA information available</div>
                         @endif
                     </div>
                 </div>
@@ -548,21 +556,21 @@
                     <div class="text-sm font-semibold text-gray-800 mb-4">Innovation</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         @if($healthResearch->agenda_addressed)
-                            @php
-                                $agendaAddressed = is_string($healthResearch->agenda_addressed) ? explode(';', $healthResearch->agenda_addressed) : (array)$healthResearch->agenda_addressed;
-                            @endphp
-                            @foreach($agendaAddressed as $agenda)
-                                @if(trim($agenda))
-                                    @php
-                                        $agendaModel = \App\Models\ref_agenda::where('agenda_code', trim($agenda))->first();
-                                    @endphp
-                                    <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                        <span class="text-gray-800 font-medium text-xs">{{ $agendaModel ? $agendaModel->agenda_desc : trim($agenda) }}</span>
-                                    </div>
-                                @endif
-                            @endforeach
+                        @php
+                        $agendaAddressed = is_string($healthResearch->agenda_addressed) ? explode(';', $healthResearch->agenda_addressed) : (array)$healthResearch->agenda_addressed;
+                        @endphp
+                        @foreach($agendaAddressed as $agenda)
+                        @if(trim($agenda))
+                        @php
+                        $agendaModel = \App\Models\ref_agenda::where('agenda_code', trim($agenda))->first();
+                        @endphp
+                        <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
+                            <span class="text-gray-800 font-medium text-xs">{{ $agendaModel ? $agendaModel->agenda_desc : trim($agenda) }}</span>
+                        </div>
+                        @endif
+                        @endforeach
                         @else
-                            <div class="text-gray-500 italic">No Innovation information available</div>
+                        <div class="text-gray-500 italic">No Innovation information available</div>
                         @endif
                     </div>
                 </div>
@@ -583,18 +591,18 @@
                     <div class="text-sm font-semibold text-gray-800 mb-3">MeSH Keywords</div>
                     <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height: 100px;">
                         @if($healthResearch->mesh_keywords)
-                            @php
-                                $meshKeywords = is_string($healthResearch->mesh_keywords) ? explode(';', $healthResearch->mesh_keywords) : (array)$healthResearch->mesh_keywords;
-                            @endphp
-                            <div class="flex flex-wrap gap-1">
-                                @foreach($meshKeywords as $keyword)
-                                    @if(trim($keyword))
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full border border-blue-300 text-blue-700 bg-white text-xs">{{ trim($keyword) }}</span>
-                                    @endif
-                                @endforeach
-                            </div>
+                        @php
+                        $meshKeywords = is_string($healthResearch->mesh_keywords) ? explode(';', $healthResearch->mesh_keywords) : (array)$healthResearch->mesh_keywords;
+                        @endphp
+                        <div class="flex flex-wrap gap-1">
+                            @foreach($meshKeywords as $keyword)
+                            @if(trim($keyword))
+                            <span class="inline-flex items-center px-2 py-1 rounded-full border border-blue-300 text-blue-700 bg-white text-xs">{{ trim($keyword) }}</span>
+                            @endif
+                            @endforeach
+                        </div>
                         @else
-                            <span class="text-gray-500 italic text-sm">No MeSH keywords available</span>
+                        <span class="text-gray-500 italic text-sm">No MeSH keywords available</span>
                         @endif
                     </div>
                 </div>
@@ -603,18 +611,18 @@
                     <div class="text-sm font-semibold text-gray-800 mb-3">Non-MeSH Keywords</div>
                     <div class="data-field block w-full rounded-lg px-3 py-2 text-sm font-medium" style="min-height: 100px;">
                         @if($healthResearch->non_mesh_keywords)
-                            @php
-                                $nonMeshKeywords = is_string($healthResearch->non_mesh_keywords) ? explode(';', $healthResearch->non_mesh_keywords) : (array)$healthResearch->non_mesh_keywords;
-                            @endphp
-                            <div class="flex flex-wrap gap-1">
-                                @foreach($nonMeshKeywords as $keyword)
-                                    @if(trim($keyword))
-                                        <span class="inline-flex items-center px-2 py-1 rounded-full border border-blue-300 text-blue-700 bg-white text-xs">{{ trim($keyword) }}</span>
-                                    @endif
-                                @endforeach
-                            </div>
+                        @php
+                        $nonMeshKeywords = is_string($healthResearch->non_mesh_keywords) ? explode(';', $healthResearch->non_mesh_keywords) : (array)$healthResearch->non_mesh_keywords;
+                        @endphp
+                        <div class="flex flex-wrap gap-1">
+                            @foreach($nonMeshKeywords as $keyword)
+                            @if(trim($keyword))
+                            <span class="inline-flex items-center px-2 py-1 rounded-full border border-blue-300 text-blue-700 bg-white text-xs">{{ trim($keyword) }}</span>
+                            @endif
+                            @endforeach
+                        </div>
                         @else
-                            <span class="text-gray-500 italic text-sm">No Non-MeSH keywords available</span>
+                        <span class="text-gray-500 italic text-sm">No Non-MeSH keywords available</span>
                         @endif
                     </div>
                 </div>
