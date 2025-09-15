@@ -279,7 +279,7 @@
                 <!-- Research Category -->
                 <div class="form-card rounded-2xl p-6">
                     <div class="text-sm font-semibold text-gray-800 mb-3">Research Category</div>
-                    <div class="inline-flex items-center px-3 py-2 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
                         <span class="text-gray-700 font-medium text-sm">{{ $healthResearch->research_category }}</span>
                     </div>
                 </div>
@@ -287,7 +287,7 @@
                 <!-- Research Type -->
                 <div class="form-card rounded-2xl p-6">
                     <div class="text-sm font-semibold text-gray-800 mb-3">Research Type</div>
-                    <div class="inline-flex items-center px-3 py-2 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div class="inline-flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
                         <span class="text-gray-700 font-medium text-sm">{{ $healthResearch->research_type }}</span>
                     </div>
                 </div>

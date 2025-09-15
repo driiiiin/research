@@ -462,16 +462,16 @@
                     <div class="form-card rounded-2xl p-8">
                         <x-input-label value="Research Category *" class="text-lg font-semibold text-gray-800 mb-4" />
                         <div class="flex flex-wrap gap-4">
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_category" value="Institutional" {{ old('research_category') == 'Institutional' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_category" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_category" value="Institutional" {{ old('research_category') == 'Institutional' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_category" />
                                 <span class="ml-3 text-gray-700 font-medium">Institutional</span>
                             </label>
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_category" value="Collaborative" {{ old('research_category') == 'Collaborative' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_category" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_category" value="Collaborative" {{ old('research_category') == 'Collaborative' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_category" />
                                 <span class="ml-3 text-gray-700 font-medium">Collaborative</span>
                             </label>
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_category" value="Commissioned" {{ old('research_category') == 'Commissioned' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_category" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_category" value="Commissioned" {{ old('research_category') == 'Commissioned' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_category" />
                                 <span class="ml-3 text-gray-700 font-medium">Commissioned</span>
                             </label>
                         </div>
@@ -482,16 +482,16 @@
                     <div class="form-card rounded-2xl p-8">
                         <x-input-label value="Research Type *" class="text-lg font-semibold text-gray-800 mb-4" />
                         <div class="flex flex-wrap gap-4">
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_type" value="Basic" {{ old('research_type') == 'Basic' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_type" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_type" value="Basic" {{ old('research_type') == 'Basic' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_type" />
                                 <span class="ml-3 text-gray-700 font-medium">Basic</span>
                             </label>
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_type" value="Applied" {{ old('research_type') == 'Applied' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_type" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_type" value="Applied" {{ old('research_type') == 'Applied' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_type" />
                                 <span class="ml-3 text-gray-700 font-medium">Applied</span>
                             </label>
-                            <label class="inline-flex items-center px-4 py-3 bg-orange-50 border border-orange-200 rounded-xl cursor-pointer transition hover:bg-orange-100">
-                                <input type="radio" name="research_type" value="Experimental" {{ old('research_type') == 'Experimental' ? 'checked' : '' }} required class="form-radio text-orange-600 focus:ring-orange-500" x-ref="research_type" />
+                            <label class="inline-flex items-center px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl cursor-pointer transition hover:bg-emerald-100">
+                                <input type="radio" name="research_type" value="Experimental" {{ old('research_type') == 'Experimental' ? 'checked' : '' }} required class="form-radio text-emerald-600 focus:ring-emerald-500" x-ref="research_type" />
                                 <span class="ml-3 text-gray-700 font-medium">Experimental</span>
                             </label>
                         </div>
@@ -875,7 +875,7 @@
                             name="nuhra_others"
                             id="nuhra_others_input"
                             class="mt-2 block w-full rounded-xl px-4 py-3 font-medium border border-gray-300"
-                            placeholder="Please specify other NUHRA"
+                            placeholder="Please specify others"
                             style="display: none;"
                             value="{{ old('nuhra_others') }}"
                         >
@@ -924,7 +924,7 @@
                             name="mthria_others"
                             id="mthria_others_input"
                             class="mt-2 block w-full rounded-xl px-4 py-3 font-medium border border-gray-300"
-                            placeholder="Please specify other MTHRIA"
+                            placeholder="Please specify others"
                             style="display: none;"
                             value="{{ old('mthria_others') }}"
                         >

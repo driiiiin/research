@@ -358,7 +358,32 @@ class HealthResearchController extends Controller
      */
     public function edit(HealthResearch $healthResearch): View
     {
-        return view('research.health_researches.edit', compact('healthResearch'));
+        // Eager load related authors and locations for the edit form
+        $healthResearch->load(['authors', 'locations']);
+
+        // Prepare selected values for checkbox groups from semicolon-separated strings
+        $explode = function (?string $value) {
+            if (!$value) {
+                return collect();
+            }
+            return collect(preg_split('/\s*;\s*/', $value, -1, PREG_SPLIT_NO_EMPTY));
+        };
+
+        $sdgSelected = $explode($healthResearch->sdg_addressed);
+        $nuhraSelected = $explode($healthResearch->nuhra_addressed);
+        $agendaSelected = $explode($healthResearch->agenda_addressed);
+        $mthriaSelected = $explode($healthResearch->mthria_addressed);
+
+        return view(
+            'research.health_researches.edit',
+            compact(
+                'healthResearch',
+                'sdgSelected',
+                'nuhraSelected',
+                'agendaSelected',
+                'mthriaSelected'
+            )
+        );
     }
 
     /**
