@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4" x-data="{ tab: 'to_submit' }">
+    <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 py-4" x-data="{ tab: 'to_submit' }">
         <h1 class="text-2xl font-bold mb-6 text-gray-800">Submit Health Research to External System</h1>
         <!-- Tab Navigation (Aligned like API tab) -->
         <div class="mb-6 border-b border-gray-200">
@@ -16,149 +16,77 @@
         <!-- Health Research to Submit Tab -->
         <div x-show="tab === 'to_submit'">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-                <form method="GET" class="flex items-center gap-2">
-                    <label for="per_page" class="text-sm text-gray-700">Show</label>
-                    <select name="per_page" id="per_page" onchange="this.form.submit()" class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm">
-                        @foreach([5, 10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('per_page', $healthResearches->perPage()) == $size ? 'selected' : '' }}>{{ $size }}</option>
-                        @endforeach
-                    </select>
-                    <span class="text-sm text-gray-700">entries</span>
-                    @if(request('search'))
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                    @endif
-                </form>
-                <form method="GET" class="flex items-center gap-2">
-                    @if(request('per_page'))
-                        <input type="hidden" name="per_page" value="{{ request('per_page') }}">
-                    @endif
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search health research..." class="border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 text-sm" />
-                    <button type="submit" class="ml-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">Search</button>
-                </form>
+                <button id="submit-selected" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Submit Selected</button>
+                <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-700">Show columns:</label>
+                    <button id="toggle-columns" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm transition">Show All Columns</button>
+                </div>
             </div>
-            <button id="submit-selected" class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Submit Selected</button>
             <div class="bg-white shadow rounded-lg overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table id="health-research-table" class="min-w-full divide-y divide-gray-200" style="width: 100%;">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2"><input type="checkbox" id="select-all"></th>
-                            <th class="px-4 py-2">ID</th>
-                            <th class="px-4 py-2">Title</th>
-                            <th class="px-4 py-2">Author</th>
-                            <th class="px-4 py-2">ISBN</th>
-                            <th class="px-4 py-2">Publisher</th>
-                            <th class="px-4 py-2">Year</th>
-                            <th class="px-4 py-2">Edition</th>
-                            <th class="px-4 py-2">Genre</th>
-                            <th class="px-4 py-2">Description</th>
-                            <th class="px-4 py-2">Total Copies</th>
-                            <th class="px-4 py-2">Available</th>
-                            <th class="px-4 py-2">Location</th>
-                            <th class="px-4 py-2">Call #</th>
-                            <th class="px-4 py-2">Price</th>
-                            <th class="px-4 py-2">Language</th>
-                            <th class="px-4 py-2">Pages</th>
-                            <th class="px-4 py-2">Format</th>
-                            <th class="px-4 py-2">Status</th>
-                            <th class="px-4 py-2">Category</th>
-                            <th class="px-4 py-2">Action</th>
+                            <th class="px-4 py-2" style="width: 40px;"><input type="checkbox" id="select-all"></th>
+                            <th class="px-4 py-2" style="width: 60px;">No.</th>
+                            <th class="px-4 py-2" style="width: 260px;">Research Title</th>
+                            <th class="px-4 py-2" style="width: 120px;">Source Type</th>
+                            <th class="px-4 py-2" style="width: 140px;">Research Category</th>
+                            <th class="px-4 py-2" style="width: 140px;">Research Type</th>
+                            <th class="px-4 py-2" style="width: 120px;">Date Issued</th>
+                            <th class="px-4 py-2" style="width: 110px;">Volume/Issue</th>
+                            <th class="px-4 py-2" style="width: 80px;">Pages</th>
+                            <th class="px-4 py-2" style="width: 160px;">DOI</th>
+                            <th class="px-4 py-2" style="width: 180px;">Implementing Agency</th>
+                            <th class="px-4 py-2" style="width: 100px;">Status</th>
+                            <th class="px-4 py-2" style="width: 90px;">Action</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @forelse($healthResearches as $book)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 text-center"><input type="checkbox" class="book-checkbox" data-book='@json($book)'></td>
-                            <td class="px-4 py-2">{{ $book->id }}</td>
-                            <td class="px-4 py-2 font-semibold text-gray-900">{{ $book->title }}</td>
-                            <td class="px-4 py-2">{{ $book->author }}</td>
-                            <td class="px-4 py-2">{{ $book->isbn }}</td>
-                            <td class="px-4 py-2">{{ $book->publisher }}</td>
-                            <td class="px-4 py-2">{{ $book->publication_year }}</td>
-                            <td class="px-4 py-2">{{ $book->edition }}</td>
-                            <td class="px-4 py-2">{{ $book->genre }}</td>
-                            <td class="px-4 py-2 truncate max-w-xs" title="{{ $book->description }}">{{ \Illuminate\Support\Str::limit($book->description, 30) }}</td>
-                            <td class="px-4 py-2">{{ $book->total_copies }}</td>
-                            <td class="px-4 py-2">{{ $book->available_copies }}</td>
-                            <td class="px-4 py-2">{{ $book->location }}</td>
-                            <td class="px-4 py-2">{{ $book->call_number }}</td>
-                            <td class="px-4 py-2">{{ $book->price }}</td>
-                            <td class="px-4 py-2">{{ $book->language }}</td>
-                            <td class="px-4 py-2">{{ $book->pages }}</td>
-                            <td class="px-4 py-2">{{ $book->format }}</td>
-                            <td class="px-4 py-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {{ $book->status === 'Available' ? 'bg-green-100 text-green-800' :
-                                       ($book->status === 'Maintenance' ? 'bg-yellow-100 text-yellow-800' :
-                                       ($book->status === 'Lost' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')) }}">
-                                    {{ $book->status }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-2">
-                                @if($book->category)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                        @if($book->category->color) style="color: {{ $book->category->color }};" @endif
-                                    >
-                                        {{ $book->category->name }}
-                                    </span>
-                                @else
-                                    <span class="text-gray-400 text-sm">No category</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-2 text-center">
-                                <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition btn-submit-book" data-book='@json($book)'>Submit</button>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="21" class="px-4 py-4 text-center text-gray-500">No health research found.</td>
-                        </tr>
-                        @endforelse
+                        <!-- DataTables will populate this via AJAX -->
                     </tbody>
                 </table>
-            </div>
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
-                <div class="text-sm text-gray-600">
-                    Showing
-                    <span class="font-semibold">{{ $healthResearches->firstItem() ?? 0 }}</span>
-                    to
-                    <span class="font-semibold">{{ $healthResearches->lastItem() ?? 0 }}</span>
-                    of
-                    <span class="font-semibold">{{ $healthResearches->total() }}</span>
-                    entries
-                </div>
-                <div>
-                    {{ $healthResearches->appends(request()->except('page'))->links() }}
-                </div>
             </div>
         </div>
 
         <!-- Submitted Health Research Tab -->
         <div x-show="tab === 'submitted'">
             <div class="bg-white shadow rounded-lg overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200" style="width: 100%;">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-4 py-2">Title</th>
-                            <th class="px-4 py-2">Author</th>
-                            <th class="px-4 py-2">ISBN</th>
-                            <th class="px-4 py-2">Date Submitted</th>
-                            <th class="px-4 py-2">Received Status</th>
-                            <th class="px-4 py-2">Date Received</th>
+                            <th class="px-4 py-2" style="width: 260px;">Research Title</th>
+                            <th class="px-4 py-2" style="width: 120px;">Source Type</th>
+                            <th class="px-4 py-2" style="width: 140px;">Research Category</th>
+                            <th class="px-4 py-2" style="width: 140px;">Research Type</th>
+                            <th class="px-4 py-2" style="width: 140px;">Date Submitted</th>
+                            <th class="px-4 py-2" style="width: 120px;">Received Status</th>
+                            <th class="px-4 py-2" style="width: 140px;">Date Received</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($submittedHealthResearches as $submitted)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2">{{ $submitted->title }}</td>
-                            <td class="px-4 py-2">{{ $submitted->author }}</td>
-                            <td class="px-4 py-2">{{ $submitted->isbn }}</td>
+                            <td class="px-4 py-2 font-semibold text-gray-900" title="{{ $submitted->research_title }}">
+                                {{ \Illuminate\Support\Str::limit($submitted->research_title, 50) }}
+                            </td>
+                            <td class="px-4 py-2">{{ $submitted->source_type }}</td>
+                            <td class="px-4 py-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ $submitted->research_category }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    {{ $submitted->research_type }}
+                                </span>
+                            </td>
                             <td class="px-4 py-2">{{ $submitted->submitted_at ? \Carbon\Carbon::parse($submitted->submitted_at)->format('Y-m-d H:i') : '-' }}</td>
                             <td class="px-4 py-2">{{ $submitted->received_status ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $submitted->received_at ? \Carbon\Carbon::parse($submitted->received_at)->format('Y-m-d H:i') : '-' }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-4 text-center text-gray-500">No submitted health research found.</td>
+                            <td colspan="7" class="px-4 py-4 text-center text-gray-500">No submitted health research found.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -195,30 +123,141 @@
     </style>
 
     <script>
-    // Only clear search and per_page on true reload (F5/refresh)
     document.addEventListener('DOMContentLoaded', function() {
-        let isReload = false;
-        if (window.performance && window.performance.getEntriesByType) {
-            const nav = window.performance.getEntriesByType('navigation')[0];
-            if (nav && nav.type === 'reload') isReload = true;
-        } else if (window.performance && window.performance.navigation) {
-            // Fallback for older browsers
-            if (window.performance.navigation.type === 1) isReload = true;
-        }
-        if (isReload) {
-            const url = new URL(window.location.href);
-            let changed = false;
-            ['search', 'per_page'].forEach(param => {
-                if (url.searchParams.has(param)) {
-                    url.searchParams.delete(param);
-                    changed = true;
+        // Initialize DataTable
+        let healthResearchTable;
+
+        function initializeDataTable() {
+            healthResearchTable = $('#health-research-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route("health_researches.data") }}',
+                    type: 'GET',
+                    data: function(d) {
+                        console.log('DataTable sending data:', d);
+                        return d;
+                    },
+                    error: function(xhr, error, thrown) {
+                        console.error('DataTable AJAX error:', error, thrown);
+                        console.error('Response:', xhr.responseText);
+                    }
+                },
+                columns: [
+                    {
+                        data: 'checkbox',
+                        name: 'checkbox',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        width: '40px'
+                    },
+                    {
+                        data: 'id',
+                        name: 'id',
+                        width: '60px',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'research_title',
+                        name: 'research_title',
+                        width: '260px',
+                        className: 'text-left'
+                    },
+                    {
+                        data: 'source_type',
+                        name: 'source_type',
+                        width: '120px',
+                        className: 'text-left',
+                        visible: false
+                    },
+                    {
+                        data: 'research_category',
+                        name: 'research_category',
+                        width: '140px',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'research_type',
+                        name: 'research_type',
+                        width: '140px',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'date_issued',
+                        name: 'date_issued_from_year',
+                        width: '120px',
+                        className: 'text-center',
+                        visible: false
+                    },
+                    {
+                        data: 'volume_issue',
+                        name: 'volume_no',
+                        width: '110px',
+                        className: 'text-center',
+                        visible: false
+                    },
+                    {
+                        data: 'pages',
+                        name: 'pages',
+                        width: '80px',
+                        className: 'text-center',
+                        visible: false
+                    },
+                    {
+                        data: 'doi',
+                        name: 'doi',
+                        width: '160px',
+                        className: 'text-left',
+                        visible: false
+                    },
+                    {
+                        data: 'implementing_agency',
+                        name: 'implementing_agency',
+                        width: '180px',
+                        className: 'text-left',
+                        visible: false
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        width: '100px',
+                        className: 'text-center',
+                        visible: false
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        width: '90px'
+                    }
+                ],
+                order: [[1, 'desc']],
+                pageLength: 10,
+                lengthMenu: [[5, 10, 25, 50, 100], [5, 10, 25, 50, 100]],
+                responsive: true,
+                autoWidth: false,
+                search: {
+                    smart: true,
+                    regex: false,
+                    caseInsensitive: true
+                },
+                language: {
+                    processing: "Loading health research data...",
+                    emptyTable: "No health research found",
+                    zeroRecords: "No matching health research found",
+                    search: "Search:",
+                    searchPlaceholder: "Search health research..."
+                },
+                drawCallback: function(settings) {
+                    // Re-attach event listeners after table redraw
+                    attachEventListeners();
                 }
             });
-            if (changed) {
-                window.location.replace(url.pathname + url.search);
-                return; // Prevent further JS from running on this load
-            }
         }
+
         // Modal logic
         const modal = document.getElementById('confirm-modal');
         const modalContent = document.getElementById('modal-content');
@@ -242,7 +281,7 @@
             } else {
                 // Multiple health research: show as table
                 const fields = Object.keys(healthResearches[0]);
-                html += '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-100 text-sm"><thead><tr>';
+                html += '<div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-100 text-sm" style="width:100%"><thead><tr>';
                 fields.forEach(f => html += `<th class='px-2 py-1 text-left font-medium text-gray-700 whitespace-nowrap'>${f}</th>`);
                 html += '</tr></thead><tbody>';
                 healthResearches.forEach(healthResearch => {
@@ -290,31 +329,65 @@
             });
         });
 
-        // Per-row submit
-        document.querySelectorAll('.btn-submit-book').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const healthResearch = JSON.parse(this.getAttribute('data-book'));
-                showModal([healthResearch], false);
+        // Function to attach event listeners
+        function attachEventListeners() {
+            // Per-row submit
+            document.querySelectorAll('.btn-submit-research').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const healthResearch = JSON.parse(this.getAttribute('data-research'));
+                    showModal([healthResearch], false);
+                });
             });
-        });
 
-        // Select all functionality
-        const selectAll = document.getElementById('select-all');
-        const checkboxes = document.querySelectorAll('.book-checkbox');
-        selectAll.addEventListener('change', function() {
-            checkboxes.forEach(cb => cb.checked = selectAll.checked);
-        });
+            // Select all functionality
+            const selectAll = document.getElementById('select-all');
+            const checkboxes = document.querySelectorAll('.research-checkbox');
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            });
+        }
 
         // Submit selected health research
         document.getElementById('submit-selected').addEventListener('click', function() {
-            const selectedHealthResearches = Array.from(document.querySelectorAll('.book-checkbox:checked'))
-                .map(cb => JSON.parse(cb.getAttribute('data-book')));
+            const selectedHealthResearches = Array.from(document.querySelectorAll('.research-checkbox:checked'))
+                .map(cb => JSON.parse(cb.getAttribute('data-research')));
             if (selectedHealthResearches.length === 0) {
                 alert('Please select at least one health research to submit.');
                 return;
             }
             showModal(selectedHealthResearches, true);
         });
+
+        // Toggle columns functionality
+        document.getElementById('toggle-columns').addEventListener('click', function() {
+            const button = this;
+            const table = healthResearchTable;
+
+            // Check if any hidden columns exist
+            const hiddenColumns = [3, 6, 7, 8, 9, 10, 11]; // Column indices for hidden columns
+            const hasHiddenColumns = hiddenColumns.some(index => !table.column(index).visible());
+
+            if (hasHiddenColumns) {
+                // Show all columns
+                hiddenColumns.forEach(index => {
+                    table.column(index).visible(true);
+                });
+                button.textContent = 'Hide Extra Columns';
+                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                button.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            } else {
+                // Hide extra columns
+                hiddenColumns.forEach(index => {
+                    table.column(index).visible(false);
+                });
+                button.textContent = 'Show All Columns';
+                button.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            }
+        });
+
+        // Initialize DataTable when the page loads
+        initializeDataTable();
     });
     </script>
 </x-app-layout>

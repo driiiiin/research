@@ -170,9 +170,19 @@
                                 ];
                                 $fromMonth = $healthResearch->date_issued_from_month ?? null;
                                 $toMonth = $healthResearch->date_issued_to_month ?? null;
+                                $fromYear = $healthResearch->date_issued_from_year ?? null;
+                                $toYear = $healthResearch->date_issued_to_year ?? null;
                                 @endphp
-                                From: {{ $fromMonth && isset($months[$fromMonth]) ? $months[$fromMonth] : ($fromMonth ?: 'N/A') }}/{{ $healthResearch->date_issued_from_year }}
-                                To: {{ $toMonth && isset($months[$toMonth]) ? $months[$toMonth] : ($toMonth ?: 'N/A') }}/{{ $healthResearch->date_issued_to_year }}
+                                @if($fromMonth && $toMonth)
+                                    From: {{ isset($months[$fromMonth]) ? $months[$fromMonth] : $fromMonth }}/{{ $fromYear }}
+                                    To: {{ isset($months[$toMonth]) ? $months[$toMonth] : $toMonth }}/{{ $toYear }}
+                                @elseif($fromMonth && !$toMonth)
+                                    {{ isset($months[$fromMonth]) ? $months[$fromMonth] : $fromMonth }}/{{ $fromYear }}
+                                @elseif(!$fromMonth && $fromYear)
+                                    {{ $fromYear }}
+                                @else
+                                    N/A
+                                @endif
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>

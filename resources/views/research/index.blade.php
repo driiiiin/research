@@ -39,7 +39,7 @@
                         <table id="researchTable" class="table table-striped w-full divide-y divide-gray-200 border border-gray-200 table-fixed">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%] min-w-[60px]">No.</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%] min-w-[90px]">No.</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[40%] min-w-[320px]">Research Title / Subtitle</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[20%] min-w-[150px]">Authors</th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[8%] min-w-[70px]">Year</th>
@@ -50,7 +50,7 @@
                             <tbody id="researchTableBody" class="bg-white divide-y divide-gray-200">
                                 @forelse($healthResearches as $index => $healthResearch)
                                     <tr class="hover:bg-gray-50">
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[5%] min-w-[60px]">
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 w-[8%] min-w-[90px]">
                                             {{ $loop->iteration }}
                                         </td>
                                         <td class="px-4 py-4 whitespace-normal text-sm text-gray-900 break-words w-[40%] min-w-[320px]">
@@ -103,18 +103,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2">
-                        <div class="text-sm text-gray-600">
-                            Showing
-                            <span class="font-semibold">{{ $healthResearches->firstItem() ?? 0 }}</span>
-                            to
-                            <span class="font-semibold">{{ $healthResearches->lastItem() ?? 0 }}</span>
-                            of
-                            <span class="font-semibold">{{ $healthResearches->total() }}</span>
-                            entries
-                        </div>
-                        <div>
-                            {{ $healthResearches->appends(request()->except('page'))->links() }}
+
+                    <!-- Record Count -->
+                    <div class="mt-6 px-6 pb-6">
+                        <div class="text-sm text-gray-700">
+                            Total: {{ $healthResearches->count() }} health research records
                         </div>
                     </div>
                 </div>
@@ -125,7 +118,18 @@
 
 <script>
     let table = new DataTable('#researchTable', {
-        responsive: true
+        responsive: true,
+        order: [[0, 'desc']],
+        paging: true,
+        pageLength: 25,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        language: {
+            lengthMenu: "Show _MENU_ records per page",
+            zeroRecords: "No health research records found",
+            info: "Showing _START_ to _END_ of _TOTAL_ records",
+            infoEmpty: "Showing 0 to 0 of 0 records",
+            infoFiltered: "(filtered from _MAX_ total records)"
+        }
     });
 
     // SweetAlert confirmation for delete buttons

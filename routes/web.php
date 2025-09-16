@@ -12,10 +12,12 @@ Route::get('/', function (Request $request) {
     if ($request->filled('search')) {
         $search = $request->search;
         $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-              ->orWhere('author', 'like', "%{$search}%")
-              ->orWhere('isbn', 'like', "%{$search}%")
-              ->orWhere('genre', 'like', "%{$search}%");
+            $q->where('research_title', 'like', "%{$search}%")
+              ->orWhere('accession_no', 'like', "%{$search}%")
+              ->orWhere('doi', 'like', "%{$search}%")
+              ->orWhere('keywords', 'like', "%{$search}%")
+              ->orWhere('mesh_keywords', 'like', "%{$search}%")
+              ->orWhere('non_mesh_keywords', 'like', "%{$search}%");
         });
     }
 
@@ -23,7 +25,7 @@ Route::get('/', function (Request $request) {
         $query->where('format', $request->format);
     }
 
-    $healthResearches = $query->latest()->paginate(12);
+    $healthResearches = $query->with('authors')->latest()->get();
 
     // Check if IP has already submitted a survey or seen it today
     $ipAddress = $request->ip();
@@ -105,10 +107,11 @@ Route::middleware(['auth', 'prevent-back'])->group(function () {
         Route::patch('/admin/pending-users/{pendingUser}/approve', [AdminPendingUserController::class, 'approve'])->name('admin.pending-users.approve');
         Route::delete('/admin/pending-users/{pendingUser}/reject', [AdminPendingUserController::class, 'reject'])->name('admin.pending-users.reject');
     });
-});
 
-// Health Researches Submit Page for External System
-Route::get('/health_researches/submit', [App\Http\Controllers\HealthResearchController::class, 'submitPage'])->name('health_researches.submit.page');
-Route::post('/health_researches/submit-health-researches', [App\Http\Controllers\HealthResearchController::class, 'submitHealthResearches'])->name('health_researches.submit.health_researches');
+    // Health Researches Submit Page for External System
+    Route::get('/health_researches/submit', [App\Http\Controllers\HealthResearchController::class, 'submitPage'])->name('health_researches.submit.page');
+    Route::get('/health_researches/data', [App\Http\Controllers\HealthResearchController::class, 'getHealthResearchData'])->name('health_researches.data');
+    Route::post('/health_researches/submit-health-researches', [App\Http\Controllers\HealthResearchController::class, 'submitHealthResearches'])->name('health_researches.submit.health_researches');
+});
 
 require __DIR__.'/auth.php';

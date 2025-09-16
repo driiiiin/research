@@ -111,13 +111,14 @@
                         </div>
                     </div>
 
-                    <!-- Pagination -->
-                    @if(!empty($healthResearches) && is_object($healthResearches) && method_exists($healthResearches, 'hasPages') && $healthResearches->hasPages())
-                    <div class="mt-8">
-                        {{ $healthResearches->links() }}
+                    <!-- Record Count -->
+                    @if(!empty($healthResearches) && count($healthResearches) > 0)
+                    <div class="mt-6 px-6 pb-6">
+                        <div class="text-sm text-gray-700">
+                            Total: {{ count($healthResearches) }} health research records
+                        </div>
                     </div>
-                    @endif
-                    @if(empty($healthResearches) || count($healthResearches) === 0)
+                    @else
                     <div class="px-4 py-4 text-center text-gray-500">
                         No health researches found.
                     </div>
@@ -260,7 +261,18 @@
                 console.log('Row', i, 'columns:', $(tr).find('td').length);
             });
             new DataTable('#welcomeResearchTable', {
-                responsive: true
+                responsive: true,
+                order: [[0, 'desc']],
+                paging: true,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                language: {
+                    lengthMenu: "Show _MENU_ records per page",
+                    zeroRecords: "No health research records found",
+                    info: "Showing _START_ to _END_ of _TOTAL_ records",
+                    infoEmpty: "Showing 0 to 0 of 0 records",
+                    infoFiltered: "(filtered from _MAX_ total records)"
+                }
             });
         }
 

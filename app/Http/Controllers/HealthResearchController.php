@@ -35,7 +35,7 @@ class HealthResearchController extends Controller
             $query->where('status', $request->status);
         }
 
-        $healthResearches = $query->with('authors')->latest()->paginate(15);
+        $healthResearches = $query->with('authors')->latest()->get();
 
         if ($request->ajax()) {
             return view('research.partials.table_body', compact('healthResearches'))->render();
@@ -621,30 +621,167 @@ class HealthResearchController extends Controller
     }
 
     /**
-     * Display all health researches in a view for submitting to an external system, with pagination and search, and show submitted health researches tab.
+     * Display all health researches in a view for submitting to an external system, with DataTable and show submitted health researches tab.
      */
     public function submitPage(Request $request): View
     {
-        $perPage = $request->input('per_page', 10);
-        $search = $request->input('search');
+        $submittedHealthResearches = SubmittedHealthResearch::orderByDesc('submitted_at')->paginate(10, ['*'], 'submitted_page');
+        return view('research.health_researches.submit', compact('submittedHealthResearches'));
+    }
+
+    /**
+     * Handle DataTable AJAX requests for health research data.
+     */
+    public function getHealthResearchData(Request $request)
+    {
         $query = HealthResearch::query();
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%$search%")
-                  ->orWhere('author', 'like', "%$search%")
-                  ->orWhere('isbn', 'like', "%$search%")
-                  ->orWhere('publisher', 'like', "%$search%")
-                  ->orWhere('genre', 'like', "%$search%")
-                  ->orWhere('description', 'like', "%$search%")
-                  ->orWhere('call_number', 'like', "%$search%")
-                  ->orWhere('location', 'like', "%$search%")
-                  ->orWhere('format', 'like', "%$search%")
-                  ->orWhere('status', 'like', "%$search%")
-                  ;
+
+        // Handle search - check if search value exists and is not empty
+        $searchValue = $request->input('search.value');
+
+        if (!empty($searchValue)) {
+            $query->where(function($q) use ($searchValue) {
+                $q->where('research_title', 'like', "%{$searchValue}%")
+                  ->orWhere('accession_no', 'like', "%{$searchValue}%")
+                  ->orWhere('source_type', 'like', "%{$searchValue}%")
+                  ->orWhere('research_category', 'like', "%{$searchValue}%")
+                  ->orWhere('research_type', 'like', "%{$searchValue}%")
+                  ->orWhere('doi', 'like', "%{$searchValue}%")
+                  ->orWhere('implementing_agency', 'like', "%{$searchValue}%")
+                  ->orWhere('status', 'like', "%{$searchValue}%")
+                  ->orWhere('mesh_keywords', 'like', "%{$searchValue}%")
+                  ->orWhere('non_mesh_keywords', 'like', "%{$searchValue}%")
+                  ->orWhere('volume_no', 'like', "%{$searchValue}%")
+                  ->orWhere('issue_no', 'like', "%{$searchValue}%")
+                  ->orWhere('pages', 'like', "%{$searchValue}%");
             });
         }
-        $healthResearches = $query->paginate($perPage)->appends($request->all());
-        $submittedHealthResearches = SubmittedHealthResearch::orderByDesc('submitted_at')->paginate(10, ['*'], 'submitted_page');
-        return view('research.health_researches.submit', compact('healthResearches', 'submittedHealthResearches'));
+
+        // Get total count before pagination
+        $totalRecords = HealthResearch::count();
+        $filteredRecords = $query->count();
+
+        // Handle ordering
+        if ($request->has('order') && !empty($request->order)) {
+            $orderColumn = $request->order[0]['column'];
+            $orderDirection = $request->order[0]['dir'];
+
+            $columns = [
+                0 => 'id',
+                1 => 'id',
+                2 => 'research_title',
+                3 => 'source_type',
+                4 => 'research_category',
+                5 => 'research_type',
+                6 => 'date_issued_from_year',
+                7 => 'volume_no',
+                8 => 'pages',
+                9 => 'doi',
+                10 => 'implementing_agency',
+                11 => 'status'
+            ];
+
+            if (isset($columns[$orderColumn])) {
+                $query->orderBy($columns[$orderColumn], $orderDirection);
+            }
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        // Handle pagination
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+        $healthResearches = $query->skip($start)->take($length)->get();
+
+        // Format data for DataTables
+        $data = [];
+        foreach ($healthResearches as $research) {
+            $data[] = [
+                'DT_RowId' => 'row_' . $research->id,
+                'DT_RowData' => ['research' => $research->toArray()],
+                'checkbox' => '<input type="checkbox" class="research-checkbox" data-research=\'' . json_encode($research) . '\'>',
+                'id' => $research->id,
+                'research_title' => '<span title="' . e($research->research_title) . '">' . \Illuminate\Support\Str::limit($research->research_title, 50) . '</span>',
+                'source_type' => $research->source_type,
+                'research_category' => '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">' . $research->research_category . '</span>',
+                'research_type' => '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">' . $research->research_type . '</span>',
+                'date_issued' => $this->formatDateIssued($research),
+                'volume_issue' => $this->formatVolumeIssue($research),
+                'pages' => $research->pages ?? '-',
+                'doi' => $this->formatDOI($research),
+                'implementing_agency' => '<span title="' . e($research->implementing_agency ?? '') . '">' . \Illuminate\Support\Str::limit($research->implementing_agency, 30) . '</span>',
+                'status' => $this->formatStatus($research),
+                'action' => '<button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition btn-submit-research" data-research=\'' . json_encode($research) . '\'>Submit</button>'
+            ];
+        }
+
+        return response()->json([
+            'draw' => intval($request->input('draw', 1)),
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $filteredRecords,
+            'data' => $data
+        ]);
+    }
+
+    /**
+     * Format date issued for display.
+     */
+    private function formatDateIssued($research)
+    {
+        if ($research->date_issued_from_year) {
+            $date = $research->date_issued_from_month ? $research->date_issued_from_month . '/' : '';
+            $date .= $research->date_issued_from_year;
+
+            if ($research->date_issued_to_year && $research->date_issued_to_year != $research->date_issued_from_year) {
+                $date .= ' - ' . ($research->date_issued_to_month ? $research->date_issued_to_month . '/' : '') . $research->date_issued_to_year;
+            }
+
+            return $date;
+        }
+
+        return '-';
+    }
+
+    /**
+     * Format volume and issue for display.
+     */
+    private function formatVolumeIssue($research)
+    {
+        if ($research->volume_no || $research->issue_no) {
+            return $research->volume_no . ($research->issue_no ? ' (' . $research->issue_no . ')' : '');
+        }
+
+        return '-';
+    }
+
+    /**
+     * Format DOI for display.
+     */
+    private function formatDOI($research)
+    {
+        if ($research->doi) {
+            return '<a href="https://doi.org/' . e($research->doi) . '" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs">' . \Illuminate\Support\Str::limit($research->doi, 20) . '</a>';
+        }
+
+        return '-';
+    }
+
+    /**
+     * Format status for display.
+     */
+    private function formatStatus($research)
+    {
+        if ($research->status) {
+            $statusClass = match($research->status) {
+                'Completed' => 'bg-green-100 text-green-800',
+                'Ongoing' => 'bg-yellow-100 text-yellow-800',
+                'Cancelled' => 'bg-red-100 text-red-800',
+                default => 'bg-blue-100 text-blue-800'
+            };
+
+            return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' . $statusClass . '">' . $research->status . '</span>';
+        }
+
+        return '<span class="text-gray-400 text-sm">-</span>';
     }
 }
