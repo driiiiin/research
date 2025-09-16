@@ -7,9 +7,7 @@
 
         <title>{{ config('app.name', 'health_research') }}</title>
 
-        <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <!-- Fonts: use system stack (no remote webfont to ensure offline consistency) -->
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
