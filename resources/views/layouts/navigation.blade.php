@@ -7,16 +7,20 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden lg:flex space-x-8">
-                    <x-nav-link class="min-w-[120px] text-center" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+                    @if(Auth::check() && (Auth::user()->organization == 'SuperAdmin' || Auth::user()->organization == '1'))
+                        <x-nav-link class="min-w-[120px] text-center" :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endif
                     <x-nav-link class="min-w-[120px] text-center" :href="route('research.index')" :active="request()->routeIs('research.*')">
                         {{ __('Research') }}
                     </x-nav-link>
+                    @if(Auth::check() && (Auth::user()->organization == 'SuperAdmin' || Auth::user()->organization == '1'))
                     <!-- THIS IS FOR USER MANAGEMENT -->
                     <x-nav-link class="min-w-[120px] text-center" :href="route('users.index')" :active="request()->routeIs('users.*')">
                         {{ __('User Management') }}
                     </x-nav-link>
+                    @endif
                     <x-nav-link class="min-w-[120px] text-center" :href="route('health_researches.submit.page')" :active="request()->routeIs('health_researches.submit.*')">
                         {{ __('API') }}
                     </x-nav-link>

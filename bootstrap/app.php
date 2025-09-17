@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'prevent-back' => \App\Http\Middleware\PreventBack::class,
             'admin' => \App\Http\Middleware\Admin::class,
+            'dashboard.access' => \App\Http\Middleware\DashboardAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -1,3 +1,4 @@
+@if(Auth::check() && (Auth::user()->organization == 'SuperAdmin' || Auth::user()->organization == '1'))
 <x-app-layout>
     <div class="max-w-7xl mx-auto py-8">
         <div class="bg-white shadow rounded-xl overflow-hidden">
@@ -153,19 +154,35 @@
         </div>
     </div>
     <script>
+
         const approvedTabBtn = document.getElementById('approvedTabBtn');
         const pendingTabBtn = document.getElementById('pendingTabBtn');
         const approvedTab = document.getElementById('approvedTab');
         const pendingTab = document.getElementById('pendingTab');
 
-        // Restore last active tab from localStorage
+        // Restore last active tab from localStorage or URL parameter
         document.addEventListener('DOMContentLoaded', function() {
-            const lastTab = localStorage.getItem('userTab') || 'approved';
-            if (lastTab === 'pending') {
-                pendingTabBtn.click();
-            } else {
-                approvedTabBtn.click();
-            }
+            // Add a small delay to ensure success alert shows first
+            setTimeout(() => {
+                // Check URL parameter first
+                const urlParams = new URLSearchParams(window.location.search);
+                const tabParam = urlParams.get('tab');
+
+                let activeTab = 'approved'; // default
+
+                if (tabParam === 'pending') {
+                    activeTab = 'pending';
+                } else {
+                    // Fall back to localStorage if no URL parameter
+                    activeTab = localStorage.getItem('userTab') || 'approved';
+                }
+
+                if (activeTab === 'pending') {
+                    pendingTabBtn.click();
+                } else {
+                    approvedTabBtn.click();
+                }
+            }, 100); // 100ms delay
         });
 
         approvedTabBtn.addEventListener('click', () => {
@@ -228,6 +245,48 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         logoutForm.submit();
+                    }
+                });
+            }
+        }, true);
+        // Delegated SweetAlert confirmation for Approve User
+        document.addEventListener('submit', function(e) {
+            const approveForm = e.target.closest('.approve-user-form');
+            if (approveForm) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Approve User?',
+                    text: 'Are you sure you want to approve this user? They will be able to access the system.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, approve',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        approveForm.submit();
+                    }
+                });
+            }
+        }, true);
+        // Delegated SweetAlert confirmation for Reject User
+        document.addEventListener('submit', function(e) {
+            const rejectForm = e.target.closest('.reject-user-form');
+            if (rejectForm) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Reject User?',
+                    text: 'Are you sure you want to reject this user? This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Yes, reject',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        rejectForm.submit();
                     }
                 });
             }
@@ -327,3 +386,4 @@
         });
     </script>
 </x-app-layout>
+@endif

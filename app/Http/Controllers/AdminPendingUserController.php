@@ -34,7 +34,14 @@ class AdminPendingUserController extends Controller
         $pendingUser->approval_status = 'approved';
         $pendingUser->save();
         $pendingUser->delete();
-        return redirect()->route('users.index')->with('status', 'User approved and added to users table.');
+        return redirect()->route('users.index', ['tab' => 'pending'])->with([
+            'swal' => [
+                'title' => 'User Approved',
+                'text' => 'User approved and added to users table.',
+                'icon' => 'success',
+                'button' => 'OK',
+            ]
+        ]);
     }
 
     // Reject a pending user
@@ -42,6 +49,13 @@ class AdminPendingUserController extends Controller
     {
         $pendingUser = PendingUser::findOrFail($id);
         $pendingUser->delete();
-        return redirect()->route('admin.pending-users.index')->with('status', 'User rejected and removed from pending list.');
+        return redirect()->route('users.index', ['tab' => 'pending'])->with([
+            'swal' => [
+                'title' => 'User Rejected',
+                'text' => 'User rejected and removed from pending list.',
+                'icon' => 'success',
+                'button' => 'OK',
+            ]
+        ]);
     }
 }
